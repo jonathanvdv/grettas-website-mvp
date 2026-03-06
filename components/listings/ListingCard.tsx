@@ -12,7 +12,7 @@ export function ListingCard({ listing }: { listing: Listing }) {
             <article className="h-full flex flex-col bg-brand-card rounded-sm overflow-hidden border border-brand-border hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
 
                 {/* Photo Container */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-bg-dark">
+                <div className="relative aspect-video w-full overflow-hidden bg-brand-bg-dark">
                     <Image
                         src={listing.photos[0] || '/images/listing-placeholder.jpg'}
                         alt={listing.address.full}

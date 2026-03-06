@@ -77,7 +77,9 @@ export function ListingSearch({ initialFilters = {} }: { initialFilters?: Record
                             <option value="Waterloo">Waterloo</option>
                             <option value="Cambridge">Cambridge</option>
                             <option value="Guelph">Guelph</option>
-                            <option value="Other">Other</option>
+                            <option value="Brampton">Brampton</option>
+                            <option value="Mississauga">Mississauga</option>
+                            <option value="Toronto">Toronto</option>
                         </select>
                     </div>
 

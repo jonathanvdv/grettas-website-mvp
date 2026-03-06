@@ -86,6 +86,16 @@ export interface ListingFilters {
 
 // ─── Build OData filter string ──────────────────────────────────────────
 
+// Map UI property type labels to DDF PropertySubType values
+const PROPERTY_TYPE_MAP: Record<string, string> = {
+    'House': 'Single Family',
+    'Condo': 'Condominium',
+    'Townhouse': 'Row / Townhouse',
+    'Land': 'Vacant Land',
+}
+
+const SERVICE_AREA_CITIES = ['Kitchener', 'Waterloo', 'Cambridge', 'Guelph', 'Brampton', 'Mississauga', 'Toronto']
+
 function buildODataFilter(filters: ListingFilters): string {
     const parts: string[] = []
 
@@ -93,7 +103,19 @@ function buildODataFilter(filters: ListingFilters): string {
     if (filters.maxPrice) parts.push(`ListPrice le ${filters.maxPrice}`)
     if (filters.beds) parts.push(`BedroomsTotal ge ${filters.beds}`)
     if (filters.baths) parts.push(`BathroomsTotalInteger ge ${filters.baths}`)
-    if (filters.city) parts.push(`City eq '${filters.city}'`)
+
+    if (filters.propertyType) {
+        const ddfValue = PROPERTY_TYPE_MAP[filters.propertyType] || filters.propertyType
+        parts.push(`PropertySubType eq '${ddfValue}'`)
+    }
+
+    if (filters.city) {
+        parts.push(`City eq '${filters.city}'`)
+    } else {
+        // Default to Abdul's service area
+        const cityFilter = SERVICE_AREA_CITIES.map(c => `City eq '${c}'`).join(' or ')
+        parts.push(`(${cityFilter})`)
+    }
 
     return parts.join(' and ')
 }
