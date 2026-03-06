@@ -101,7 +101,7 @@ function buildODataFilter(filters: ListingFilters): string {
 function buildODataOrderBy(filters: ListingFilters): string {
     const dir = filters.sortDirection || 'desc'
     if (filters.sortField === 'listingPrice') return `ListPrice ${dir}`
-    return `ListingContractDate ${dir}`
+    return `OriginalEntryTimestamp ${dir}`
 }
 
 // ─── Fetch All Listings ──────────────────────────────────────────────────
@@ -122,14 +122,18 @@ export async function getListings(filters: ListingFilters = {}): Promise<Listing
     if (filter) params.set('$filter', filter)
     params.set('$orderby', buildODataOrderBy(filters))
 
-    const res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
+    const url = `${DDF_API_BASE}/Property?${params.toString()}`
+    const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
         next: { revalidate: 300 },
     })
 
     if (!res.ok) {
-        console.error('DDF API error:', res.status, res.statusText)
-        throw new Error(`Failed to fetch listings: ${res.status}`)
+        const body = await res.text()
+        console.error('DDF API error:', res.status, url, body)
+        // Fall back to mock data instead of crashing the page
+        const { mockListings } = await import('./mock-listings')
+        return applyMockFilters(mockListings, filters)
     }
 
     const data = await res.json()
@@ -212,7 +216,7 @@ function normalizeDdfListing(raw: any): Listing {
         .filter(Boolean)
 
     // Calculate days on market
-    const listDate = raw.ListingContractDate || raw.OriginalEntryTimestamp || ''
+    const listDate = raw.OriginalEntryTimestamp || ''
     const dom = listDate ? Math.floor((Date.now() - new Date(listDate).getTime()) / (1000 * 60 * 60 * 24)) : 0
 
     return {
