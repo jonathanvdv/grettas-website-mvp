@@ -35,6 +35,13 @@ async function getDdfToken(): Promise<string> {
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
+export interface Room {
+    type: string
+    level: string
+    dimensions: string
+    description: string
+}
+
 export interface Listing {
     id: string
     mlsNumber: string
@@ -46,13 +53,26 @@ export interface Listing {
         city: string
         province: string
         postalCode: string
+        neighbourhood: string | null
     }
     price: number
+    latitude: number | null
+    longitude: number | null
+    isRental: boolean
+    rentPrice: number | null
+    rentFrequency: string | null
     beds: number
+    bedsAboveGrade: number | null
+    bedsBelowGrade: number | null
     baths: number
+    bathsFull: number | null
+    bathsHalf: number | null
     sqft: number | null
     lotSize: string | null
+    lotSizeDimensions: string | null
     propertyType: string
+    buildingType: string | null
+    storeys: string | null
     yearBuilt: number | null
     description: string
     photos: string[]
@@ -60,15 +80,42 @@ export interface Listing {
     daysOnMarket: number
     status: 'Active' | 'Sold' | 'Pending'
     virtualTour: string | null
-    features: {
-        garage?: string
-        heating?: string
-        cooling?: string
-        basement?: string
-        [key: string]: string | undefined
-    }
-    realtorCaUrl: string       // required link back to REALTOR.ca listing
-    listingBrokerage: string   // required brokerage attribution
+    // Building & structure
+    constructionMaterial: string | null
+    foundation: string | null
+    roof: string | null
+    exteriorFeatures: string | null
+    // Interior
+    flooring: string | null
+    interiorFeatures: string | null
+    appliances: string | null
+    basement: string | null
+    // Utilities
+    heating: string | null
+    heatingFuel: string | null
+    cooling: string | null
+    waterSource: string | null
+    sewer: string | null
+    // Parking
+    parkingTotal: number | null
+    garageSpaces: number | null
+    parkingFeatures: string | null
+    // Financial
+    taxAmount: number | null
+    taxYear: number | null
+    associationFee: number | null
+    associationFeeFrequency: string | null
+    // Rooms
+    rooms: Room[]
+    roomsTotal: number | null
+    // Misc
+    zoning: string | null
+    communityFeatures: string | null
+    poolFeatures: string | null
+    fencing: string | null
+    // Required
+    realtorCaUrl: string
+    listingBrokerage: string
 }
 
 export interface ListingFilters {
@@ -76,8 +123,12 @@ export interface ListingFilters {
     maxPrice?: number
     beds?: number
     baths?: number
-    propertyType?: string
+    propertyType?: string      // StructureType: House, Apartment, Row / Townhouse, etc.
+    buildingType?: string       // PropertySubType: Single Family, Multi-family, etc.
     city?: string
+    transactionType?: 'sale' | 'rent'
+    storeys?: number
+    yearBuilt?: number
     limit?: number
     offset?: number
     sortField?: 'listingPrice' | 'listingDate'
@@ -86,13 +137,8 @@ export interface ListingFilters {
 
 // ─── Build OData filter string ──────────────────────────────────────────
 
-// Map UI property type labels to DDF PropertySubType values
-const PROPERTY_TYPE_MAP: Record<string, string> = {
-    'House': 'Single Family',
-    'Condo': 'Condominium',
-    'Townhouse': 'Row / Townhouse',
-    'Land': 'Vacant Land',
-}
+// StructureType values (Collection enum): House, Apartment, Row / Townhouse, Duplex, Triplex, etc.
+// Land uses PropertySubType 'Vacant Land' since it has no StructureType
 
 const SERVICE_AREA_CITIES = ['Kitchener', 'Waterloo', 'Cambridge', 'Guelph', 'Brampton', 'Mississauga', 'Toronto']
 
@@ -105,8 +151,23 @@ function buildODataFilter(filters: ListingFilters): string {
     if (filters.baths) parts.push(`BathroomsTotalInteger ge ${filters.baths}`)
 
     if (filters.propertyType) {
-        const ddfValue = PROPERTY_TYPE_MAP[filters.propertyType] || filters.propertyType
-        parts.push(`PropertySubType eq '${ddfValue}'`)
+        if (filters.propertyType === 'Land') {
+            parts.push(`PropertySubType eq 'Vacant Land'`)
+        } else {
+            parts.push(`StructureType/any(s: s eq '${filters.propertyType}')`)
+        }
+    }
+    if (filters.buildingType) parts.push(`PropertySubType eq '${filters.buildingType}'`)
+    if (filters.storeys) parts.push(`Stories ge ${filters.storeys}`)
+    if (filters.yearBuilt) parts.push(`YearBuilt ge ${filters.yearBuilt}`)
+
+    // Transaction type filter
+    if (filters.transactionType === 'sale') {
+        parts.push('ListPrice gt 0')
+    } else if (filters.transactionType === 'rent') {
+        parts.push('TotalActualRent gt 0')
+    } else {
+        parts.push('(ListPrice gt 0 or TotalActualRent gt 0)')
     }
 
     if (filters.city) {
@@ -128,17 +189,26 @@ function buildODataOrderBy(filters: ListingFilters): string {
 
 // ─── Fetch All Listings ──────────────────────────────────────────────────
 
-export async function getListings(filters: ListingFilters = {}): Promise<Listing[]> {
+/**
+ * Fetches listings from the CREA DDF API or mock data source based on provided filters.
+ * Supports pagination, sorting, and various property attribute filters.
+ * 
+ * @param filters - Criteria to filter and paginate results
+ * @returns Object containing the listings array and the total count of matches
+ */
+export async function getListings(filters: ListingFilters = {}): Promise<{ listings: Listing[], totalCount: number }> {
     if (!DDF_CLIENT_ID) {
         console.warn('⚠️  No DDF_CLIENT_ID set - returning mock listings')
         const { mockListings } = await import('./mock-listings')
-        return applyMockFilters(mockListings, filters)
+        const filtered = applyMockFilters(mockListings, filters)
+        return { listings: filtered, totalCount: mockListings.length }
     }
 
     const token = await getDdfToken()
     const params = new URLSearchParams()
     params.set('$top', (filters.limit || 12).toString())
     if (filters.offset) params.set('$skip', filters.offset.toString())
+    params.set('$count', 'true')
 
     const filter = buildODataFilter(filters)
     if (filter) params.set('$filter', filter)
@@ -153,17 +223,25 @@ export async function getListings(filters: ListingFilters = {}): Promise<Listing
     if (!res.ok) {
         const body = await res.text()
         console.error('DDF API error:', res.status, url, body)
-        // Fall back to mock data instead of crashing the page
         const { mockListings } = await import('./mock-listings')
-        return applyMockFilters(mockListings, filters)
+        const filtered = applyMockFilters(mockListings, filters)
+        return { listings: filtered, totalCount: mockListings.length }
     }
 
     const data = await res.json()
-    return (data.value || []).map(normalizeDdfListing)
+    const listings = (data.value || []).map(normalizeDdfListing)
+    const totalCount = data['@odata.count'] ?? listings.length
+    return { listings, totalCount }
 }
 
 // ─── Fetch Single Listing ────────────────────────────────────────────────
 
+/**
+ * Retrieves detailed information for a single listing by its unique ID.
+ * 
+ * @param listingId - The unique identifier (ListingKey) of the property
+ * @returns The normalized listing object
+ */
 export async function getListing(listingId: string): Promise<Listing> {
     if (!DDF_CLIENT_ID) {
         const { mockListings } = await import('./mock-listings')
@@ -175,11 +253,21 @@ export async function getListing(listingId: string): Promise<Listing> {
     const token = await getDdfToken()
     const params = new URLSearchParams()
     params.set('$filter', `ListingKey eq '${listingId}'`)
+    params.set('$expand', 'Rooms')
 
-    const res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
+    let res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
         headers: { Authorization: `Bearer ${token}` },
         next: { revalidate: 300 },
     })
+
+    // If $expand=Rooms isn't supported, retry without it
+    if (!res.ok) {
+        params.delete('$expand')
+        res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
+            headers: { Authorization: `Bearer ${token}` },
+            next: { revalidate: 300 },
+        })
+    }
 
     if (!res.ok) throw new Error(`Listing not found: ${listingId}`)
 
@@ -190,6 +278,13 @@ export async function getListing(listingId: string): Promise<Listing> {
 
 // ─── Fetch Featured Listings ─────────────────────────────────────────────
 
+/**
+ * Fetches a list of featured listings, typically displayed on the home page.
+ * Defaults to recent listings in Abdul's core service area.
+ * 
+ * @param limit - Maximum number of featured listings to return
+ * @returns Array of featured listing objects
+ */
 export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
     if (!DDF_CLIENT_ID) {
         const { mockListings } = await import('./mock-listings')
@@ -217,7 +312,50 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
     return (data.value || []).map(normalizeDdfListing)
 }
 
+// ─── Fetch Abdul's Own Listings ──────────────────────────────────────────
+
+const ABDUL_AGENT_KEY = '2151491'
+
+/**
+ * Fetches listings specifically belonging to Abdul (the agent).
+ * Uses the hardcoded agent key to filtered CREA DDF results.
+ * 
+ * @returns Array of listings where Abdul is the primary listing agent
+ */
+export async function getAgentListings(): Promise<Listing[]> {
+    if (!DDF_CLIENT_ID) {
+        const { mockListings } = await import('./mock-listings')
+        return mockListings.slice(0, 6)
+    }
+
+    const token = await getDdfToken()
+    const params = new URLSearchParams()
+    params.set('$top', '50')
+    params.set('$filter', `ListAgentKey eq '${ABDUL_AGENT_KEY}'`)
+    params.set('$orderby', 'ModificationTimestamp desc')
+
+    const res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        next: { revalidate: 300 },
+    })
+
+    if (!res.ok) {
+        console.error('DDF agent listings error:', res.status)
+        return []
+    }
+
+    const data = await res.json()
+    return (data.value || []).map(normalizeDdfListing)
+}
+
 // ─── Normalize DDF RESO response to our Listing type ─────────────────────
+
+// Helper: coerce DDF value (string | array | null) to a display string
+function ddfStr(val: any): string | null {
+    if (!val) return null
+    if (Array.isArray(val)) return val.join(', ')
+    return String(val)
+}
 
 function normalizeDdfListing(raw: any): Listing {
     const streetNum = raw.StreetNumber || ''
@@ -231,8 +369,9 @@ function normalizeDdfListing(raw: any): Listing {
     const unitPart = unit ? ` Unit ${unit}` : ''
     const fullAddress = `${streetNum} ${streetName} ${streetSuffix}${unitPart}, ${city}, ${province} ${postal}`.trim()
 
-    // Media array from DDF (inline, not expanded)
+    // Media array from DDF — filter to actual image URLs only
     const photos = (raw.Media || [])
+        .filter((m: any) => m.MediaCategory === 'Photo' || (m.MediaURL && /\.(jpg|jpeg|png|webp|gif)/i.test(m.MediaURL)))
         .sort((a: any, b: any) => (a.Order || 0) - (b.Order || 0))
         .map((m: any) => m.MediaURL)
         .filter(Boolean)
@@ -240,6 +379,14 @@ function normalizeDdfListing(raw: any): Listing {
     // Calculate days on market
     const listDate = raw.OriginalEntryTimestamp || ''
     const dom = listDate ? Math.floor((Date.now() - new Date(listDate).getTime()) / (1000 * 60 * 60 * 24)) : 0
+
+    // Parse rooms from $expand=Rooms
+    const rooms: Room[] = (raw.Rooms || []).map((r: any) => ({
+        type: r.RoomType || 'Room',
+        level: r.RoomLevel || '',
+        dimensions: r.RoomDimensions || (r.RoomLength && r.RoomWidth ? `${r.RoomLength} x ${r.RoomWidth}` : ''),
+        description: r.RoomDescription || '',
+    }))
 
     return {
         id: raw.ListingKey,
@@ -252,13 +399,26 @@ function normalizeDdfListing(raw: any): Listing {
             city,
             province,
             postalCode: postal,
+            neighbourhood: raw.MLSAreaMinor || raw.SubdivisionName || null,
         },
-        price: raw.ListPrice || 0,
+        price: raw.ListPrice || raw.TotalActualRent || 0,
+        latitude: raw.Latitude ?? null,
+        longitude: raw.Longitude ?? null,
+        isRental: !raw.ListPrice && !!raw.TotalActualRent,
+        rentPrice: raw.TotalActualRent || null,
+        rentFrequency: raw.LeaseAmountFrequency || null,
         beds: raw.BedroomsTotal || 0,
+        bedsAboveGrade: raw.BedroomsAboveGrade ?? null,
+        bedsBelowGrade: raw.BedroomsBelowGrade ?? null,
         baths: raw.BathroomsTotalInteger || 0,
-        sqft: raw.LivingArea || null,
+        bathsFull: raw.BathroomsFull ?? null,
+        bathsHalf: raw.BathroomsHalf ?? null,
+        sqft: raw.LivingArea || raw.BuildingAreaTotal || null,
         lotSize: raw.LotSizeArea ? `${raw.LotSizeArea}` : null,
-        propertyType: raw.PropertySubType || raw.PropertyType || 'Residential',
+        lotSizeDimensions: raw.LotSizeDimensions || null,
+        propertyType: (Array.isArray(raw.StructureType) && raw.StructureType[0]) || raw.PropertySubType || 'Residential',
+        buildingType: raw.PropertySubType || null,
+        storeys: ddfStr(raw.StoriesTotal || raw.Stories),
         yearBuilt: raw.YearBuilt || null,
         description: raw.PublicRemarks || '',
         photos,
@@ -266,12 +426,40 @@ function normalizeDdfListing(raw: any): Listing {
         daysOnMarket: dom,
         status: normalizeStatus(raw.StandardStatus || raw.MlsStatus),
         virtualTour: raw.VirtualTourURLUnbranded || raw.VirtualTourURLBranded || null,
-        features: {
-            garage: raw.GarageSpaces ? `${raw.GarageSpaces} spaces` : undefined,
-            heating: raw.Heating ? (Array.isArray(raw.Heating) ? raw.Heating.join(', ') : raw.Heating) : undefined,
-            cooling: raw.Cooling ? (Array.isArray(raw.Cooling) ? raw.Cooling.join(', ') : raw.Cooling) : undefined,
-            basement: raw.Basement ? (Array.isArray(raw.Basement) ? raw.Basement.join(', ') : raw.Basement) : undefined,
-        },
+        // Building
+        constructionMaterial: ddfStr(raw.ConstructionMaterials),
+        foundation: ddfStr(raw.FoundationDetails || raw.Foundation),
+        roof: ddfStr(raw.Roof),
+        exteriorFeatures: ddfStr(raw.ExteriorFeatures),
+        // Interior
+        flooring: ddfStr(raw.Flooring),
+        interiorFeatures: ddfStr(raw.InteriorFeatures),
+        appliances: ddfStr(raw.Appliances),
+        basement: ddfStr(raw.Basement),
+        // Utilities
+        heating: ddfStr(raw.Heating),
+        heatingFuel: ddfStr(raw.HeatingFuel),
+        cooling: ddfStr(raw.Cooling),
+        waterSource: ddfStr(raw.WaterSource),
+        sewer: ddfStr(raw.Sewer),
+        // Parking
+        parkingTotal: raw.ParkingTotal ?? raw.ParkingSpaces ?? null,
+        garageSpaces: raw.GarageSpaces ?? null,
+        parkingFeatures: ddfStr(raw.ParkingFeatures),
+        // Financial
+        taxAmount: raw.TaxAnnualAmount ?? null,
+        taxYear: raw.TaxYear ?? null,
+        associationFee: raw.AssociationFee ?? null,
+        associationFeeFrequency: raw.AssociationFeeFrequency || null,
+        // Rooms
+        rooms,
+        roomsTotal: raw.RoomsTotal ?? null,
+        // Misc
+        zoning: raw.Zoning || raw.ZoningDescription || null,
+        communityFeatures: ddfStr(raw.CommunityFeatures),
+        poolFeatures: ddfStr(raw.PoolFeatures),
+        fencing: ddfStr(raw.Fencing),
+        // Required
         realtorCaUrl: raw.ListingURL ? `https://${raw.ListingURL}` : `https://www.realtor.ca/real-estate/${raw.ListingKey}`,
         listingBrokerage: raw.ListOfficeName || '',
     }

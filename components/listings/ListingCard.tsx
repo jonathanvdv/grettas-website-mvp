@@ -1,79 +1,84 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { Bed, Bath, Square } from 'lucide-react'
+import { Bed, Bath, Maximize } from 'lucide-react'
 import type { Listing } from '@/lib/listings'
 
 export function ListingCard({ listing }: { listing: Listing }) {
-    // Simple check for "new" listing (within 7 days)
     const isNew = (Date.now() - new Date(listing.listDate).getTime()) / (1000 * 3600 * 24) <= 7
 
     return (
-        <Link href={`/listings/${listing.id}`} className="group block h-full">
-            <article className="h-full flex flex-col bg-brand-card rounded-sm overflow-hidden border border-brand-border hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+        <Link href={`/listings/${listing.id}`} className="group block">
+            <article className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
 
-                {/* Photo Container */}
-                <div className="relative aspect-video w-full overflow-hidden bg-brand-bg-dark">
+                {/* Image */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-gray-100">
                     <Image
                         src={listing.photos[0] || '/images/listing-placeholder.jpg'}
                         alt={listing.address.full}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    {/* Subtle green overlay on hover */}
-                    <div className="absolute inset-0 bg-brand-accent/0 group-hover:bg-brand-accent/10 transition-colors duration-300 z-10"></div>
-
                     {/* Badges */}
-                    <div className="absolute top-3 left-3 flex gap-2 z-20">
+                    <div className="absolute top-3 left-3 flex gap-2 z-10">
+                        {listing.isRental && (
+                            <span className="bg-blue-600 text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded">
+                                For Rent
+                            </span>
+                        )}
                         {isNew && (
-                            <span className="bg-brand-accent text-white text-[10px] uppercase tracking-wider font-semibold px-2 py-1 shadow-sm">
+                            <span className="bg-green-600 text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded">
                                 New
                             </span>
                         )}
-                        {listing.status === 'Pending' && (
-                            <span className="bg-brand-gold text-white text-[10px] uppercase tracking-wider font-semibold px-2 py-1 shadow-sm">
-                                Pending
-                            </span>
-                        )}
                         {listing.status === 'Sold' && (
-                            <span className="bg-red-800 text-white text-[10px] uppercase tracking-wider font-semibold px-2 py-1 shadow-sm">
+                            <span className="bg-red-600 text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded">
                                 Sold
                             </span>
                         )}
+                        {listing.status === 'Pending' && (
+                            <span className="bg-amber-500 text-white text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded">
+                                Pending
+                            </span>
+                        )}
                     </div>
-                    <div className="absolute top-3 right-3 z-20">
-                        <span className="bg-white/95 text-brand-text-muted text-[10px] uppercase tracking-wider font-semibold px-2 py-1 shadow-sm">
+                    <div className="absolute top-3 right-3 z-10">
+                        <span className="bg-white/90 backdrop-blur-sm text-gray-700 text-[11px] font-semibold uppercase tracking-wide px-2.5 py-1 rounded">
                             {listing.propertyType}
                         </span>
                     </div>
                 </div>
 
                 {/* Content */}
-                <div className="p-5 flex flex-col flex-1">
-                    <p className="text-2xl font-display font-medium text-brand-text mb-2">
+                <div className="p-4">
+                    <p className="text-[22px] font-semibold text-gray-900 mb-2">
                         ${listing.price.toLocaleString()}
+                        {listing.isRental && listing.rentFrequency && (
+                            <span className="text-sm font-normal text-gray-500"> /{listing.rentFrequency.toLowerCase()}</span>
+                        )}
                     </p>
-                    <div className="flex-1">
-                        <p className="text-brand-text-muted text-sm leading-relaxed line-clamp-2">
-                            <span className="font-semibold text-brand-text block mb-0.5">
-                                {listing.address.streetNumber} {listing.address.streetName}
-                                {listing.address.unitNumber ? ` Unit ${listing.address.unitNumber}` : ''}
-                            </span>
-                            {listing.address.city}, {listing.address.province}
-                        </p>
-                    </div>
+                    <p className="text-[15px] font-medium text-gray-900 leading-snug">
+                        {listing.address.streetNumber} {listing.address.streetName}
+                        {listing.address.unitNumber ? ` Unit ${listing.address.unitNumber}` : ''}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-0.5">
+                        {listing.address.city}, {listing.address.province}
+                    </p>
 
-                    {/* Stats Row */}
-                    <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-brand-text-muted border-t border-brand-border/60 pt-4 mt-4">
-                        <span className="flex items-center gap-1.5" title={`${listing.beds} Bedrooms`}>
-                            <Bed className="w-4 h-4 text-brand-accent" /> {listing.beds} <span className="sr-only sm:not-sr-only">Beds</span>
+                    {/* Stats */}
+                    <div className="flex items-center gap-5 text-sm text-gray-600 mt-4 pt-3 border-t border-gray-100">
+                        <span className="flex items-center gap-1.5">
+                            <Bed className="w-4 h-4 text-gray-400" />
+                            <span className="font-medium">{listing.beds}</span> Beds
                         </span>
-                        <span className="flex items-center gap-1.5" title={`${listing.baths} Bathrooms`}>
-                            <Bath className="w-4 h-4 text-brand-accent" /> {listing.baths} <span className="sr-only sm:not-sr-only">Baths</span>
+                        <span className="flex items-center gap-1.5">
+                            <Bath className="w-4 h-4 text-gray-400" />
+                            <span className="font-medium">{listing.baths}</span> Baths
                         </span>
                         {listing.sqft && (
-                            <span className="flex items-center gap-1.5 ml-auto" title={`${listing.sqft} Square Feet`}>
-                                <Square className="w-4 h-4 text-brand-accent" /> {listing.sqft.toLocaleString()} <span className="sr-only md:not-sr-only">sqft</span>
+                            <span className="flex items-center gap-1.5 ml-auto">
+                                <Maximize className="w-4 h-4 text-gray-400" />
+                                <span className="font-medium">{listing.sqft.toLocaleString()}</span> sqft
                             </span>
                         )}
                     </div>

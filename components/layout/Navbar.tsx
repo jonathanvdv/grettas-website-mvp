@@ -6,10 +6,42 @@ import { Menu, X, ChevronDown, Phone } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePathname } from 'next/navigation'
 
+function NavDropdown({ label, items, isScrolled }: { label: string; items: { name: string; href: string }[]; isScrolled: boolean }) {
+    const [open, setOpen] = useState(false)
+
+    return (
+        <div className="relative" onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+            <button className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-brand-accent ${isScrolled ? 'text-brand-text' : 'text-brand-bg-dark'} relative group`}>
+                {label} <ChevronDown className="w-4 h-4" />
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-accent transition-all duration-300 group-hover:w-full"></span>
+            </button>
+            <AnimatePresence>
+                {open && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="absolute top-full left-0 mt-2 w-52 bg-white shadow-lg border border-gray-200 rounded-md overflow-hidden"
+                    >
+                        {items.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-brand-accent transition-colors"
+                            >
+                                {item.name}
+                            </Link>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    )
+}
+
 export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false)
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const [toolsOpen, setToolsOpen] = useState(false)
     const pathname = usePathname()
 
     const isHome = pathname === '/'
@@ -19,7 +51,6 @@ export function Navbar() {
             setIsScrolled(window.scrollY > 80)
         }
 
-        // Always consider scrolled if not on home page
         if (!isHome) {
             setIsScrolled(true)
             return
@@ -30,12 +61,21 @@ export function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [isHome])
 
-    const navLinks = [
+    const simpleLinks = [
         { name: 'Home', href: '/' },
-        { name: 'Listings', href: '/listings' },
         { name: 'Neighbourhoods', href: '/neighbourhoods' },
         { name: 'About', href: '/about' },
         { name: 'Contact', href: '/contact' },
+    ]
+
+    const listingsItems = [
+        { name: "Abdul's Listings", href: '/listings/my-listings' },
+        { name: 'Home Search', href: '/listings' },
+    ]
+
+    const toolsItems = [
+        { name: 'Mortgage Calculator', href: '/mortgage-calculator' },
+        { name: 'Home Evaluation', href: '/contact?type=evaluation' },
     ]
 
     return (
@@ -56,7 +96,17 @@ export function Navbar() {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-8">
-                        {navLinks.map((link) => (
+                        <Link
+                            href="/"
+                            className={`text-sm font-medium transition-colors hover:text-brand-accent ${isScrolled ? 'text-brand-text' : 'text-brand-bg-dark'} relative group`}
+                        >
+                            Home
+                            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-accent transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+
+                        <NavDropdown label="Listings" items={listingsItems} isScrolled={isScrolled} />
+
+                        {simpleLinks.slice(1).map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
@@ -67,29 +117,7 @@ export function Navbar() {
                             </Link>
                         ))}
 
-                        <div className="relative" onMouseEnter={() => setToolsOpen(true)} onMouseLeave={() => setToolsOpen(false)}>
-                            <button className={`flex items-center gap-1 text-sm font-medium transition-colors hover:text-brand-accent ${isScrolled ? 'text-brand-text' : 'text-brand-bg-dark'}`}>
-                                Tools <ChevronDown className="w-4 h-4" />
-                            </button>
-
-                            <AnimatePresence>
-                                {toolsOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 10 }}
-                                        className="absolute top-full left-0 mt-2 w-48 bg-white shadow-lg border border-brand-border/50 rounded-md overflow-hidden"
-                                    >
-                                        <Link href="/mortgage-calculator" className="block px-4 py-3 text-sm text-brand-text hover:bg-brand-bg transition-colors">
-                                            Mortgage Calculator
-                                        </Link>
-                                        <Link href="/contact?type=evaluation" className="block px-4 py-3 text-sm text-brand-text hover:bg-brand-bg transition-colors">
-                                            Home Evaluation
-                                        </Link>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
+                        <NavDropdown label="Tools" items={toolsItems} isScrolled={isScrolled} />
                     </nav>
 
                     {/* Desktop CTA */}
@@ -133,31 +161,28 @@ export function Navbar() {
                         transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
                         className="fixed inset-0 bg-white z-40 md:hidden pt-24 px-6 overflow-y-auto pb-8 flex flex-col"
                     >
-                        <nav className="flex flex-col gap-8 text-2xl font-display mt-8">
-                            {navLinks.map((link) => (
-                                <Link
-                                    key={link.name}
-                                    href={link.href}
-                                    className="text-brand-text hover:text-brand-accent transition-colors"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                            <Link
-                                href="/mortgage-calculator"
-                                className="text-brand-text hover:text-brand-accent transition-colors"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Mortgage Calculator
-                            </Link>
-                            <Link
-                                href="/contact?type=evaluation"
-                                className="text-brand-text hover:text-brand-accent transition-colors"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                Home Evaluation
-                            </Link>
+                        <nav className="flex flex-col gap-6 text-xl font-display mt-8">
+                            <Link href="/" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Home</Link>
+
+                            <div>
+                                <span className="text-xs uppercase tracking-widest text-gray-400 mb-2 block">Listings</span>
+                                <div className="flex flex-col gap-4 pl-2">
+                                    <Link href="/listings/my-listings" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Abdul's Listings</Link>
+                                    <Link href="/listings" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Home Search</Link>
+                                </div>
+                            </div>
+
+                            <Link href="/neighbourhoods" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Neighbourhoods</Link>
+                            <Link href="/about" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>About</Link>
+                            <Link href="/contact" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+
+                            <div>
+                                <span className="text-xs uppercase tracking-widest text-gray-400 mb-2 block">Tools</span>
+                                <div className="flex flex-col gap-4 pl-2">
+                                    <Link href="/mortgage-calculator" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Mortgage Calculator</Link>
+                                    <Link href="/contact?type=evaluation" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Home Evaluation</Link>
+                                </div>
+                            </div>
                         </nav>
 
                         <div className="mt-auto pt-12 pb-6">
