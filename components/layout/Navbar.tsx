@@ -46,6 +46,14 @@ export function Navbar() {
 
     const isHome = pathname === '/'
 
+    // Prefetch map pins data so /listings map view loads instantly
+    useEffect(() => {
+        if (pathname !== '/listings') {
+            // Fire and forget — warms the server-side cache
+            fetch('/api/listings/map-pins', { priority: 'low' as any }).catch(() => {})
+        }
+    }, [pathname])
+
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 80)

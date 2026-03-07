@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { getListings, ListingFilters } from '@/lib/listings'
+import { getListings, getListingCount, ListingFilters } from '@/lib/listings'
 import { ListingSearch } from '@/components/listings/ListingSearch'
 import { ListingCard } from '@/components/listings/ListingCard'
 import { ListingDisclaimer } from '@/components/listings/ListingDisclaimer'
@@ -21,7 +21,7 @@ export default async function ListingsPage({
     const unresolvedSearchParams = await searchParams;
 
     const page = Math.max(1, Number(unresolvedSearchParams.page) || 1)
-    const view = (unresolvedSearchParams.view as string) || 'list'
+    const view = (unresolvedSearchParams.view as string) || 'map'
 
     // Parse search params into filters
     const filters: ListingFilters = {
@@ -41,64 +41,71 @@ export default async function ListingsPage({
         offset: (page - 1) * PAGE_SIZE,
     }
 
-    const { listings, totalCount } = await getListings(filters)
-    const totalPages = Math.ceil(totalCount / PAGE_SIZE)
-
-    // Pass flat record of string params to ListingSearch for initial state
-    const initialFilters: Record<string, string> = {}
+    // Build flat filter params string for client-side API calls
+    const filterParams: Record<string, string> = {}
     Object.keys(unresolvedSearchParams).forEach(key => {
         if (typeof unresolvedSearchParams[key] === 'string') {
-            initialFilters[key] = unresolvedSearchParams[key] as string
+            filterParams[key] = unresolvedSearchParams[key] as string
         }
     })
 
+    if (view === 'map') {
+        // Map view: only fetch a fast count, no listing data
+        const totalCount = await getListingCount(filters)
+
+        return (
+            <div className="bg-gray-50 min-h-screen pt-24 pb-16">
+                <div className="px-4 sm:px-6">
+                    <ListingSearch initialFilters={filterParams} totalCount={totalCount} />
+                    <MapView filterParams={filterParams} totalCount={totalCount} />
+                    <ListingDisclaimer lastUpdated={new Date().toLocaleDateString('en-CA')} />
+                </div>
+            </div>
+        )
+    }
+
+    // List view: paginated fetch
+    const { listings, totalCount } = await getListings(filters)
+    const totalPages = Math.ceil(totalCount / PAGE_SIZE)
+
     return (
         <div className="bg-gray-50 min-h-screen pt-24 pb-16">
-            <div className={view === 'map' ? 'px-4 sm:px-6' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <ListingSearch initialFilters={filterParams} resultCount={listings.length} totalCount={totalCount} />
 
-                <ListingSearch initialFilters={initialFilters} resultCount={listings.length} totalCount={totalCount} />
-
-                {view === 'map' ? (
-                    <MapView listings={listings} />
+                {listings.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {listings.map(listing => (
+                            <ListingCard key={listing.id} listing={listing} />
+                        ))}
+                    </div>
                 ) : (
-                    <>
-                        {listings.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {listings.map(listing => (
-                                    <ListingCard key={listing.id} listing={listing} />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="bg-white border border-brand-border/40 p-12 text-center rounded-sm">
-                                <h3 className="text-xl font-display text-brand-text mb-2">No properties found</h3>
-                                <p className="text-brand-text-muted">
-                                    We couldn't find any listings matching your current filters. Try broadening your search or clearing some filters.
-                                </p>
-                            </div>
-                        )}
-
-                        <Pagination currentPage={page} totalPages={totalPages} />
-                    </>
-                )}
-
-                {view === 'list' && (
-                    <div className="mt-12 bg-white border border-gray-200 rounded-lg overflow-hidden">
-                        <div className="p-6 pb-4">
-                            <h2 className="text-xl font-semibold text-gray-900">Service Area</h2>
-                            <p className="text-sm text-gray-500 mt-1">Kitchener · Waterloo · Cambridge · Guelph · Brampton · Mississauga · Toronto</p>
-                        </div>
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d370726.5!2d-80.2!3d43.55!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sca"
-                            width="100%"
-                            height="350"
-                            style={{ border: 0 }}
-                            allowFullScreen
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            title="Abdul Basharmal service area map"
-                        />
+                    <div className="bg-white border border-brand-border/40 p-12 text-center rounded-sm">
+                        <h3 className="text-xl font-display text-brand-text mb-2">No properties found</h3>
+                        <p className="text-brand-text-muted">
+                            We couldn't find any listings matching your current filters. Try broadening your search or clearing some filters.
+                        </p>
                     </div>
                 )}
+
+                <Pagination currentPage={page} totalPages={totalPages} />
+
+                <div className="mt-12 bg-white border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="p-6 pb-4">
+                        <h2 className="text-xl font-semibold text-gray-900">Service Area</h2>
+                        <p className="text-sm text-gray-500 mt-1">Kitchener · Waterloo · Cambridge · Guelph · Brampton · Mississauga · Toronto</p>
+                    </div>
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d370726.5!2d-80.2!3d43.55!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sca"
+                        width="100%"
+                        height="350"
+                        style={{ border: 0 }}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title="Abdul Basharmal service area map"
+                    />
+                </div>
 
                 <ListingDisclaimer lastUpdated={new Date().toLocaleDateString('en-CA')} />
             </div>

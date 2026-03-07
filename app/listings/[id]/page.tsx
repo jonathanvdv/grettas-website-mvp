@@ -45,6 +45,7 @@ export default async function ListingDetailPage({
     const mapQuery = encodeURIComponent(listing.address.full)
 
     return (
+        <>
         <div className="bg-white relative min-h-screen pt-[72px] lg:pt-[84px]">
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -95,7 +96,7 @@ export default async function ListingDetailPage({
                                 <span className="font-semibold text-gray-900">{listing.sqft.toLocaleString()}</span> sqft
                             </span>
                         )}
-                        {listing.parkingTotal != null && listing.parkingTotal > 0 && (
+                        {listing.parkingTotal != null && listing.parkingTotal > 0 && listing.parkingTotal <= 10 && (
                             <span className="flex items-center gap-1.5">
                                 <Car className="w-4 h-4 text-gray-400" />
                                 <span className="font-semibold text-gray-900">{listing.parkingTotal}</span> Parking
@@ -348,6 +349,15 @@ export default async function ListingDetailPage({
 
                 <ListingDisclaimer lastUpdated={new Date().toLocaleDateString('en-CA')} />
             </div>
+
         </div>
+        {/* Floating mobile contact button */}
+        <a
+            href="/contact"
+            className="fixed bottom-5 right-4 z-[9999] md:hidden px-4 py-2 text-xs font-semibold rounded-full border-2 border-brand-accent text-brand-accent bg-white shadow-lg"
+        >
+            Contact Me
+        </a>
+        </>
     )
 }

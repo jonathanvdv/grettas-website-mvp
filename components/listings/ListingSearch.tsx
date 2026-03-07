@@ -175,22 +175,50 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
     const currentVal = (key: string) => searchParams.get(key) || initialFilters[key] || ''
 
     const hasActiveFilters = ['tt', 'pt', 'city', 'lp', 'hp', 'bd', 'ba'].some(k => currentVal(k))
-    const currentView = currentVal('view') || 'list'
+    const currentView = currentVal('view') || 'map'
 
     return (
-        <div className="relative z-30 mb-8">
+        <div className="relative z-30 mb-4 sm:mb-8">
             {/* Main Filter Bar — realtor.ca style inline row */}
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <div className="flex flex-wrap items-end gap-3 p-4">
+                {/* Mobile: compact 1-row with key filters + Filters button */}
+                <div className="flex sm:hidden items-center gap-2 p-2.5">
+                    <FilterSelect value={currentVal('tt')} onChange={(v) => handleChange('tt', v)} className="flex-1 min-w-0">
+                        <option value="">All</option>
+                        <option value="sale">For Sale</option>
+                        <option value="rent">For Rent</option>
+                    </FilterSelect>
+                    <FilterSelect value={currentVal('pt')} onChange={(v) => handleChange('pt', v)} className="flex-1 min-w-0">
+                        <option value="">Any Type</option>
+                        <option value="House">House</option>
+                        <option value="Apartment">Apt</option>
+                        <option value="Row / Townhouse">Town</option>
+                        <option value="Duplex">Duplex</option>
+                        <option value="Land">Land</option>
+                    </FilterSelect>
+                    <button
+                        onClick={() => setShowAdvanced(!showAdvanced)}
+                        className={`flex items-center gap-1.5 px-3 py-2 rounded text-sm font-medium border transition-colors flex-shrink-0 ${showAdvanced ? 'bg-brand-accent text-white border-brand-accent' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                    >
+                        <SlidersHorizontal className="w-3.5 h-3.5" />
+                        Filters
+                        {hasActiveFilters && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-brand-accent" />
+                        )}
+                    </button>
+                </div>
+
+                {/* Desktop: full filter row */}
+                <div className="hidden sm:flex flex-wrap items-end gap-3 p-4">
                     {/* Transaction Type */}
-                    <FilterSelect label="Transaction Type" value={currentVal('tt')} onChange={(v) => handleChange('tt', v)} className="w-full sm:w-auto sm:min-w-[130px]">
+                    <FilterSelect label="Transaction Type" value={currentVal('tt')} onChange={(v) => handleChange('tt', v)} className="min-w-[130px]">
                         <option value="">All</option>
                         <option value="sale">For Sale</option>
                         <option value="rent">For Rent</option>
                     </FilterSelect>
 
                     {/* Property Type */}
-                    <FilterSelect label="Property Type" value={currentVal('pt')} onChange={(v) => handleChange('pt', v)} className="w-full sm:w-auto sm:min-w-[150px] flex-1">
+                    <FilterSelect label="Property Type" value={currentVal('pt')} onChange={(v) => handleChange('pt', v)} className="min-w-[150px] flex-1">
                         <option value="">Any</option>
                         <option value="House">House</option>
                         <option value="Apartment">Apartment</option>
@@ -201,13 +229,13 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                     </FilterSelect>
 
                     {/* Min Price */}
-                    <PriceInput label="Min Price" value={currentVal('lp')} onChange={(v) => handleChange('lp', v)} presets={minPresets} placeholder="No min" className="w-[calc(50%-6px)] sm:w-auto sm:min-w-[130px] flex-1" />
+                    <PriceInput label="Min Price" value={currentVal('lp')} onChange={(v) => handleChange('lp', v)} presets={minPresets} placeholder="No min" className="min-w-[130px] flex-1" />
 
                     {/* Max Price */}
-                    <PriceInput label="Max Price" value={currentVal('hp')} onChange={(v) => handleChange('hp', v)} presets={maxPresets} placeholder="No max" className="w-[calc(50%-6px)] sm:w-auto sm:min-w-[130px] flex-1" />
+                    <PriceInput label="Max Price" value={currentVal('hp')} onChange={(v) => handleChange('hp', v)} presets={maxPresets} placeholder="No max" className="min-w-[130px] flex-1" />
 
                     {/* Beds */}
-                    <FilterSelect label="Beds" value={currentVal('bd')} onChange={(v) => handleChange('bd', v)} className="w-[calc(50%-6px)] sm:w-auto sm:min-w-[100px]">
+                    <FilterSelect label="Beds" value={currentVal('bd')} onChange={(v) => handleChange('bd', v)} className="min-w-[100px]">
                         <option value="">Any</option>
                         <option value="1">1+</option>
                         <option value="2">2+</option>
@@ -217,7 +245,7 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                     </FilterSelect>
 
                     {/* Baths */}
-                    <FilterSelect label="Baths" value={currentVal('ba')} onChange={(v) => handleChange('ba', v)} className="w-[calc(50%-6px)] sm:w-auto sm:min-w-[100px]">
+                    <FilterSelect label="Baths" value={currentVal('ba')} onChange={(v) => handleChange('ba', v)} className="min-w-[100px]">
                         <option value="">Any</option>
                         <option value="1">1+</option>
                         <option value="2">2+</option>
@@ -239,8 +267,8 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                 </div>
 
                 {/* Results count + Sort row */}
-                <div className="flex items-center justify-between px-4 pb-3 pt-1 border-t border-gray-100">
-                    <div className="text-sm text-gray-500">
+                <div className="flex items-center justify-between px-2.5 sm:px-4 pb-2.5 sm:pb-3 pt-1 border-t border-gray-100">
+                    <div className="text-xs sm:text-sm text-gray-500">
                         {totalCount !== undefined ? (
                             <span>Results: <strong className="text-gray-900">{totalCount.toLocaleString()} Listings</strong></span>
                         ) : resultCount !== undefined ? (
@@ -249,7 +277,7 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                     </div>
                     <div className="flex items-center gap-3">
                         {/* Map / List toggle */}
-                        <div className="flex border border-gray-300 rounded overflow-hidden">
+                        <div className="hidden lg:flex border border-gray-300 rounded overflow-hidden">
                             <button
                                 onClick={() => handleChange('view', 'list')}
                                 className={`flex items-center gap-1 px-3 py-1.5 text-xs font-medium transition-colors ${currentView === 'list' ? 'bg-brand-accent text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}

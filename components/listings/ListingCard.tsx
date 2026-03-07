@@ -1,9 +1,10 @@
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Bed, Bath, Maximize } from 'lucide-react'
 import type { Listing } from '@/lib/listings'
 
-export function ListingCard({ listing }: { listing: Listing }) {
+export const ListingCard = React.memo(function ListingCard({ listing }: { listing: Listing }) {
     const isNew = (Date.now() - new Date(listing.listDate).getTime()) / (1000 * 3600 * 24) <= 7
 
     return (
@@ -86,4 +87,4 @@ export function ListingCard({ listing }: { listing: Listing }) {
             </article>
         </Link>
     )
-}
+})

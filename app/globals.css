@@ -36,6 +36,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Cluster popup — remove Mapbox default padding */
+.cluster-popup-wrapper .mapboxgl-popup-content {
+  padding: 0 !important;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
 /* Custom Utilities for Premium Look */
 .text-balance {
   text-wrap: balance;

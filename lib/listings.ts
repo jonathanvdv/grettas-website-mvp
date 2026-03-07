@@ -35,6 +35,22 @@ async function getDdfToken(): Promise<string> {
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
+export interface MapPin {
+    id: string
+    lat: number
+    lng: number
+    price: number
+    beds: number
+    baths: number
+    sqft: number | null
+    address: string
+    photo: string
+    propertyType: string
+    isRental: boolean
+    status: 'Active' | 'Sold' | 'Pending'
+    listDate: string
+}
+
 export interface Room {
     type: string
     level: string
@@ -215,10 +231,21 @@ export async function getListings(filters: ListingFilters = {}): Promise<{ listi
     params.set('$orderby', buildODataOrderBy(filters))
 
     const url = `${DDF_API_BASE}/Property?${params.toString()}`
-    const res = await fetch(url, {
+    let res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
         next: { revalidate: 300 },
     })
+
+    // Retry once on 401 with a fresh token
+    if (res.status === 401) {
+        cachedToken = null
+        tokenExpiry = 0
+        const freshToken = await getDdfToken()
+        res = await fetch(url, {
+            headers: { Authorization: `Bearer ${freshToken}` },
+            next: { revalidate: 300 },
+        })
+    }
 
     if (!res.ok) {
         const body = await res.text()
@@ -232,6 +259,115 @@ export async function getListings(filters: ListingFilters = {}): Promise<{ listi
     const listings = (data.value || []).map(normalizeDdfListing)
     const totalCount = data['@odata.count'] ?? listings.length
     return { listings, totalCount }
+}
+
+// ─── Fetch All Listings (batched) ────────────────────────────────────────
+
+const DDF_PAGE_LIMIT = 100
+
+/**
+ * Fetches ALL listings matching filters by batching paginated requests in parallel.
+ * Used for map view where we need every listing for clustering.
+ * Results are cached via Next.js revalidate for 5 minutes.
+ */
+export async function getAllListings(filters: ListingFilters = {}): Promise<{ listings: Listing[], totalCount: number }> {
+    if (!DDF_CLIENT_ID) {
+        console.warn('⚠️  No DDF_CLIENT_ID set - returning mock listings')
+        const { mockListings } = await import('./mock-listings')
+        const filtered = applyMockFilters(mockListings, filters)
+        return { listings: filtered, totalCount: mockListings.length }
+    }
+
+    const token = await getDdfToken()
+    const filterStr = buildODataFilter(filters)
+    const orderBy = buildODataOrderBy(filters)
+
+    // First request: get page 1 + total count
+    const firstParams = new URLSearchParams()
+    firstParams.set('$top', DDF_PAGE_LIMIT.toString())
+    firstParams.set('$count', 'true')
+    if (filterStr) firstParams.set('$filter', filterStr)
+    firstParams.set('$orderby', orderBy)
+
+    const firstUrl = `${DDF_API_BASE}/Property?${firstParams.toString()}`
+    const firstRes = await fetch(firstUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+        next: { revalidate: 300 },
+    })
+
+    if (firstRes.status === 401) {
+        // Token may be stale — force refresh and retry once
+        cachedToken = null
+        tokenExpiry = 0
+        const freshToken = await getDdfToken()
+        const retryRes = await fetch(firstUrl, {
+            headers: { Authorization: `Bearer ${freshToken}` },
+            next: { revalidate: 300 },
+        })
+        if (!retryRes.ok) {
+            const body = await retryRes.text()
+            console.error('DDF API error (batch first, after retry):', retryRes.status, body)
+            const { mockListings } = await import('./mock-listings')
+            return { listings: applyMockFilters(mockListings, filters), totalCount: mockListings.length }
+        }
+        const retryData = await retryRes.json()
+        const retryTotal: number = retryData['@odata.count'] ?? 0
+        const retryBatch: Listing[] = (retryData.value || []).map(normalizeDdfListing)
+        // Continue with fresh token for remaining batches
+        return fetchRemainingBatches(retryBatch, retryTotal, freshToken, firstParams, filterStr, orderBy, filters)
+    }
+
+    if (!firstRes.ok) {
+        const body = await firstRes.text()
+        console.error('DDF API error (batch first):', firstRes.status, body)
+        const { mockListings } = await import('./mock-listings')
+        return { listings: applyMockFilters(mockListings, filters), totalCount: mockListings.length }
+    }
+
+    const firstData = await firstRes.json()
+    const totalCount: number = firstData['@odata.count'] ?? 0
+    const firstBatch: Listing[] = (firstData.value || []).map(normalizeDdfListing)
+
+    return fetchRemainingBatches(firstBatch, totalCount, token, firstParams, filterStr, orderBy, filters)
+}
+
+async function fetchRemainingBatches(
+    firstBatch: Listing[],
+    totalCount: number,
+    token: string,
+    baseParams: URLSearchParams,
+    _filterStr: string,
+    _orderBy: string,
+    _filters: ListingFilters,
+): Promise<{ listings: Listing[], totalCount: number }> {
+    if (totalCount <= DDF_PAGE_LIMIT) {
+        return { listings: firstBatch, totalCount }
+    }
+
+    const remainingPages = Math.ceil((totalCount - DDF_PAGE_LIMIT) / DDF_PAGE_LIMIT)
+    const batchPromises = Array.from({ length: remainingPages }, (_, i) => {
+        const skip = (i + 1) * DDF_PAGE_LIMIT
+        const params = new URLSearchParams(baseParams)
+        params.delete('$count')
+        params.set('$skip', skip.toString())
+
+        const url = `${DDF_API_BASE}/Property?${params.toString()}`
+        return fetch(url, {
+            headers: { Authorization: `Bearer ${token}` },
+            next: { revalidate: 300 },
+        }).then(async res => {
+            if (!res.ok) {
+                console.error('DDF batch error:', res.status, `skip=${skip}`)
+                return []
+            }
+            const data = await res.json()
+            return (data.value || []).map(normalizeDdfListing)
+        })
+    })
+
+    const batches = await Promise.all(batchPromises)
+    const allListings = [firstBatch, ...batches].flat()
+    return { listings: allListings, totalCount }
 }
 
 // ─── Fetch Single Listing ────────────────────────────────────────────────
@@ -470,6 +606,201 @@ function normalizeStatus(status: string): 'Active' | 'Sold' | 'Pending' {
     if (s.includes('sold') || s.includes('closed')) return 'Sold'
     if (s.includes('pending') || s.includes('contingent')) return 'Pending'
     return 'Active'
+}
+
+// ─── MapPin helper ───────────────────────────────────────────────────────
+
+export function toMapPin(listing: Listing): MapPin | null {
+    if (!listing.latitude || !listing.longitude) return null
+    // Exclude outliers outside the KW / Southern Ontario service area
+    if (listing.latitude < 43.0 || listing.latitude > 44.0 || listing.longitude < -81.0 || listing.longitude > -79.5) return null
+    return {
+        id: listing.id,
+        lat: listing.latitude,
+        lng: listing.longitude,
+        price: listing.price,
+        beds: listing.beds,
+        baths: listing.baths,
+        sqft: listing.sqft,
+        address: listing.address.full,
+        photo: listing.photos[0] || '',
+        propertyType: listing.propertyType,
+        isRental: listing.isRental,
+        status: listing.status,
+        listDate: listing.listDate,
+    }
+}
+
+// ─── Fetch All Map Pins (lightweight, uses $select) ─────────────────────
+
+const MAP_PIN_SELECT = [
+    'ListingKey', 'Latitude', 'Longitude', 'ListPrice', 'TotalActualRent',
+    'BedroomsTotal', 'BathroomsTotalInteger', 'LivingArea', 'BuildingAreaTotal',
+    'StreetNumber', 'StreetName', 'StreetSuffix', 'UnitNumber', 'City', 'StateOrProvince', 'PostalCode',
+    'Media', 'StructureType', 'PropertySubType', 'StandardStatus', 'MlsStatus',
+    'OriginalEntryTimestamp',
+].join(',')
+
+function normalizeDdfToPin(raw: any): MapPin | null {
+    const lat = raw.Latitude
+    const lng = raw.Longitude
+    if (!lat || !lng) return null
+
+    // Exclude outliers outside the KW / Southern Ontario service area
+    if (lat < 43.0 || lat > 44.0 || lng < -81.0 || lng > -79.5) return null
+
+    const streetNum = raw.StreetNumber || ''
+    const streetName = raw.StreetName || ''
+    const streetSuffix = raw.StreetSuffix || ''
+    const unit = raw.UnitNumber || ''
+    const city = raw.City || ''
+    const unitPart = unit ? ` Unit ${unit}` : ''
+    const address = `${streetNum} ${streetName} ${streetSuffix}${unitPart}, ${city}`.trim()
+
+    const photos = (raw.Media || [])
+        .filter((m: any) => m.MediaCategory === 'Photo' || (m.MediaURL && /\.(jpg|jpeg|png|webp|gif)/i.test(m.MediaURL)))
+        .sort((a: any, b: any) => (a.Order || 0) - (b.Order || 0))
+
+    const status = normalizeStatus(raw.StandardStatus || raw.MlsStatus)
+
+    return {
+        id: raw.ListingKey,
+        lat,
+        lng,
+        price: raw.ListPrice || raw.TotalActualRent || 0,
+        beds: raw.BedroomsTotal || 0,
+        baths: raw.BathroomsTotalInteger || 0,
+        sqft: raw.LivingArea || raw.BuildingAreaTotal || null,
+        address,
+        photo: photos[0]?.MediaURL || '',
+        propertyType: (Array.isArray(raw.StructureType) && raw.StructureType[0]) || raw.PropertySubType || 'Residential',
+        isRental: !raw.ListPrice && !!raw.TotalActualRent,
+        status,
+        listDate: raw.OriginalEntryTimestamp || '',
+    }
+}
+
+export async function getAllMapPins(filters: ListingFilters = {}): Promise<{ pins: MapPin[], totalCount: number }> {
+    if (!DDF_CLIENT_ID) {
+        const { mockListings } = await import('./mock-listings')
+        const filtered = applyMockFilters(mockListings, filters)
+        const pins = filtered.map(toMapPin).filter((p): p is MapPin => p !== null)
+        return { pins, totalCount: mockListings.length }
+    }
+
+    const token = await getDdfToken()
+    const filterStr = buildODataFilter(filters)
+    const orderBy = buildODataOrderBy(filters)
+
+    // First request: get page 1 + total count
+    const firstParams = new URLSearchParams()
+    firstParams.set('$top', DDF_PAGE_LIMIT.toString())
+    firstParams.set('$count', 'true')
+    if (filterStr) firstParams.set('$filter', filterStr)
+    firstParams.set('$orderby', orderBy)
+
+    const firstUrl = `${DDF_API_BASE}/Property?${firstParams.toString()}`
+    let res = await fetch(firstUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+        next: { revalidate: 300 },
+    })
+
+    if (res.status === 401) {
+        cachedToken = null
+        tokenExpiry = 0
+        const freshToken = await getDdfToken()
+        res = await fetch(firstUrl, {
+            headers: { Authorization: `Bearer ${freshToken}` },
+            next: { revalidate: 300 },
+        })
+    }
+
+    if (!res.ok) {
+        console.error('DDF map pins error:', res.status)
+        const { mockListings } = await import('./mock-listings')
+        const pins = applyMockFilters(mockListings, filters).map(toMapPin).filter((p): p is MapPin => p !== null)
+        return { pins, totalCount: mockListings.length }
+    }
+
+    const firstData = await res.json()
+    const totalCount: number = firstData['@odata.count'] ?? 0
+    const firstPins: MapPin[] = (firstData.value || []).map(normalizeDdfToPin).filter(Boolean)
+
+    if (totalCount <= DDF_PAGE_LIMIT) {
+        return { pins: firstPins, totalCount }
+    }
+
+    // Fetch remaining pages in parallel
+    const currentToken = cachedToken || token
+    const remainingPages = Math.ceil((totalCount - DDF_PAGE_LIMIT) / DDF_PAGE_LIMIT)
+    const batchPromises = Array.from({ length: remainingPages }, (_, i) => {
+        const skip = (i + 1) * DDF_PAGE_LIMIT
+        const params = new URLSearchParams(firstParams)
+        params.delete('$count')
+        params.set('$skip', skip.toString())
+
+        const url = `${DDF_API_BASE}/Property?${params.toString()}`
+        return fetch(url, {
+            headers: { Authorization: `Bearer ${currentToken}` },
+            next: { revalidate: 300 },
+        }).then(async r => {
+            if (!r.ok) {
+                console.error('DDF map pins batch error:', r.status, `skip=${skip}`)
+                return [] as MapPin[]
+            }
+            const data = await r.json()
+            return (data.value || []).map(normalizeDdfToPin).filter(Boolean) as MapPin[]
+        })
+    })
+
+    const batches = await Promise.all(batchPromises)
+    const allPins = [firstPins, ...batches].flat()
+    return { pins: allPins, totalCount }
+}
+
+// ─── Fast count-only query ───────────────────────────────────────────────
+
+export async function getListingCount(filters: ListingFilters = {}): Promise<number> {
+    if (!DDF_CLIENT_ID) {
+        const { mockListings } = await import('./mock-listings')
+        return applyMockFilters(mockListings, filters).length
+    }
+
+    const token = await getDdfToken()
+    const params = new URLSearchParams()
+    params.set('$top', '1')
+    params.set('$count', 'true')
+    const filter = buildODataFilter(filters)
+    if (filter) params.set('$filter', filter)
+
+    const url = `${DDF_API_BASE}/Property?${params.toString()}`
+    const res = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` },
+        next: { revalidate: 300 },
+    })
+
+    if (!res.ok) return 0
+    const data = await res.json()
+    return data['@odata.count'] ?? 0
+}
+
+// ─── Parse filter params from URL search params ─────────────────────────
+
+export function parseFilterParams(params: Record<string, string>): ListingFilters {
+    return {
+        minPrice: params.lp ? Number(params.lp) : undefined,
+        maxPrice: params.hp ? Number(params.hp) : undefined,
+        beds: params.bd ? Number(params.bd) : undefined,
+        baths: params.ba ? Number(params.ba) : undefined,
+        propertyType: params.pt || undefined,
+        buildingType: params.bt || undefined,
+        city: params.city || undefined,
+        transactionType: (params.tt as 'sale' | 'rent') || undefined,
+        storeys: params.storeys ? Number(params.storeys) : undefined,
+        yearBuilt: params.yb ? Number(params.yb) : undefined,
+        sortField: (params.sortField as 'listingPrice' | 'listingDate') || undefined,
+        sortDirection: (params.sortDirection as 'asc' | 'desc') || undefined,
+    }
 }
 
 // ─── Mock data filter helper ─────────────────────────────────────────────
