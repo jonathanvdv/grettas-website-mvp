@@ -6,7 +6,7 @@ export function middleware(request: NextRequest) {
 
     const csp = [
         "default-src 'self'",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://api.mapbox.com https://cdn.mapbox.com",
+        "script-src 'self' 'unsafe-inline' https://api.mapbox.com https://cdn.mapbox.com",
         "style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com",
         "font-src 'self' https://fonts.gstatic.com",
         "img-src 'self' data: blob: https://cdn.realtor.ca https://*.realtor.ca https://www.realtor.ca https://api.mapbox.com https://cdn.mapbox.com",
