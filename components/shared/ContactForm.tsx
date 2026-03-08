@@ -61,7 +61,7 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className={`space-y-4 ${className}`}>
+        <form onSubmit={handleSubmit(onSubmit)} className={`space-y-4 ${className}`} suppressHydrationWarning>
             {isError && (
                 <div className="p-4 bg-red-50 text-red-700 text-sm rounded-sm mb-4">
                     There was an error sending your message. Please try again or contact Abdul directly.
@@ -73,7 +73,7 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
+                <div suppressHydrationWarning>
                     <label htmlFor="firstName" className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider">First Name *</label>
                     <input
                         {...register('firstName')}
