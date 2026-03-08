@@ -591,7 +591,7 @@ function normalizeDdfListing(raw: any): Listing {
         photos,
         listDate,
         daysOnMarket: dom,
-        status: normalizeStatus(raw.StandardStatus || raw.MlsStatus),
+        status: normalizeStatus(raw.StandardStatus || ''),
         virtualTour: raw.VirtualTourURLUnbranded || raw.VirtualTourURLBranded || null,
         // Building
         constructionMaterial: ddfStr(raw.ConstructionMaterials),
@@ -668,7 +668,7 @@ const MAP_PIN_SELECT = [
     'ListingKey', 'Latitude', 'Longitude', 'ListPrice', 'TotalActualRent',
     'BedroomsTotal', 'BathroomsTotalInteger', 'LivingArea', 'BuildingAreaTotal',
     'StreetNumber', 'StreetName', 'StreetSuffix', 'UnitNumber', 'City', 'StateOrProvince', 'PostalCode',
-    'Media', 'StructureType', 'PropertySubType', 'StandardStatus', 'MlsStatus',
+    'Media', 'StructureType', 'PropertySubType', 'StandardStatus',
     'OriginalEntryTimestamp',
 ].join(',')
 
@@ -692,7 +692,7 @@ export function normalizeDdfToPin(raw: any): MapPin | null {
         .filter((m: any) => m.MediaCategory === 'Photo' || (m.MediaURL && /\.(jpg|jpeg|png|webp|gif)/i.test(m.MediaURL)))
         .sort((a: any, b: any) => (a.Order || 0) - (b.Order || 0))
 
-    const status = normalizeStatus(raw.StandardStatus || raw.MlsStatus)
+    const status = normalizeStatus(raw.StandardStatus || '')
 
     return {
         id: raw.ListingKey,
@@ -748,7 +748,8 @@ export async function getAllMapPins(filters: ListingFilters = {}): Promise<{ pin
     }
 
     if (!res.ok) {
-        console.error('DDF map pins error:', res.status)
+        const errorBody = await res.text().catch(() => '')
+        console.error('DDF map pins error:', res.status, errorBody)
         const { mockListings } = await import('./mock-listings')
         const pins = applyMockFilters(mockListings, filters).map(toMapPin).filter((p): p is MapPin => p !== null)
         return { pins, totalCount: mockListings.length }
