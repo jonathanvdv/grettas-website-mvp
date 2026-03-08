@@ -167,7 +167,7 @@ export default function HomeEvaluationPage() {
                                 <p className="text-brand-text-muted text-sm mb-6">Fill out the form and Abdul will get back to you within 24 hours.</p>
                                 <ContactForm
                                     defaultIntent="Sell"
-                                    defaultMessage={"Hey Abdul, I'm interested in getting a free home evaluation.\n\nMy address: "}
+                                    defaultMessage="Hi Abdul. I'd like to get a free home evaluation for my property located at [Your Address]."
                                 />
                             </div>
                         </AnimatedSection>
