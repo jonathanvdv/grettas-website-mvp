@@ -12,6 +12,7 @@ interface MapViewProps {
 }
 
 const PER_PAGE = 20
+const FETCH_PAGE_SIZE = 500
 
 // Client-side filter: apply transaction type, price, beds, baths, property type
 function filterPins(pins: MapPin[], params: Record<string, string>): MapPin[] {
@@ -53,7 +54,9 @@ function filterPins(pins: MapPin[], params: Record<string, string>): MapPin[] {
 }
 
 export function MapView({ filterParams, totalCount }: MapViewProps) {
-    const [allPins, setAllPins] = useState<MapPin[] | null>(null)
+    const [allPins, setAllPins] = useState<MapPin[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [isLoadingMore, setIsLoadingMore] = useState(false)
     const [bounds, setBounds] = useState<MapBounds | null>(null)
     const [page, setPage] = useState(0)
     const [isDesktop, setIsDesktop] = useState(false)
@@ -68,31 +71,56 @@ export function MapView({ filterParams, totalCount }: MapViewProps) {
         return () => mq.removeEventListener('change', handler)
     }, [])
 
-    // Fetch ALL pins once on mount (no filters) — subsequent filter changes are instant
+    // Progressively fetch all pins in chunks
     useEffect(() => {
         let cancelled = false
-        setAllPins(null)
 
-        fetch('/api/listings/map-pins', { priority: 'low' as any })
-            .then(r => {
-                if (!r.ok) throw new Error(`Map pins fetch failed: ${r.status}`)
-                return r.json()
-            })
-            .then(data => {
-                if (!cancelled) setAllPins(data.pins)
-            })
-            .catch(() => {
-                if (!cancelled) setAllPins([])
-            })
+        async function loadPins() {
+            setIsLoading(true)
+            setAllPins([])
 
+            let cursor: number | null = 0
+
+            while (cursor !== null && !cancelled) {
+                try {
+                    const res: Response = await fetch(`/api/listings/map-pins?cursor=${cursor}&limit=${FETCH_PAGE_SIZE}`)
+                    if (!res.ok) throw new Error(`Fetch failed: ${res.status}`)
+                    const data: { pins: MapPin[]; totalCount: number; nextCursor: number | null } = await res.json()
+
+                    if (cancelled) break
+
+                    setAllPins(prev => [...prev, ...data.pins])
+
+                    // After first chunk, switch from loading to loading-more
+                    setIsLoading(false)
+                    if (data.nextCursor !== null) {
+                        setIsLoadingMore(true)
+                    }
+
+                    cursor = data.nextCursor
+                } catch {
+                    if (!cancelled) {
+                        setIsLoading(false)
+                        setIsLoadingMore(false)
+                    }
+                    break
+                }
+            }
+
+            if (!cancelled) {
+                setIsLoadingMore(false)
+            }
+        }
+
+        loadPins()
         return () => { cancelled = true }
-    }, []) // fetch once on mount
+    }, [])
 
     // Apply filters client-side — instant, no network call
     const filteredPins = useMemo(() => {
-        if (!allPins) return null
+        if (isLoading) return null
         return filterPins(allPins, filterParams)
-    }, [allPins, filterParams])
+    }, [allPins, filterParams, isLoading])
 
     // Reset page when filters change
     useEffect(() => { setPage(0) }, [filterParams])
@@ -129,26 +157,25 @@ export function MapView({ filterParams, totalCount }: MapViewProps) {
         sidebarRef.current?.scrollTo({ top: 0 })
     }, [page])
 
-    const loading = allPins === null
-
     return (
         <div className="flex h-[calc(100vh-180px)] min-h-[500px]">
             {/* Sidebar */}
             <div className="w-full lg:w-[340px] xl:w-[380px] flex-shrink-0 flex flex-col bg-white border-r border-gray-200">
                 <div className="px-3 py-2 border-b border-gray-200 flex-shrink-0">
                     <p className="text-sm text-gray-600">
-                        {loading ? (
+                        {isLoading ? (
                             <span className="text-gray-400">Loading...</span>
                         ) : (
                             <>
                                 Results: <strong className="text-gray-900">{visiblePins.length.toLocaleString()} Listings</strong>
+                                {isLoadingMore && <span className="text-gray-400 ml-1">(loading more...)</span>}
                             </>
                         )}
                     </p>
                 </div>
 
                 <div ref={sidebarRef} className="flex-1 overflow-y-auto">
-                    {loading ? (
+                    {isLoading ? (
                         Array.from({ length: 5 }).map((_, i) => (
                             <div key={i} className="flex gap-3 p-3 border-b border-gray-200 animate-pulse">
                                 <div className="w-[140px] h-[100px] bg-gray-200 rounded flex-shrink-0" />
@@ -170,7 +197,7 @@ export function MapView({ filterParams, totalCount }: MapViewProps) {
                     )}
                 </div>
 
-                {!loading && visiblePins.length > PER_PAGE && (
+                {!isLoading && visiblePins.length > PER_PAGE && (
                     <div className="flex items-center justify-center gap-3 px-3 py-2.5 border-t border-gray-200 flex-shrink-0 bg-white">
                         <button
                             onClick={() => setPage(p => Math.max(0, p - 1))}
@@ -196,7 +223,7 @@ export function MapView({ filterParams, totalCount }: MapViewProps) {
             {/* Map — only mounted on desktop to avoid Mapbox loading on mobile */}
             {isDesktop && (
                 <div className="flex-1">
-                    {loading ? (
+                    {isLoading ? (
                         <div className="w-full h-full bg-gray-100 animate-pulse flex items-center justify-center text-gray-400 text-sm">
                             Loading map...
                         </div>
