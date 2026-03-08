@@ -3,8 +3,9 @@ import { getAllMapPins, type MapPin } from '@/lib/listings'
 
 export const revalidate = 300
 
-// Single in-memory cache for ALL pins
+// Single in-memory cache for ALL pins with dedup to prevent concurrent refreshes
 let pinCache: { pins: MapPin[]; totalCount: number; ts: number } | null = null
+let pendingRefresh: Promise<{ pins: MapPin[]; totalCount: number }> | null = null
 const CACHE_TTL = 10 * 60 * 1000 // 10 minutes
 
 const DEFAULT_PAGE_SIZE = 500
@@ -13,9 +14,17 @@ async function ensureCache(): Promise<{ pins: MapPin[]; totalCount: number }> {
     if (pinCache && Date.now() - pinCache.ts < CACHE_TTL) {
         return pinCache
     }
-    const { pins, totalCount } = await getAllMapPins()
-    pinCache = { pins, totalCount, ts: Date.now() }
-    return pinCache
+    if (!pendingRefresh) {
+        pendingRefresh = getAllMapPins().then(result => {
+            pinCache = { ...result, ts: Date.now() }
+            pendingRefresh = null
+            return result
+        }).catch(err => {
+            pendingRefresh = null
+            throw err
+        })
+    }
+    return pendingRefresh
 }
 
 export async function GET(request: NextRequest) {
