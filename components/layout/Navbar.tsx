@@ -83,7 +83,7 @@ export function Navbar() {
 
     const toolsItems = [
         { name: 'Mortgage Calculator', href: '/mortgage-calculator' },
-        { name: 'Home Evaluation', href: '/contact?type=evaluation' },
+        { name: 'Home Evaluation', href: '/home-evaluation' },
     ]
 
     return (
@@ -188,7 +188,7 @@ export function Navbar() {
                                 <span className="text-xs uppercase tracking-widest text-gray-400 mb-2 block">Tools</span>
                                 <div className="flex flex-col gap-4 pl-2">
                                     <Link href="/mortgage-calculator" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Mortgage Calculator</Link>
-                                    <Link href="/contact?type=evaluation" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Home Evaluation</Link>
+                                    <Link href="/home-evaluation" className="text-brand-text hover:text-brand-accent transition-colors" onClick={() => setMobileMenuOpen(false)}>Home Evaluation</Link>
                                 </div>
                             </div>
                         </nav>

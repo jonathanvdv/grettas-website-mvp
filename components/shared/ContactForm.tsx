@@ -79,6 +79,7 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
                         {...register('firstName')}
                         id="firstName"
                         type="text"
+                        placeholder="John"
                         className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
                     />
                     {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>}
@@ -89,6 +90,7 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
                         {...register('lastName')}
                         id="lastName"
                         type="text"
+                        placeholder="Smith"
                         className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
                     />
                     {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName.message}</p>}
@@ -102,6 +104,7 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
                         {...register('email')}
                         id="email"
                         type="email"
+                        placeholder="john@example.com"
                         className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
@@ -112,6 +115,7 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
                         {...register('phone')}
                         id="phone"
                         type="tel"
+                        placeholder="(519) 555-0123"
                         className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
                     />
                 </div>

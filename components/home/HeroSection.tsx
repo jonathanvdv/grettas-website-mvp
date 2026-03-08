@@ -58,7 +58,7 @@ export function HeroSection() {
                                 Search Listings →
                             </Link>
                             <Link
-                                href="/contact?type=evaluation"
+                                href="/home-evaluation"
                                 className="border border-brand-border bg-white lg:bg-transparent hover:bg-brand-border/10 text-brand-text font-medium px-6 py-4 lg:px-8 transition-colors text-center uppercase tracking-wider text-xs lg:text-sm shadow-sm hover:shadow-md lg:shadow-none w-full sm:w-auto"
                             >
                                 What's My Home Worth?

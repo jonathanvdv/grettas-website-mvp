@@ -15,7 +15,7 @@ export function ContactCTA() {
                     </p>
 
                     <Link
-                        href="/contact?type=evaluation"
+                        href="/home-evaluation"
                         className="inline-block bg-brand-accent hover:bg-brand-accent-light text-white px-10 py-5 uppercase tracking-wider text-sm font-medium transition-colors shadow-lg hover:shadow-xl w-full sm:w-auto"
                     >
                         Get My Free Home Evaluation →
