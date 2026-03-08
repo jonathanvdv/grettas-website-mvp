@@ -163,11 +163,24 @@ export function odataString(value: string): string {
     return value.replace(/'/g, "''")
 }
 
+/** Validate that a value is a finite number before interpolating into OData. */
+function safeNum(value: number | undefined): number | undefined {
+    if (value === undefined) return undefined
+    return Number.isFinite(value) ? value : undefined
+}
+
 export function buildODataFilter(filters: ListingFilters): string {
     const parts: string[] = []
 
-    if (filters.beds) parts.push(`BedroomsTotal ge ${filters.beds}`)
-    if (filters.baths) parts.push(`BathroomsTotalInteger ge ${filters.baths}`)
+    const beds = safeNum(filters.beds)
+    const baths = safeNum(filters.baths)
+    const storeys = safeNum(filters.storeys)
+    const yearBuilt = safeNum(filters.yearBuilt)
+    const minPrice = safeNum(filters.minPrice)
+    const maxPrice = safeNum(filters.maxPrice)
+
+    if (beds) parts.push(`BedroomsTotal ge ${beds}`)
+    if (baths) parts.push(`BathroomsTotalInteger ge ${baths}`)
 
     if (filters.propertyType) {
         if (filters.propertyType === 'Land') {
@@ -177,32 +190,32 @@ export function buildODataFilter(filters: ListingFilters): string {
         }
     }
     if (filters.buildingType) parts.push(`PropertySubType eq '${odataString(filters.buildingType)}'`)
-    if (filters.storeys) parts.push(`Stories ge ${filters.storeys}`)
-    if (filters.yearBuilt) parts.push(`YearBuilt ge ${filters.yearBuilt}`)
+    if (storeys) parts.push(`Stories ge ${storeys}`)
+    if (yearBuilt) parts.push(`YearBuilt ge ${yearBuilt}`)
 
     // Transaction type filtering
     // Rentals: ListPrice is null, price is in TotalActualRent
     // Sales: ListPrice has the value, TotalActualRent is null/0
     if (filters.transactionType === 'sale') {
         parts.push('ListPrice gt 0')
-        if (filters.minPrice) parts.push(`ListPrice ge ${filters.minPrice}`)
-        if (filters.maxPrice) parts.push(`ListPrice le ${filters.maxPrice}`)
+        if (minPrice) parts.push(`ListPrice ge ${minPrice}`)
+        if (maxPrice) parts.push(`ListPrice le ${maxPrice}`)
     } else if (filters.transactionType === 'rent') {
         parts.push('TotalActualRent gt 0')
-        if (filters.minPrice) parts.push(`TotalActualRent ge ${filters.minPrice}`)
-        if (filters.maxPrice) parts.push(`TotalActualRent le ${filters.maxPrice}`)
+        if (minPrice) parts.push(`TotalActualRent ge ${minPrice}`)
+        if (maxPrice) parts.push(`TotalActualRent le ${maxPrice}`)
     } else {
         // "All" — include sales and rentals, with proper price filtering on each field
-        if (filters.minPrice || filters.maxPrice) {
+        if (minPrice || maxPrice) {
             const saleParts = ['ListPrice gt 0']
             const rentParts = ['TotalActualRent gt 0']
-            if (filters.minPrice) {
-                saleParts.push(`ListPrice ge ${filters.minPrice}`)
-                rentParts.push(`TotalActualRent ge ${filters.minPrice}`)
+            if (minPrice) {
+                saleParts.push(`ListPrice ge ${minPrice}`)
+                rentParts.push(`TotalActualRent ge ${minPrice}`)
             }
-            if (filters.maxPrice) {
-                saleParts.push(`ListPrice le ${filters.maxPrice}`)
-                rentParts.push(`TotalActualRent le ${filters.maxPrice}`)
+            if (maxPrice) {
+                saleParts.push(`ListPrice le ${maxPrice}`)
+                rentParts.push(`TotalActualRent le ${maxPrice}`)
             }
             parts.push(`((${saleParts.join(' and ')}) or (${rentParts.join(' and ')}))`)
         } else {
