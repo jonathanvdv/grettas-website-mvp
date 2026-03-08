@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 export function ListingDisclaimer({ lastUpdated }: { lastUpdated?: string }) {
     return (
         <div className="mt-8 border-t border-brand-border/30 pt-8 text-center">
@@ -7,10 +9,12 @@ export function ListingDisclaimer({ lastUpdated }: { lastUpdated?: string }) {
                 rel="noopener noreferrer"
                 className="inline-block mb-4"
             >
-                <img
+                <Image
                     src="https://www.realtor.ca/images/logo.svg"
                     alt="Powered by REALTOR.ca"
-                    className="h-8 mx-auto opacity-60 hover:opacity-100 transition-opacity"
+                    width={120}
+                    height={32}
+                    className="mx-auto opacity-60 hover:opacity-100 transition-opacity"
                 />
             </a>
             <p className="text-xs text-brand-text-muted leading-relaxed max-w-3xl mx-auto font-light">
