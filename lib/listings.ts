@@ -158,6 +158,11 @@ export interface ListingFilters {
 
 const SERVICE_AREA_CITIES = ['Kitchener', 'Waterloo', 'Cambridge', 'Guelph', 'Brampton', 'Mississauga', 'Toronto']
 
+/** Escape a value for use inside an OData single-quoted string literal. */
+function odataString(value: string): string {
+    return value.replace(/'/g, "''")
+}
+
 function buildODataFilter(filters: ListingFilters): string {
     const parts: string[] = []
 
@@ -168,10 +173,10 @@ function buildODataFilter(filters: ListingFilters): string {
         if (filters.propertyType === 'Land') {
             parts.push(`PropertySubType eq 'Vacant Land'`)
         } else {
-            parts.push(`StructureType/any(s: s eq '${filters.propertyType}')`)
+            parts.push(`StructureType/any(s: s eq '${odataString(filters.propertyType)}')`)
         }
     }
-    if (filters.buildingType) parts.push(`PropertySubType eq '${filters.buildingType}'`)
+    if (filters.buildingType) parts.push(`PropertySubType eq '${odataString(filters.buildingType)}'`)
     if (filters.storeys) parts.push(`Stories ge ${filters.storeys}`)
     if (filters.yearBuilt) parts.push(`YearBuilt ge ${filters.yearBuilt}`)
 
@@ -206,7 +211,7 @@ function buildODataFilter(filters: ListingFilters): string {
     }
 
     if (filters.city) {
-        parts.push(`City eq '${filters.city}'`)
+        parts.push(`City eq '${odataString(filters.city)}'`)
     } else {
         // Default to Abdul's service area
         const cityFilter = SERVICE_AREA_CITIES.map(c => `City eq '${c}'`).join(' or ')
