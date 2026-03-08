@@ -159,11 +159,11 @@ export interface ListingFilters {
 const SERVICE_AREA_CITIES = ['Kitchener', 'Waterloo', 'Cambridge', 'Guelph', 'Brampton', 'Mississauga', 'Toronto']
 
 /** Escape a value for use inside an OData single-quoted string literal. */
-function odataString(value: string): string {
+export function odataString(value: string): string {
     return value.replace(/'/g, "''")
 }
 
-function buildODataFilter(filters: ListingFilters): string {
+export function buildODataFilter(filters: ListingFilters): string {
     const parts: string[] = []
 
     if (filters.beds) parts.push(`BedroomsTotal ge ${filters.beds}`)
@@ -632,7 +632,7 @@ function normalizeDdfListing(raw: any): Listing {
     }
 }
 
-function normalizeStatus(status: string): 'Active' | 'Sold' | 'Pending' {
+export function normalizeStatus(status: string): 'Active' | 'Sold' | 'Pending' {
     const s = (status || '').toLowerCase()
     if (s.includes('sold') || s.includes('closed')) return 'Sold'
     if (s.includes('pending') || s.includes('contingent')) return 'Pending'
@@ -672,7 +672,7 @@ const MAP_PIN_SELECT = [
     'OriginalEntryTimestamp',
 ].join(',')
 
-function normalizeDdfToPin(raw: any): MapPin | null {
+export function normalizeDdfToPin(raw: any): MapPin | null {
     const lat = raw.Latitude
     const lng = raw.Longitude
     if (!lat || !lng) return null

@@ -15,7 +15,7 @@ const PER_PAGE = 20
 const FETCH_PAGE_SIZE = 500
 
 // Client-side filter: apply transaction type, price, beds, baths, property type
-function filterPins(pins: MapPin[], params: Record<string, string>): MapPin[] {
+export function filterPins(pins: MapPin[], params: Record<string, string>): MapPin[] {
     let result = pins
 
     const tt = params.tt
