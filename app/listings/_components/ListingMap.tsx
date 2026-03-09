@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
-import Map, { Source, Layer, Popup, NavigationControl, Marker } from 'react-map-gl/maplibre'
+import Map, { Popup, NavigationControl, Marker } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { MapPin } from '@/lib/listings'
 import Link from 'next/link'
 import type { MapRef } from 'react-map-gl/maplibre'
-import type { GeoJSONSource, MapLayerMouseEvent } from 'maplibre-gl'
 import { Bed, Bath, Maximize, ChevronLeft, ChevronRight } from 'lucide-react'
 import Supercluster from 'supercluster'
 
