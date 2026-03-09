@@ -9,16 +9,39 @@ const RATE_LIMIT_MAX = 5
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000
 const MAX_TRACKED_IPS = 10_000
 const ipHits = new Map<string, number[]>()
+let cleanupCounter = 0
+const CLEANUP_INTERVAL = 100 // sweep stale entries every N requests
+
+/** Remove expired entries. Safe to call during iteration: .set() on existing keys
+ *  does not add new entries, and .delete() removes the current key. */
+function sweepStaleEntries(): void {
+    const now = Date.now()
+    for (const [ip, hits] of ipHits) {
+        const active = hits.filter(t => now - t < RATE_LIMIT_WINDOW_MS)
+        if (active.length === 0) {
+            ipHits.delete(ip)
+        } else {
+            ipHits.set(ip, active)
+        }
+    }
+}
 
 function isRateLimited(ip: string): boolean {
     const now = Date.now()
+
+    // Periodically sweep stale entries to prevent unbounded growth
+    if (++cleanupCounter >= CLEANUP_INTERVAL) {
+        cleanupCounter = 0
+        sweepStaleEntries()
+    }
+
     const hits = (ipHits.get(ip) || []).filter(t => now - t < RATE_LIMIT_WINDOW_MS)
 
     if (hits.length === 0) {
         ipHits.delete(ip)
     }
 
-    // Safety valve: evict oldest entries if map grows too large
+    // Safety valve: evict oldest entry if map grows too large
     if (ipHits.size >= MAX_TRACKED_IPS) {
         const firstKey = ipHits.keys().next().value
         if (firstKey) ipHits.delete(firstKey)

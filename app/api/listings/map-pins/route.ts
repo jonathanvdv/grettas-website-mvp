@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/db'
+import { SERVICE_AREA_BBOX } from '@/lib/constants'
 
 export const revalidate = 300
 
@@ -11,12 +12,11 @@ export const revalidate = 300
  */
 export async function GET(request: NextRequest) {
     try {
-        // Use a large bbox covering the service area
         const { data, error } = await supabase.rpc('get_listings_in_bbox', {
-            bbox_west: -81.0,
-            bbox_south: 43.0,
-            bbox_east: -79.5,
-            bbox_north: 44.0,
+            bbox_west: SERVICE_AREA_BBOX.west,
+            bbox_south: SERVICE_AREA_BBOX.south,
+            bbox_east: SERVICE_AREA_BBOX.east,
+            bbox_north: SERVICE_AREA_BBOX.north,
             filter_status: 'Active',
             max_results: 5000,
         })

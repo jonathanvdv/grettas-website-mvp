@@ -179,8 +179,8 @@ export function buildODataFilter(filters: ListingFilters): string {
     const minPrice = safeNum(filters.minPrice)
     const maxPrice = safeNum(filters.maxPrice)
 
-    if (beds) parts.push(`BedroomsTotal ge ${beds}`)
-    if (baths) parts.push(`BathroomsTotalInteger ge ${baths}`)
+    if (beds != null) parts.push(`BedroomsTotal ge ${beds}`)
+    if (baths != null) parts.push(`BathroomsTotalInteger ge ${baths}`)
 
     if (filters.propertyType) {
         if (filters.propertyType === 'Land') {
@@ -190,30 +190,30 @@ export function buildODataFilter(filters: ListingFilters): string {
         }
     }
     if (filters.buildingType) parts.push(`PropertySubType eq '${odataString(filters.buildingType)}'`)
-    if (storeys) parts.push(`Stories ge ${storeys}`)
-    if (yearBuilt) parts.push(`YearBuilt ge ${yearBuilt}`)
+    if (storeys != null) parts.push(`Stories ge ${storeys}`)
+    if (yearBuilt != null) parts.push(`YearBuilt ge ${yearBuilt}`)
 
     // Transaction type filtering
     // Rentals: ListPrice is null, price is in TotalActualRent
     // Sales: ListPrice has the value, TotalActualRent is null/0
     if (filters.transactionType === 'sale') {
         parts.push('ListPrice gt 0')
-        if (minPrice) parts.push(`ListPrice ge ${minPrice}`)
-        if (maxPrice) parts.push(`ListPrice le ${maxPrice}`)
+        if (minPrice != null) parts.push(`ListPrice ge ${minPrice}`)
+        if (maxPrice != null) parts.push(`ListPrice le ${maxPrice}`)
     } else if (filters.transactionType === 'rent') {
         parts.push('TotalActualRent gt 0')
-        if (minPrice) parts.push(`TotalActualRent ge ${minPrice}`)
-        if (maxPrice) parts.push(`TotalActualRent le ${maxPrice}`)
+        if (minPrice != null) parts.push(`TotalActualRent ge ${minPrice}`)
+        if (maxPrice != null) parts.push(`TotalActualRent le ${maxPrice}`)
     } else {
         // "All" — include sales and rentals, with proper price filtering on each field
-        if (minPrice || maxPrice) {
+        if (minPrice != null || maxPrice != null) {
             const saleParts = ['ListPrice gt 0']
             const rentParts = ['TotalActualRent gt 0']
-            if (minPrice) {
+            if (minPrice != null) {
                 saleParts.push(`ListPrice ge ${minPrice}`)
                 rentParts.push(`TotalActualRent ge ${minPrice}`)
             }
-            if (maxPrice) {
+            if (maxPrice != null) {
                 saleParts.push(`ListPrice le ${maxPrice}`)
                 rentParts.push(`TotalActualRent le ${maxPrice}`)
             }
@@ -844,20 +844,26 @@ const VALID_TRANSACTION_TYPES = new Set(['sale', 'rent'])
 const VALID_SORT_FIELDS = new Set(['listingPrice', 'listingDate'])
 const VALID_SORT_DIRECTIONS = new Set(['asc', 'desc'])
 
+function finiteOrUndefined(value: string | undefined): number | undefined {
+    if (!value) return undefined
+    const n = Number(value)
+    return Number.isFinite(n) ? n : undefined
+}
+
 export function parseFilterParams(params: Record<string, string>): ListingFilters {
     return {
-        minPrice: params.lp ? Number(params.lp) : undefined,
-        maxPrice: params.hp ? Number(params.hp) : undefined,
-        beds: params.bd ? Number(params.bd) : undefined,
-        baths: params.ba ? Number(params.ba) : undefined,
+        minPrice: finiteOrUndefined(params.lp),
+        maxPrice: finiteOrUndefined(params.hp),
+        beds: finiteOrUndefined(params.bd),
+        baths: finiteOrUndefined(params.ba),
         propertyType: params.pt && VALID_PROPERTY_TYPES.has(params.pt) ? params.pt : undefined,
         buildingType: params.bt && VALID_BUILDING_TYPES.has(params.bt) ? params.bt : undefined,
         city: params.city || undefined,
         transactionType: params.tt && VALID_TRANSACTION_TYPES.has(params.tt)
             ? (params.tt as 'sale' | 'rent')
             : undefined,
-        storeys: params.storeys ? Number(params.storeys) : undefined,
-        yearBuilt: params.yb ? Number(params.yb) : undefined,
+        storeys: finiteOrUndefined(params.storeys),
+        yearBuilt: finiteOrUndefined(params.yb),
         sortField: params.sortField && VALID_SORT_FIELDS.has(params.sortField)
             ? (params.sortField as 'listingPrice' | 'listingDate')
             : undefined,

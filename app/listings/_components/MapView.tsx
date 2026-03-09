@@ -6,12 +6,24 @@ import { MapPinCard } from './MapPinCard'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { MapPin } from '@/lib/listings'
 import { filterPins } from '@/lib/filter-pins'
+import { SERVICE_AREA_BBOX_STRING } from '@/lib/constants'
 
 interface MapViewProps {
     filterParams: Record<string, string>
 }
 
 const PER_PAGE = 20
+
+function appendFilterParams(params: URLSearchParams, filterParams: Record<string, string>): void {
+    if (filterParams.tt) params.set('tt', filterParams.tt)
+    if (filterParams.lp) params.set('lp', filterParams.lp)
+    if (filterParams.hp) params.set('hp', filterParams.hp)
+    if (filterParams.bd) params.set('bd', filterParams.bd)
+    if (filterParams.ba) params.set('ba', filterParams.ba)
+    if (filterParams.pt) params.set('pt', filterParams.pt)
+    if (filterParams.agent_key) params.set('agent_key', filterParams.agent_key)
+    if (filterParams.office_key) params.set('office_key', filterParams.office_key)
+}
 
 export function MapView({ filterParams }: MapViewProps) {
     const [pins, setPins] = useState<MapPin[] | null>(null)
@@ -41,18 +53,7 @@ export function MapView({ filterParams }: MapViewProps) {
 
         const bbox = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`
         const params = new URLSearchParams({ bbox })
-
-        // Forward filter params to API
-        if (filterParams.tt) params.set('tt', filterParams.tt)
-        if (filterParams.lp) params.set('lp', filterParams.lp)
-        if (filterParams.hp) params.set('hp', filterParams.hp)
-        if (filterParams.bd) params.set('bd', filterParams.bd)
-        if (filterParams.ba) params.set('ba', filterParams.ba)
-        if (filterParams.pt) params.set('pt', filterParams.pt)
-
-        // Multi-tenant: pass agent_key or office_key if configured
-        if (filterParams.agent_key) params.set('agent_key', filterParams.agent_key)
-        if (filterParams.office_key) params.set('office_key', filterParams.office_key)
+        appendFilterParams(params, filterParams)
 
         fetch(`/api/listings?${params.toString()}`, {
             signal: controller.signal,
@@ -82,16 +83,8 @@ export function MapView({ filterParams }: MapViewProps) {
         if (isDesktop) return // Desktop uses bbox-based fetch above
 
         const params = new URLSearchParams()
-        // Use a large default bbox covering the service area
-        params.set('bbox', '-81.0,43.0,-79.5,44.0')
-        if (filterParams.tt) params.set('tt', filterParams.tt)
-        if (filterParams.lp) params.set('lp', filterParams.lp)
-        if (filterParams.hp) params.set('hp', filterParams.hp)
-        if (filterParams.bd) params.set('bd', filterParams.bd)
-        if (filterParams.ba) params.set('ba', filterParams.ba)
-        if (filterParams.pt) params.set('pt', filterParams.pt)
-        if (filterParams.agent_key) params.set('agent_key', filterParams.agent_key)
-        if (filterParams.office_key) params.set('office_key', filterParams.office_key)
+        params.set('bbox', SERVICE_AREA_BBOX_STRING)
+        appendFilterParams(params, filterParams)
 
         fetch(`/api/listings?${params.toString()}`, { priority: 'low' as any })
             .then(r => {

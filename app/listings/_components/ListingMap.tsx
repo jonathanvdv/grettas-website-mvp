@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useMemo, useRef } from 'react'
 import Map, { Popup, NavigationControl, Marker } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { MapPin } from '@/lib/listings'

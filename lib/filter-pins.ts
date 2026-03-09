@@ -8,16 +8,16 @@ export function filterPins(pins: MapPin[], params: Record<string, string>): MapP
     if (tt === 'sale') result = result.filter(p => !p.isRental)
     else if (tt === 'rent') result = result.filter(p => p.isRental)
 
-    const lp = params.lp ? Number(params.lp) : 0
-    const hp = params.hp ? Number(params.hp) : 0
-    if (lp) result = result.filter(p => p.price >= lp)
-    if (hp) result = result.filter(p => p.price <= hp)
+    const lp = params.lp ? Number(params.lp) : NaN
+    const hp = params.hp ? Number(params.hp) : NaN
+    if (Number.isFinite(lp)) result = result.filter(p => p.price >= lp)
+    if (Number.isFinite(hp)) result = result.filter(p => p.price <= hp)
 
-    const bd = params.bd ? Number(params.bd) : 0
-    if (bd) result = result.filter(p => p.beds >= bd)
+    const bd = params.bd ? Number(params.bd) : NaN
+    if (Number.isFinite(bd)) result = result.filter(p => p.beds >= bd)
 
-    const ba = params.ba ? Number(params.ba) : 0
-    if (ba) result = result.filter(p => p.baths >= ba)
+    const ba = params.ba ? Number(params.ba) : NaN
+    if (Number.isFinite(ba)) result = result.filter(p => p.baths >= ba)
 
     const pt = params.pt
     if (pt) result = result.filter(p => p.propertyType === pt)

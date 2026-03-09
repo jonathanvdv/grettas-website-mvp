@@ -229,6 +229,11 @@ RETURNS TABLE (
     "listDate" TIMESTAMPTZ
 ) AS $$
 BEGIN
+    -- Validate bbox coordinates (west > east is allowed for antimeridian-crossing boxes)
+    IF bbox_south < -90 OR bbox_north > 90 OR bbox_west < -180 OR bbox_east > 180 OR bbox_south >= bbox_north THEN
+        RAISE EXCEPTION 'Invalid bbox coordinates';
+    END IF;
+
     RETURN QUERY
     SELECT
         l.listing_key AS id,

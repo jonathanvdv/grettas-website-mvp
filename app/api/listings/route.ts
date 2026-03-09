@@ -10,10 +10,12 @@ const VALID_PROPERTY_TYPES = new Set([
 ])
 
 function safeNum(value: string | null): number | undefined {
-    if (!value) return undefined
+    if (value == null || value === '') return undefined
     const n = Number(value)
     return Number.isFinite(n) ? n : undefined
 }
+
+const KEY_PATTERN = /^[a-zA-Z0-9_-]{1,50}$/
 
 /**
  * GET /api/listings?bbox=lng1,lat1,lng2,lat2&agent_id=123
@@ -69,8 +71,8 @@ export async function GET(request: NextRequest) {
 
     const agentKey = params.get('agent_key')
     const officeKey = params.get('office_key')
-    if (agentKey) rpcParams.filter_agent_key = agentKey
-    if (officeKey) rpcParams.filter_office_key = officeKey
+    if (agentKey && KEY_PATTERN.test(agentKey)) rpcParams.filter_agent_key = agentKey
+    if (officeKey && KEY_PATTERN.test(officeKey)) rpcParams.filter_office_key = officeKey
 
     const status = params.get('status')
     if (status && VALID_STATUSES.has(status)) rpcParams.filter_status = status
@@ -80,13 +82,13 @@ export async function GET(request: NextRequest) {
 
     const lp = safeNum(params.get('lp'))
     const hp = safeNum(params.get('hp'))
-    if (lp) rpcParams.filter_min_price = lp
-    if (hp) rpcParams.filter_max_price = hp
+    if (lp != null) rpcParams.filter_min_price = lp
+    if (hp != null) rpcParams.filter_max_price = hp
 
     const bd = safeNum(params.get('bd'))
     const ba = safeNum(params.get('ba'))
-    if (bd) rpcParams.filter_min_beds = bd
-    if (ba) rpcParams.filter_min_baths = ba
+    if (bd != null) rpcParams.filter_min_beds = bd
+    if (ba != null) rpcParams.filter_min_baths = ba
 
     const pt = params.get('pt')
     if (pt && VALID_PROPERTY_TYPES.has(pt)) rpcParams.filter_property_type = pt
