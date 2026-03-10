@@ -29,7 +29,7 @@ async function getDdfToken(): Promise<string> {
     const data = await res.json()
     cachedToken = data.access_token
     // Token lasts 60 min, refresh 5 min early
-    tokenExpiry = Date.now() + (55 * 60 * 1000)
+    tokenExpiry = Date.now() + 55 * 60 * 1000
     return cachedToken!
 }
 
@@ -139,8 +139,8 @@ export interface ListingFilters {
     maxPrice?: number
     beds?: number
     baths?: number
-    propertyType?: string      // StructureType: House, Apartment, Row / Townhouse, etc.
-    buildingType?: string       // PropertySubType: Single Family, Multi-family, etc.
+    propertyType?: string // StructureType: House, Apartment, Row / Townhouse, etc.
+    buildingType?: string // PropertySubType: Single Family, Multi-family, etc.
     city?: string
     transactionType?: 'sale' | 'rent'
     storeys?: number
@@ -227,7 +227,7 @@ export function buildODataFilter(filters: ListingFilters): string {
         parts.push(`City eq '${odataString(filters.city)}'`)
     } else {
         // Default to Abdul's service area
-        const cityFilter = SERVICE_AREA_CITIES.map(c => `City eq '${odataString(c)}'`).join(' or ')
+        const cityFilter = SERVICE_AREA_CITIES.map((c) => `City eq '${odataString(c)}'`).join(' or ')
         parts.push(`(${cityFilter})`)
     }
 
@@ -245,16 +245,16 @@ function buildODataOrderBy(filters: ListingFilters): string {
 /**
  * Fetches listings from the CREA DDF API or mock data source based on provided filters.
  * Supports pagination, sorting, and various property attribute filters.
- * 
+ *
  * @param filters - Criteria to filter and paginate results
  * @returns Object containing the listings array and the total count of matches
  */
-export async function getListings(filters: ListingFilters = {}): Promise<{ listings: Listing[], totalCount: number }> {
+export async function getListings(filters: ListingFilters = {}): Promise<{ listings: Listing[]; totalCount: number }> {
     if (!DDF_CLIENT_ID) {
         // DDF credentials not configured — fall back to mock data
         const { mockListings } = await import('./mock-listings')
         const filtered = applyMockFilters(mockListings, filters)
-        return { listings: filtered, totalCount: mockListings.length }
+        return { listings: paginateMockResults(filtered, filters), totalCount: filtered.length }
     }
 
     const token = await getDdfToken()
@@ -289,17 +289,17 @@ export async function getListings(filters: ListingFilters = {}): Promise<{ listi
         console.error('DDF API error:', res.status, url, body)
         const { mockListings } = await import('./mock-listings')
         const filtered = applyMockFilters(mockListings, filters)
-        return { listings: filtered, totalCount: mockListings.length }
+        return { listings: paginateMockResults(filtered, filters), totalCount: filtered.length }
     }
 
     const data = await res.json()
-    let listings = (data.value || []).map(normalizeDdfListing)
+    const listings = (data.value || []).map(normalizeDdfListing)
     const totalCount = data['@odata.count'] ?? listings.length
 
     // Post-fetch sort by price since rentals use TotalActualRent, not ListPrice
     if (filters.sortField === 'listingPrice') {
         const dir = filters.sortDirection || 'desc'
-        listings.sort((a: Listing, b: Listing) => dir === 'asc' ? a.price - b.price : b.price - a.price)
+        listings.sort((a: Listing, b: Listing) => (dir === 'asc' ? a.price - b.price : b.price - a.price))
     }
 
     return { listings, totalCount }
@@ -314,12 +314,14 @@ const DDF_PAGE_LIMIT = 100
  * Used for map view where we need every listing for clustering.
  * Results are cached via Next.js revalidate for 5 minutes.
  */
-export async function getAllListings(filters: ListingFilters = {}): Promise<{ listings: Listing[], totalCount: number }> {
+export async function getAllListings(
+    filters: ListingFilters = {}
+): Promise<{ listings: Listing[]; totalCount: number }> {
     if (!DDF_CLIENT_ID) {
         // DDF credentials not configured — fall back to mock data
         const { mockListings } = await import('./mock-listings')
         const filtered = applyMockFilters(mockListings, filters)
-        return { listings: filtered, totalCount: mockListings.length }
+        return { listings: paginateMockResults(filtered, filters), totalCount: filtered.length }
     }
 
     const token = await getDdfToken()
@@ -352,7 +354,8 @@ export async function getAllListings(filters: ListingFilters = {}): Promise<{ li
             const body = await retryRes.text()
             console.error('DDF API error (batch first, after retry):', retryRes.status, body)
             const { mockListings } = await import('./mock-listings')
-            return { listings: applyMockFilters(mockListings, filters), totalCount: mockListings.length }
+            const filtered = applyMockFilters(mockListings, filters)
+            return { listings: paginateMockResults(filtered, filters), totalCount: filtered.length }
         }
         const retryData = await retryRes.json()
         const retryTotal: number = retryData['@odata.count'] ?? 0
@@ -365,7 +368,8 @@ export async function getAllListings(filters: ListingFilters = {}): Promise<{ li
         const body = await firstRes.text()
         console.error('DDF API error (batch first):', firstRes.status, body)
         const { mockListings } = await import('./mock-listings')
-        return { listings: applyMockFilters(mockListings, filters), totalCount: mockListings.length }
+        const filtered = applyMockFilters(mockListings, filters)
+        return { listings: paginateMockResults(filtered, filters), totalCount: filtered.length }
     }
 
     const firstData = await firstRes.json()
@@ -380,10 +384,10 @@ async function fetchRemainingBatches(
     totalCount: number,
     token: string,
     baseParams: URLSearchParams,
-    _filterStr: string,
-    _orderBy: string,
-    _filters: ListingFilters,
-): Promise<{ listings: Listing[], totalCount: number }> {
+    _filterStr: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+    _orderBy: string, // eslint-disable-line @typescript-eslint/no-unused-vars
+    _filters: ListingFilters // eslint-disable-line @typescript-eslint/no-unused-vars
+): Promise<{ listings: Listing[]; totalCount: number }> {
     if (totalCount <= DDF_PAGE_LIMIT) {
         return { listings: firstBatch, totalCount }
     }
@@ -399,7 +403,7 @@ async function fetchRemainingBatches(
         return fetch(url, {
             headers: { Authorization: `Bearer ${token}` },
             next: { revalidate: 300 },
-        }).then(async res => {
+        }).then(async (res) => {
             if (!res.ok) {
                 console.error('DDF batch error:', res.status, `skip=${skip}`)
                 return []
@@ -418,14 +422,14 @@ async function fetchRemainingBatches(
 
 /**
  * Retrieves detailed information for a single listing by its unique ID.
- * 
+ *
  * @param listingId - The unique identifier (ListingKey) of the property
  * @returns The normalized listing object
  */
 export async function getListing(listingId: string): Promise<Listing> {
     if (!DDF_CLIENT_ID) {
         const { mockListings } = await import('./mock-listings')
-        const found = mockListings.find(l => l.id === listingId)
+        const found = mockListings.find((l) => l.id === listingId)
         if (!found) throw new Error('Listing not found')
         return found
     }
@@ -461,7 +465,7 @@ export async function getListing(listingId: string): Promise<Listing> {
 /**
  * Fetches a list of featured listings, typically displayed on the home page.
  * Defaults to recent listings in Abdul's core service area.
- * 
+ *
  * @param limit - Maximum number of featured listings to return
  * @returns Array of featured listing objects
  */
@@ -530,12 +534,14 @@ export async function getAgentListings(): Promise<Listing[]> {
 // ─── Normalize DDF RESO response to our Listing type ─────────────────────
 
 // Helper: coerce DDF value (string | array | null) to a display string
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ddfStr(val: any): string | null {
     if (!val) return null
     if (Array.isArray(val)) return val.join(', ')
     return String(val)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalizeDdfListing(raw: any): Listing {
     const streetNum = raw.StreetNumber || ''
     const streetName = raw.StreetName || ''
@@ -548,9 +554,12 @@ function normalizeDdfListing(raw: any): Listing {
     const unitPart = unit ? ` Unit ${unit}` : ''
     const fullAddress = `${streetNum} ${streetName} ${streetSuffix}${unitPart}, ${city}, ${province} ${postal}`.trim()
 
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     // Media array from DDF — filter to actual image URLs only
     const photos = (raw.Media || [])
-        .filter((m: any) => m.MediaCategory === 'Photo' || (m.MediaURL && /\.(jpg|jpeg|png|webp|gif)/i.test(m.MediaURL)))
+        .filter(
+            (m: any) => m.MediaCategory === 'Photo' || (m.MediaURL && /\.(jpg|jpeg|png|webp|gif)/i.test(m.MediaURL))
+        )
         .sort((a: any, b: any) => (a.Order || 0) - (b.Order || 0))
         .map((m: any) => m.MediaURL)
         .filter(Boolean)
@@ -566,6 +575,7 @@ function normalizeDdfListing(raw: any): Listing {
         dimensions: r.RoomDimensions || (r.RoomLength && r.RoomWidth ? `${r.RoomLength} x ${r.RoomWidth}` : ''),
         description: r.RoomDescription || '',
     }))
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     return {
         id: raw.ListingKey,
@@ -595,7 +605,8 @@ function normalizeDdfListing(raw: any): Listing {
         sqft: raw.LivingArea || raw.BuildingAreaTotal || null,
         lotSize: raw.LotSizeArea ? `${raw.LotSizeArea}` : null,
         lotSizeDimensions: raw.LotSizeDimensions || null,
-        propertyType: (Array.isArray(raw.StructureType) && raw.StructureType[0]) || raw.PropertySubType || 'Residential',
+        propertyType:
+            (Array.isArray(raw.StructureType) && raw.StructureType[0]) || raw.PropertySubType || 'Residential',
         buildingType: raw.PropertySubType || null,
         storeys: ddfStr(raw.StoriesTotal || raw.Stories),
         yearBuilt: raw.YearBuilt || null,
@@ -639,7 +650,9 @@ function normalizeDdfListing(raw: any): Listing {
         poolFeatures: ddfStr(raw.PoolFeatures),
         fencing: ddfStr(raw.Fencing),
         // Required
-        realtorCaUrl: raw.ListingURL ? `https://${raw.ListingURL}` : `https://www.realtor.ca/real-estate/${raw.ListingKey}`,
+        realtorCaUrl: raw.ListingURL
+            ? `https://${raw.ListingURL}`
+            : `https://www.realtor.ca/real-estate/${raw.ListingKey}`,
         listingBrokerage: raw.ListOfficeName || '',
     }
 }
@@ -656,7 +669,8 @@ export function normalizeStatus(status: string): 'Active' | 'Sold' | 'Pending' {
 export function toMapPin(listing: Listing): MapPin | null {
     if (!listing.latitude || !listing.longitude) return null
     // Exclude outliers outside the KW / Southern Ontario service area
-    if (listing.latitude < 43.0 || listing.latitude > 44.0 || listing.longitude < -81.0 || listing.longitude > -79.5) return null
+    if (listing.latitude < 43.0 || listing.latitude > 44.0 || listing.longitude < -81.0 || listing.longitude > -79.5)
+        return null
     return {
         id: listing.id,
         lat: listing.latitude,
@@ -677,13 +691,30 @@ export function toMapPin(listing: Listing): MapPin | null {
 // ─── Fetch All Map Pins (lightweight, uses $select) ─────────────────────
 
 const MAP_PIN_SELECT = [
-    'ListingKey', 'Latitude', 'Longitude', 'ListPrice', 'TotalActualRent',
-    'BedroomsTotal', 'BathroomsTotalInteger', 'LivingArea', 'BuildingAreaTotal',
-    'StreetNumber', 'StreetName', 'StreetSuffix', 'UnitNumber', 'City', 'StateOrProvince', 'PostalCode',
-    'Media', 'StructureType', 'PropertySubType', 'StandardStatus',
+    'ListingKey',
+    'Latitude',
+    'Longitude',
+    'ListPrice',
+    'TotalActualRent',
+    'BedroomsTotal',
+    'BathroomsTotalInteger',
+    'LivingArea',
+    'BuildingAreaTotal',
+    'StreetNumber',
+    'StreetName',
+    'StreetSuffix',
+    'UnitNumber',
+    'City',
+    'StateOrProvince',
+    'PostalCode',
+    'Media',
+    'StructureType',
+    'PropertySubType',
+    'StandardStatus',
     'OriginalEntryTimestamp',
 ].join(',')
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function normalizeDdfToPin(raw: any): MapPin | null {
     const lat = raw.Latitude
     const lng = raw.Longitude
@@ -700,9 +731,13 @@ export function normalizeDdfToPin(raw: any): MapPin | null {
     const unitPart = unit ? ` Unit ${unit}` : ''
     const address = `${streetNum} ${streetName} ${streetSuffix}${unitPart}, ${city}`.trim()
 
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     const photos = (raw.Media || [])
-        .filter((m: any) => m.MediaCategory === 'Photo' || (m.MediaURL && /\.(jpg|jpeg|png|webp|gif)/i.test(m.MediaURL)))
+        .filter(
+            (m: any) => m.MediaCategory === 'Photo' || (m.MediaURL && /\.(jpg|jpeg|png|webp|gif)/i.test(m.MediaURL))
+        )
         .sort((a: any, b: any) => (a.Order || 0) - (b.Order || 0))
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     const status = normalizeStatus(raw.StandardStatus || '')
 
@@ -716,19 +751,20 @@ export function normalizeDdfToPin(raw: any): MapPin | null {
         sqft: raw.LivingArea || raw.BuildingAreaTotal || null,
         address,
         photo: photos[0]?.MediaURL || '',
-        propertyType: (Array.isArray(raw.StructureType) && raw.StructureType[0]) || raw.PropertySubType || 'Residential',
+        propertyType:
+            (Array.isArray(raw.StructureType) && raw.StructureType[0]) || raw.PropertySubType || 'Residential',
         isRental: !raw.ListPrice && !!raw.TotalActualRent,
         status,
         listDate: raw.OriginalEntryTimestamp || '',
     }
 }
 
-export async function getAllMapPins(filters: ListingFilters = {}): Promise<{ pins: MapPin[], totalCount: number }> {
+export async function getAllMapPins(filters: ListingFilters = {}): Promise<{ pins: MapPin[]; totalCount: number }> {
     if (!DDF_CLIENT_ID) {
         const { mockListings } = await import('./mock-listings')
         const filtered = applyMockFilters(mockListings, filters)
         const pins = filtered.map(toMapPin).filter((p): p is MapPin => p !== null)
-        return { pins, totalCount: mockListings.length }
+        return { pins, totalCount: filtered.length }
     }
 
     const token = await getDdfToken()
@@ -763,8 +799,9 @@ export async function getAllMapPins(filters: ListingFilters = {}): Promise<{ pin
         const errorBody = await res.text().catch(() => '')
         console.error('DDF map pins error:', res.status, errorBody)
         const { mockListings } = await import('./mock-listings')
-        const pins = applyMockFilters(mockListings, filters).map(toMapPin).filter((p): p is MapPin => p !== null)
-        return { pins, totalCount: mockListings.length }
+        const filtered = applyMockFilters(mockListings, filters)
+        const pins = filtered.map(toMapPin).filter((p): p is MapPin => p !== null)
+        return { pins, totalCount: filtered.length }
     }
 
     const firstData = await res.json()
@@ -788,7 +825,7 @@ export async function getAllMapPins(filters: ListingFilters = {}): Promise<{ pin
         return fetch(url, {
             headers: { Authorization: `Bearer ${currentToken}` },
             next: { revalidate: 300 },
-        }).then(async r => {
+        }).then(async (r) => {
             if (!r.ok) {
                 console.error('DDF map pins batch error:', r.status, `skip=${skip}`)
                 return [] as MapPin[]
@@ -832,13 +869,18 @@ export async function getListingCount(filters: ListingFilters = {}): Promise<num
 // ─── Parse filter params from URL search params ─────────────────────────
 
 const VALID_PROPERTY_TYPES = new Set([
-    'House', 'Apartment', 'Row / Townhouse', 'Duplex', 'Triplex',
-    'Fourplex', 'Mobile Home', 'Manufactured Home/Mobile', 'Land',
+    'House',
+    'Apartment',
+    'Row / Townhouse',
+    'Duplex',
+    'Triplex',
+    'Fourplex',
+    'Mobile Home',
+    'Manufactured Home/Mobile',
+    'Land',
 ])
 
-const VALID_BUILDING_TYPES = new Set([
-    'Single Family', 'Multi-family', 'Vacant Land', 'Commercial',
-])
+const VALID_BUILDING_TYPES = new Set(['Single Family', 'Multi-family', 'Vacant Land', 'Commercial'])
 
 const VALID_TRANSACTION_TYPES = new Set(['sale', 'rent'])
 const VALID_SORT_FIELDS = new Set(['listingPrice', 'listingDate'])
@@ -859,17 +901,18 @@ export function parseFilterParams(params: Record<string, string>): ListingFilter
         propertyType: params.pt && VALID_PROPERTY_TYPES.has(params.pt) ? params.pt : undefined,
         buildingType: params.bt && VALID_BUILDING_TYPES.has(params.bt) ? params.bt : undefined,
         city: params.city || undefined,
-        transactionType: params.tt && VALID_TRANSACTION_TYPES.has(params.tt)
-            ? (params.tt as 'sale' | 'rent')
-            : undefined,
+        transactionType:
+            params.tt && VALID_TRANSACTION_TYPES.has(params.tt) ? (params.tt as 'sale' | 'rent') : undefined,
         storeys: finiteOrUndefined(params.storeys),
         yearBuilt: finiteOrUndefined(params.yb),
-        sortField: params.sortField && VALID_SORT_FIELDS.has(params.sortField)
-            ? (params.sortField as 'listingPrice' | 'listingDate')
-            : undefined,
-        sortDirection: params.sortDirection && VALID_SORT_DIRECTIONS.has(params.sortDirection)
-            ? (params.sortDirection as 'asc' | 'desc')
-            : undefined,
+        sortField:
+            params.sortField && VALID_SORT_FIELDS.has(params.sortField)
+                ? (params.sortField as 'listingPrice' | 'listingDate')
+                : undefined,
+        sortDirection:
+            params.sortDirection && VALID_SORT_DIRECTIONS.has(params.sortDirection)
+                ? (params.sortDirection as 'asc' | 'desc')
+                : undefined,
     }
 }
 
@@ -878,11 +921,16 @@ export function parseFilterParams(params: Record<string, string>): ListingFilter
 function applyMockFilters(listings: Listing[], filters: ListingFilters): Listing[] {
     let result = [...listings]
 
-    if (filters.minPrice) result = result.filter(l => l.price >= filters.minPrice!)
-    if (filters.maxPrice) result = result.filter(l => l.price <= filters.maxPrice!)
-    if (filters.beds) result = result.filter(l => l.beds >= filters.beds!)
-    if (filters.baths) result = result.filter(l => l.baths >= filters.baths!)
-    if (filters.city) result = result.filter(l => l.address.city === filters.city)
+    if (filters.minPrice) result = result.filter((l) => l.price >= filters.minPrice!)
+    if (filters.maxPrice) result = result.filter((l) => l.price <= filters.maxPrice!)
+    if (filters.beds) result = result.filter((l) => l.beds >= filters.beds!)
+    if (filters.baths) result = result.filter((l) => l.baths >= filters.baths!)
+    if (filters.city) result = result.filter((l) => l.address.city === filters.city)
 
-    return result.slice(0, filters.limit || 12)
+    return result
+}
+
+function paginateMockResults(listings: Listing[], filters: ListingFilters): Listing[] {
+    const offset = filters.offset || 0
+    return listings.slice(offset, offset + (filters.limit || 12))
 }
