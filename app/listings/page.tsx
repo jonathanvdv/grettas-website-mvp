@@ -77,7 +77,7 @@ export default async function ListingsPage({
                 <ListingSearch initialFilters={filterParams} resultCount={listings.length} totalCount={totalCount} />
 
                 {listings.length > 0 ? (
-                    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1400px] mx-auto">
                         {listings.map(listing => (
                             <ListingCard key={listing.id} listing={listing} />
                         ))}

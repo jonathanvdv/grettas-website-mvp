@@ -253,7 +253,7 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
     return (
         <div className="relative z-30 mb-4">
             {/* ─── Desktop: single-row filter bar ─── */}
-            <div className="hidden lg:flex items-end gap-3 bg-white border border-gray-200 rounded-lg shadow-sm px-4 py-3">
+            <div className="hidden lg:flex items-end gap-2 xl:gap-3 bg-white border border-gray-200 rounded-lg shadow-sm px-3 xl:px-4 py-3">
                 {/* Search input */}
                 <div className="flex-1 min-w-0">
                     <label className="block text-[10px] font-medium text-gray-400 uppercase tracking-wider mb-1">Search</label>
@@ -275,14 +275,14 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                 </div>
 
                 {/* Transaction Type */}
-                <InlineSelect label="Transaction Type" value={currentVal('tt')} onChange={(v) => handleChange('tt', v)} className="w-[130px]">
+                <InlineSelect label="Transaction Type" value={currentVal('tt')} onChange={(v) => handleChange('tt', v)} className="w-[115px] xl:w-[130px] flex-shrink-0">
                     <option value="">All</option>
                     <option value="sale">For Sale</option>
                     <option value="rent">For Rent</option>
                 </InlineSelect>
 
                 {/* Property Type */}
-                <InlineSelect label="Property Type" value={currentVal('pt')} onChange={(v) => handleChange('pt', v)} className="w-[130px]">
+                <InlineSelect label="Property Type" value={currentVal('pt')} onChange={(v) => handleChange('pt', v)} className="w-[115px] xl:w-[130px] flex-shrink-0">
                     <option value="">Any</option>
                     <option value="House">House</option>
                     <option value="Apartment">Apartment</option>
@@ -293,13 +293,13 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                 </InlineSelect>
 
                 {/* Min Price */}
-                <PriceInput label="Min Price" value={currentVal('lp')} onChange={(v) => handleChange('lp', v)} presets={minPresets} placeholder="No min" className="w-[130px]" />
+                <PriceInput label="Min Price" value={currentVal('lp')} onChange={(v) => handleChange('lp', v)} presets={minPresets} placeholder="No min" className="w-[110px] xl:w-[130px] flex-shrink-0" />
 
                 {/* Max Price */}
-                <PriceInput label="Max Price" value={currentVal('hp')} onChange={(v) => handleChange('hp', v)} presets={maxPresets} placeholder="No max" className="w-[130px]" />
+                <PriceInput label="Max Price" value={currentVal('hp')} onChange={(v) => handleChange('hp', v)} presets={maxPresets} placeholder="No max" className="w-[110px] xl:w-[130px] flex-shrink-0" />
 
                 {/* Beds */}
-                <InlineSelect label="Beds" value={currentVal('bd')} onChange={(v) => handleChange('bd', v)} className="w-[80px]">
+                <InlineSelect label="Beds" value={currentVal('bd')} onChange={(v) => handleChange('bd', v)} className="w-[70px] xl:w-[80px] flex-shrink-0">
                     <option value="">Any</option>
                     <option value="1">1+</option>
                     <option value="2">2+</option>
@@ -309,7 +309,7 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                 </InlineSelect>
 
                 {/* Baths */}
-                <InlineSelect label="Baths" value={currentVal('ba')} onChange={(v) => handleChange('ba', v)} className="w-[80px]">
+                <InlineSelect label="Baths" value={currentVal('ba')} onChange={(v) => handleChange('ba', v)} className="w-[70px] xl:w-[80px] flex-shrink-0">
                     <option value="">Any</option>
                     <option value="1">1+</option>
                     <option value="2">2+</option>
@@ -320,7 +320,7 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                 {/* Filters button */}
                 <button
                     onClick={() => setShowAdvanced(!showAdvanced)}
-                    className={`flex items-center gap-2 px-4 py-[7px] rounded text-sm font-medium border transition-colors whitespace-nowrap ${showAdvanced ? 'bg-brand-accent text-white border-brand-accent' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                    className={`flex items-center gap-1.5 px-3 xl:px-4 py-[7px] rounded text-sm font-medium border transition-colors whitespace-nowrap flex-shrink-0 ${showAdvanced ? 'bg-brand-accent text-white border-brand-accent' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
                 >
                     <SlidersHorizontal className="w-4 h-4" />
                     Filters
@@ -363,7 +363,7 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
                         params.set('sortDirection', 'desc')
                     }
                     router.push(pathname + '?' + params.toString())
-                }} className="w-[110px] flex-shrink-0">
+                }} className="w-[120px] xl:w-[140px] flex-shrink-0">
                     <option value="listingDate">Newest</option>
                     <option value="price-asc">Price: Low</option>
                     <option value="price-desc">Price: High</option>
