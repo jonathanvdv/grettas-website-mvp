@@ -73,11 +73,11 @@ export default async function ListingsPage({
     return (
         <ListingsTermsGate>
         <div className="bg-gray-50 min-h-screen pt-24 pb-16">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="px-4 sm:px-6 lg:px-8">
                 <ListingSearch initialFilters={filterParams} resultCount={listings.length} totalCount={totalCount} />
 
                 {listings.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {listings.map(listing => (
                             <ListingCard key={listing.id} listing={listing} />
                         ))}
