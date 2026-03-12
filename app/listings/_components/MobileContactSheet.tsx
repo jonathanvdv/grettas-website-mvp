@@ -38,16 +38,19 @@ export function MobileContactSheet({ defaultMessage, listingAddress }: MobileCon
                             <div className="flex items-center gap-3">
                                 <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200">
                                     <Image
-                                        src="https://cdn.realtor.ca/individual/TS637750507800000000/highres/1403257.jpg"
-                                        alt="Abdul Basharmal"
+                                        src="/images/chris3.png"
+                                        alt="Chris Pimentel"
                                         fill
                                         className="object-cover object-top"
                                     />
                                 </div>
                                 <div>
-                                    <p className="font-semibold text-gray-900 text-sm">Abdul Basharmal</p>
-                                    <a href="tel:905-906-0045" className="text-brand-accent text-xs font-medium flex items-center gap-1">
-                                        <Phone className="w-3 h-3" /> (905) 906-0045
+                                    <p className="font-semibold text-gray-900 text-sm">Chris Pimentel</p>
+                                    <a
+                                        href="tel:519-716-4662"
+                                        className="text-brand-accent text-xs font-medium flex items-center gap-1"
+                                    >
+                                        <Phone className="w-3 h-3" /> (519) 716-4662
                                     </a>
                                 </div>
                             </div>

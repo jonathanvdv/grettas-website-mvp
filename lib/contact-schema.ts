@@ -7,7 +7,6 @@ export const contactSchema = z.object({
     phone: z.string().optional(),
     message: z.string().min(10, 'Please write a brief message (min 10 characters)'),
     intent: z.enum(['Buy', 'Sell', 'Both', 'Just Curious']).optional(),
-    language: z.enum(['English', 'Farsi', 'Dari', 'Persian', 'Hindi', 'Urdu']).optional(),
     listingAddress: z.string().optional(),
 })
 

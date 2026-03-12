@@ -8,17 +8,32 @@ import { contactSchema, type ContactFormData } from '@/lib/contact-schema'
 type FormData = ContactFormData
 const schema = contactSchema
 
-export function ContactForm({ className = '', defaultMessage = '', defaultIntent, showLanguage = false, listingAddress }: { className?: string, defaultMessage?: string, defaultIntent?: FormData['intent'], showLanguage?: boolean, listingAddress?: string }) {
+export function ContactForm({
+    className = '',
+    defaultMessage = '',
+    defaultIntent,
+    listingAddress,
+}: {
+    className?: string
+    defaultMessage?: string
+    defaultIntent?: FormData['intent']
+    listingAddress?: string
+}) {
     const [isSuccess, setIsSuccess] = useState(false)
     const [isError, setIsError] = useState(false)
 
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<FormData>({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+    } = useForm<FormData>({
         resolver: zodResolver(schema),
         defaultValues: {
             message: defaultMessage,
             intent: defaultIntent,
             listingAddress: listingAddress,
-        }
+        },
     })
 
     const onSubmit = async (data: FormData) => {
@@ -42,8 +57,14 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
         return (
             <div className={`bg-brand-bg p-8 text-center rounded-sm border border-brand-border/50 ${className}`}>
                 <h3 className="text-xl font-display font-medium text-brand-text mb-2">Got it!</h3>
-                <p className="text-brand-text-muted">Thanks, Abdul will reach out personally within one business day. If it's urgent, feel free to call or text directly.</p>
-                <button onClick={() => setIsSuccess(false)} className="mt-6 text-brand-accent text-sm font-medium hover:underline">
+                <p className="text-brand-text-muted">
+                    Thanks, Chris will reach out personally within one business day. If it&apos;s urgent, feel free to
+                    call or text directly.
+                </p>
+                <button
+                    onClick={() => setIsSuccess(false)}
+                    className="mt-6 text-brand-accent text-sm font-medium hover:underline"
+                >
                     Send another message
                 </button>
             </div>
@@ -54,17 +75,20 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
         <form onSubmit={handleSubmit(onSubmit)} className={`space-y-4 ${className}`} suppressHydrationWarning>
             {isError && (
                 <div className="p-4 bg-red-50 text-red-700 text-sm rounded-sm mb-4">
-                    There was an error sending your message. Please try again or contact Abdul directly.
+                    There was an error sending your message. Please try again or contact Chris directly.
                 </div>
             )}
 
-            {listingAddress && (
-                <input type="hidden" {...register('listingAddress')} />
-            )}
+            {listingAddress ? <input type="hidden" {...register('listingAddress')} /> : null}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div suppressHydrationWarning>
-                    <label htmlFor="firstName" className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider">First Name *</label>
+                    <label
+                        htmlFor="firstName"
+                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                    >
+                        First Name *
+                    </label>
                     <input
                         {...register('firstName')}
                         id="firstName"
@@ -75,7 +99,12 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
                     {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>}
                 </div>
                 <div>
-                    <label htmlFor="lastName" className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider">Last Name *</label>
+                    <label
+                        htmlFor="lastName"
+                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                    >
+                        Last Name *
+                    </label>
                     <input
                         {...register('lastName')}
                         id="lastName"
@@ -89,7 +118,12 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label htmlFor="email" className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider">Email *</label>
+                    <label
+                        htmlFor="email"
+                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                    >
+                        Email *
+                    </label>
                     <input
                         {...register('email')}
                         id="email"
@@ -100,7 +134,12 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                 </div>
                 <div>
-                    <label htmlFor="phone" className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider">Phone</label>
+                    <label
+                        htmlFor="phone"
+                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                    >
+                        Phone
+                    </label>
                     <input
                         {...register('phone')}
                         id="phone"
@@ -113,11 +152,21 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
 
             {!defaultIntent && !listingAddress && (
                 <div>
-                    <label className="block text-xs font-semibold text-brand-text mb-2 uppercase tracking-wider">I'm looking to:</label>
+                    <label className="block text-xs font-semibold text-brand-text mb-2 uppercase tracking-wider">
+                        I&apos;m looking to:
+                    </label>
                     <div className="flex flex-wrap gap-4">
-                        {['Buy', 'Sell', 'Both', 'Just Curious'].map(intent => (
-                            <label key={intent} className="flex items-center gap-2 cursor-pointer text-sm text-brand-text-muted hover:text-brand-text">
-                                <input type="radio" value={intent} {...register('intent')} className="accent-brand-accent" />
+                        {['Buy', 'Sell', 'Both', 'Just Curious'].map((intent) => (
+                            <label
+                                key={intent}
+                                className="flex items-center gap-2 cursor-pointer text-sm text-brand-text-muted hover:text-brand-text"
+                            >
+                                <input
+                                    type="radio"
+                                    value={intent}
+                                    {...register('intent')}
+                                    className="accent-brand-accent"
+                                />
                                 <span>{intent}</span>
                             </label>
                         ))}
@@ -125,26 +174,13 @@ export function ContactForm({ className = '', defaultMessage = '', defaultIntent
                 </div>
             )}
 
-            {showLanguage && (
-                <div>
-                    <label htmlFor="language" className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider">Preferred Language</label>
-                    <select
-                        {...register('language')}
-                        id="language"
-                        className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors text-brand-text"
-                    >
-                        <option value="English">English</option>
-                        <option value="Farsi">Farsi</option>
-                        <option value="Dari">Dari</option>
-                        <option value="Persian">Persian</option>
-                        <option value="Hindi">Hindi</option>
-                        <option value="Urdu">Urdu</option>
-                    </select>
-                </div>
-            )}
-
             <div>
-                <label htmlFor="message" className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider">Message *</label>
+                <label
+                    htmlFor="message"
+                    className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                >
+                    Message *
+                </label>
                 <textarea
                     {...register('message')}
                     id="message"

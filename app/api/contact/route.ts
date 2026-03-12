@@ -17,7 +17,7 @@ const CLEANUP_INTERVAL = 100 // sweep stale entries every N requests
 function sweepStaleEntries(): void {
     const now = Date.now()
     for (const [ip, hits] of ipHits) {
-        const active = hits.filter(t => now - t < RATE_LIMIT_WINDOW_MS)
+        const active = hits.filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
         if (active.length === 0) {
             ipHits.delete(ip)
         } else {
@@ -35,7 +35,7 @@ function isRateLimited(ip: string): boolean {
         sweepStaleEntries()
     }
 
-    const hits = (ipHits.get(ip) || []).filter(t => now - t < RATE_LIMIT_WINDOW_MS)
+    const hits = (ipHits.get(ip) || []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS)
 
     if (hits.length === 0) {
         ipHits.delete(ip)
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
             )
         }
 
-        const { firstName, lastName, email, phone, message, intent, language, listingAddress } = result.data
+        const { firstName, lastName, email, phone, message, intent, listingAddress } = result.data
 
         const recipient = process.env.CONTACT_FORM_RECIPIENT
         if (!recipient) {
@@ -89,11 +89,10 @@ export async function POST(request: Request) {
         const safePhone = phone ? escapeHtml(phone) : ''
         const safeMessage = escapeHtml(message)
         const safeIntent = intent ? escapeHtml(intent) : ''
-        const safeLanguage = language ? escapeHtml(language) : ''
         const safeListingAddress = listingAddress ? escapeHtml(listingAddress) : ''
 
         const { error } = await resend.emails.send({
-            from: 'Abdul Basharmal <no-reply@abdulsellshomes.com>',
+            from: 'Chris Pimentel <no-reply@chrissellshomes.com>',
             to: recipient,
             replyTo: email,
             subject: `New ${safeIntent || 'Contact'} Inquiry from ${safeFirstName} ${safeLastName}`,
@@ -112,7 +111,7 @@ export async function POST(request: Request) {
 <!-- Header -->
 <tr>
 <td style="background-color:#1a1a1a;padding:32px 40px;text-align:center;">
-<h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:400;letter-spacing:2px;">ABDUL BASHARMAL</h1>
+<h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:400;letter-spacing:2px;">CHRIS PIMENTEL</h1>
 <p style="margin:6px 0 0;color:#b8a88a;font-size:11px;letter-spacing:3px;font-family:Arial,Helvetica,sans-serif;">REALTOR&reg; &middot; RE/MAX TWIN CITY</p>
 </td>
 </tr>
@@ -147,30 +146,36 @@ export async function POST(request: Request) {
 <a href="mailto:${safeEmail}" style="color:#1a1a1a;font-size:15px;text-decoration:none;">${safeEmail}</a>
 </td>
 </tr>
-${safePhone ? `<tr>
+${
+    safePhone
+        ? `<tr>
 <td style="padding:8px 0;vertical-align:top;">
 <span style="color:#999;font-size:11px;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;">Phone</span><br>
 <a href="tel:${safePhone}" style="color:#1a1a1a;font-size:15px;text-decoration:none;">${safePhone}</a>
 </td>
-</tr>` : ''}
-${safeIntent ? `<tr>
+</tr>`
+        : ''
+}
+${
+    safeIntent
+        ? `<tr>
 <td style="padding:8px 0;vertical-align:top;">
 <span style="color:#999;font-size:11px;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;">Interest</span><br>
 <span style="color:#1a1a1a;font-size:15px;">${safeIntent}</span>
 </td>
-</tr>` : ''}
-${safeLanguage ? `<tr>
-<td style="padding:8px 0;vertical-align:top;">
-<span style="color:#999;font-size:11px;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;">Preferred Language</span><br>
-<span style="color:#1a1a1a;font-size:15px;">${safeLanguage}</span>
-</td>
-</tr>` : ''}
-${safeListingAddress ? `<tr>
+</tr>`
+        : ''
+}
+${
+    safeListingAddress
+        ? `<tr>
 <td style="padding:8px 0;vertical-align:top;">
 <span style="color:#999;font-size:11px;letter-spacing:1px;font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;">Listing Address</span><br>
 <span style="color:#1a1a1a;font-size:15px;">${safeListingAddress}</span>
 </td>
-</tr>` : ''}
+</tr>`
+        : ''
+}
 </table>
 </td>
 </tr>
@@ -196,7 +201,7 @@ ${safeListingAddress ? `<tr>
 <!-- Footer -->
 <tr>
 <td style="background-color:#f9f8f5;padding:24px 40px;text-align:center;border-top:1px solid #e8e4dc;">
-<p style="margin:0;color:#aaa;font-size:11px;font-family:Arial,Helvetica,sans-serif;letter-spacing:1px;">ABDULSELLSHOMES.COM</p>
+<p style="margin:0;color:#aaa;font-size:11px;font-family:Arial,Helvetica,sans-serif;letter-spacing:1px;">CHRISSELLSHOMES.COM</p>
 </td>
 </tr>
 
