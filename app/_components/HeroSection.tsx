@@ -4,11 +4,11 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection'
 
 export function HeroSection() {
     return (
-        <section className="relative w-full bg-white pt-[90px] lg:pt-[124px] overflow-hidden">
-            <div className="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-12 2xl:px-20 w-full">
-                <div className="flex flex-col lg:flex-row items-end">
+        <section className="relative w-full bg-white overflow-hidden lg:h-screen lg:min-h-[700px]">
+            <div className="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-12 2xl:px-20 w-full h-full">
+                <div className="flex flex-col lg:flex-row items-end h-full pt-[90px] lg:pt-[124px]">
                     {/* Main Content Area */}
-                    <div className="w-full lg:w-1/2 flex flex-col z-10 lg:pr-8 pt-8 lg:pt-0 lg:pb-0 lg:justify-center lg:self-stretch">
+                    <div className="w-full lg:w-[55%] flex flex-col z-10 lg:pr-0 pt-8 lg:pt-0 lg:justify-center lg:self-stretch">
                         {/* Mobile: side-by-side heading + image */}
                         <div className="flex flex-row items-stretch lg:block w-full mb-6 lg:mb-0">
                             {/* Text */}
@@ -64,17 +64,16 @@ export function HeroSection() {
                         </div>
 
                         {/* Trust badge */}
-                        <div className="flex justify-center sm:justify-start text-[9px] sm:text-[10px] lg:text-xs font-medium text-brand-text-muted uppercase tracking-wider lg:mb-0 mb-4">
+                        <div className="flex justify-center sm:justify-start text-[9px] sm:text-[10px] lg:text-xs font-medium text-brand-text-muted uppercase tracking-wider mb-5">
                             <span className="flex items-center gap-1.5 lg:gap-3">
-                                <span className="text-brand-accent">✓</span> Cambridge Community Roots · RE/MAX Twin City
-                                · Experienced. Knowledgeable. Professional.
+                                <span className="text-brand-accent">✓</span> Cambridge Community Roots · Experienced. Professional.
                             </span>
                         </div>
                     </div>
 
-                    {/* Desktop Image — large, bottom-aligned */}
-                    <div className="hidden lg:flex w-1/2 justify-center items-end relative">
-                        <div className="relative w-full max-w-[580px] 2xl:max-w-[660px] h-[85vh] min-h-[600px]">
+                    {/* Desktop Image — large, bottom-aligned, fills viewport */}
+                    <div className="hidden lg:flex w-[45%] justify-end items-end relative self-end h-[calc(100vh-40px)]">
+                        <div className="relative w-full max-w-[750px] 2xl:max-w-[850px] h-full">
                             <Image
                                 src="/images/gretta-hero-nobg.png"
                                 alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
