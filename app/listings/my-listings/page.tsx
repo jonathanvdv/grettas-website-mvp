@@ -6,9 +6,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-    title: "Chris's Listings | Chris Pimentel REALTOR®",
+    title: "Gretta's Listings | Gretta Hughes REALTOR®",
     description:
-        'View properties currently listed by Chris Pimentel, REALTOR® with RE/MAX Twin City Realty in Cambridge.',
+        'View properties currently listed by Gretta Hughes, REALTOR® with RE/MAX Twin City Realty in Cambridge.',
 }
 
 export default async function MyListingsPage() {
@@ -20,20 +20,20 @@ export default async function MyListingsPage() {
                 {/* Agent header */}
                 <div className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center gap-6">
                     <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 border-2 border-brand-accent/20">
-                        <Image src="/images/chris4.png" alt="Chris Pimentel" fill className="object-cover object-top" />
+                        <Image src="/images/gretta-meet.png" alt="Gretta Hughes" fill className="object-cover object-top" />
                     </div>
                     <div className="text-center md:text-left">
-                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Chris Pimentel&apos;s Listings</h1>
+                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Gretta Hughes&apos;s Listings</h1>
                         <p className="text-gray-500 mt-1">REALTOR® · RE/MAX Twin City Realty Inc., Brokerage</p>
                         <p className="text-sm text-gray-400 mt-1">
                             {listings.length} active listing{listings.length !== 1 ? 's' : ''}
                         </p>
                     </div>
                     <a
-                        href="tel:519-716-4662"
+                        href="tel:519-590-3236"
                         className="md:ml-auto bg-brand-accent hover:bg-brand-accent/90 text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors"
                     >
-                        Contact Chris
+                        Contact Gretta
                     </a>
                 </div>
 
@@ -47,7 +47,7 @@ export default async function MyListingsPage() {
                     <div className="bg-white border border-gray-200 p-12 text-center rounded-lg">
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">No active listings right now</h3>
                         <p className="text-gray-500 mb-6">
-                            Chris doesn&apos;t have any active listings at the moment. Check back soon or browse all
+                            Gretta doesn&apos;t have any active listings at the moment. Check back soon or browse all
                             available listings.
                         </p>
                         <Link href="/listings" className="text-brand-accent font-medium hover:underline">

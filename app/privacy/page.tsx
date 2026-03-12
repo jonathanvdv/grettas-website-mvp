@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: 'Privacy Policy',
-    description: 'Privacy policy for Chris Pimentel Real Estate.',
+    description: 'Privacy policy for Gretta Hughes Real Estate.',
 }
 
 export default function PrivacyPage() {
@@ -46,13 +46,9 @@ export default function PrivacyPage() {
 
                     <h2 className="font-display text-2xl text-brand-text mt-10">Contact</h2>
                     <p>
-                        If you have questions about this privacy policy, please contact Chris Pimentel at{' '}
-                        <a href="mailto:cpimentel@remax.net" className="text-brand-accent hover:underline">
-                            cpimentel@remax.net
-                        </a>{' '}
-                        or call{' '}
-                        <a href="tel:519-716-4662" className="text-brand-accent hover:underline">
-                            (519) 716-4662
+                        If you have questions about this privacy policy, please contact Gretta Hughes at{' '}
+                        <a href="tel:519-590-3236" className="text-brand-accent hover:underline">
+                            (519) 590-3236
                         </a>
                         .
                     </p>

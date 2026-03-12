@@ -5,9 +5,9 @@ import { ChevronDown } from 'lucide-react'
 import { TestimonialsSection } from '@/app/_components/TestimonialsSection'
 
 export const metadata: Metadata = {
-    title: 'About Chris Pimentel | REALTOR® Cambridge & Tri-Cities',
+    title: 'About Gretta Hughes | REALTOR® Cambridge & Waterloo Region',
     description:
-        'Learn about Chris Pimentel - a seasoned REALTOR® with 16 years of experience at RE/MAX Twin City Realty in Cambridge, Ontario, serving buyers and sellers across the Tri-Cities region.',
+        'Learn about Gretta Hughes — a passionate REALTOR® with RE/MAX Twin City Realty in Cambridge, Ontario, serving buyers and sellers across the Waterloo Region.',
 }
 
 export default function AboutPage() {
@@ -16,8 +16,8 @@ export default function AboutPage() {
             {/* Hero */}
             <section className="relative h-[60vh] min-h-[500px] flex flex-col items-center justify-center">
                 <Image
-                    src="/images/chris3.png"
-                    alt="Chris Pimentel"
+                    src="/images/gretta-hero.png"
+                    alt="Gretta Hughes"
                     fill
                     priority
                     sizes="100vw"
@@ -27,7 +27,7 @@ export default function AboutPage() {
 
                 <div className="relative z-10 text-center px-4 flex-1 flex items-end justify-center w-full pb-16">
                     <h1 className="font-display text-5xl md:text-7xl text-brand-text">
-                        Hi, I&apos;m <span className="italic text-brand-accent">Chris.</span>
+                        Hi, I&apos;m <span className="italic text-brand-accent">Gretta.</span>
                     </h1>
                 </div>
 
@@ -41,39 +41,37 @@ export default function AboutPage() {
                 <div className="text-center mb-16">
                     <p className="text-brand-accent text-xs font-semibold uppercase tracking-widest mb-6">My Story</p>
                     <h2 className="font-display text-4xl md:text-5xl text-brand-text mb-10 leading-tight">
-                        I Don&apos;t Just Sell Homes. <br className="hidden md:block" />I Help Families{' '}
-                        <span className="italic text-brand-accent">Move Forward</span>
+                        I Know What It Means to <br className="hidden md:block" />
+                        <span className="italic text-brand-accent">Find Home</span>
                     </h2>
                 </div>
 
                 <div className="prose prose-lg prose-brand max-w-none text-brand-text-muted font-light leading-relaxed space-y-6">
                     <p>
-                        For the past 16 years, I have been helping families across Cambridge, Kitchener, Waterloo,
-                        Guelph, and Paris buy and sell homes. Real estate is not just my career. It is my calling. There
-                        is nothing more rewarding than handing someone the keys to a place where they will build their
-                        life.
+                        I was born in El Salvador and moved to Canada when I was 10 years old. Cambridge became home,
+                        and it still is. I know what it feels like to search for a place where you truly belong — and
+                        that experience shapes everything I do as a REALTOR&reg;.
                     </p>
                     <p>
-                        I grew up in this community and I have watched it evolve. I know the neighbourhoods, the
-                        streets, and the subtle shifts in the market that make all the difference when it comes to
-                        pricing a home right or finding the perfect property. That kind of local knowledge only comes
-                        with time, and after 16 years, I have seen just about every scenario the market can throw at
-                        you.
+                        Before real estate, I worked as an Early Childhood Educator and earned my Child and Youth Worker
+                        diploma. Those years taught me patience, empathy, and how to guide families through significant
+                        life decisions with care. Buying or selling a home is one of the biggest decisions a family makes,
+                        and I bring that same level of dedication to every client.
                     </p>
                     <p>
-                        To me, real estate is about more than a transaction. It is about building futures, creating
-                        stability, and helping people find a place where they truly feel at home. I take pride in
-                        guiding my clients with honesty, transparency, and a strategy tailored to their specific goals.
+                        I am passionate about my community — the local businesses, the natural spaces, and the vibrant
+                        downtown areas that make this region special. I help my clients find homes, achieve their real
+                        estate goals, and navigate the process with confidence, making every transaction as enjoyable and
+                        stress-free as possible.
                     </p>
                     <p>
-                        Whether you are purchasing your first home, expanding your investment portfolio, selling to move
-                        on to your next chapter, or seeking advice on residential financing and leasing, I am here to
-                        support you every step of the way.
+                        I am married and have a young daughter, so I understand firsthand how important it is to find the
+                        right home for your family. Whether you are purchasing your first home, selling to move on to your
+                        next chapter, or exploring investment opportunities, I am here to support you every step of the way.
                     </p>
                     <p>
-                        Based in Cambridge and working with RE/MAX Twin City Realty, I bring a professional and results
-                        driven approach to every interaction. I look forward to helping you achieve your real estate
-                        goals.
+                        Based in Cambridge and working with RE/MAX Twin City Realty, I bring a professional, knowledgeable,
+                        and caring approach to every interaction. I look forward to helping you achieve your real estate goals.
                     </p>
                 </div>
             </section>
@@ -97,10 +95,10 @@ export default function AboutPage() {
                             <div>
                                 <h3 className="font-display text-3xl text-brand-text mb-4">If You&apos;re Buying</h3>
                                 <p className="text-brand-text-muted text-lg leading-relaxed font-light">
-                                    You can expect honest guidance from day 1. If a property is overpriced, I will tell
+                                    You can expect honest guidance from day one. If a property is overpriced, I will tell
                                     you. I review accurate comparables, break down what is happening in that specific
                                     neighbourhood, and help you structure a strong, strategic offer that makes sense for
-                                    you. My goal is for you to feel confident in your decision, not stressed or second
+                                    you. My goal is for you to feel confident in your decision — not stressed or second
                                     guessing it later.
                                 </p>
                             </div>
@@ -134,8 +132,8 @@ export default function AboutPage() {
                                 <p className="text-brand-text-muted text-lg leading-relaxed font-light">
                                     You work directly with me. You have my personal number, and you can call or text
                                     anytime. I respond promptly and keep communication clear throughout the process. I
-                                    intentionally keep my business focused and manageable so I can give each client the
-                                    attention, strategy, and service they truly deserve.
+                                    genuinely care about my clients and their families — this is not just business to me,
+                                    it is personal.
                                 </p>
                             </div>
                         </div>
@@ -156,17 +154,25 @@ export default function AboutPage() {
                                 <li className="flex gap-4">
                                     <span className="text-brand-accent mt-1">•</span>
                                     <span>
-                                        <strong className="text-brand-text">16 Years of Real Estate Experience</strong>
+                                        <strong className="text-brand-text">Cambridge Roots</strong>
                                         <br />
-                                        <span className="text-sm">Helping families across the Tri-Cities region</span>
+                                        <span className="text-sm">Living in Cambridge since childhood — this community is home</span>
                                     </span>
                                 </li>
                                 <li className="flex gap-4">
                                     <span className="text-brand-accent mt-1">•</span>
                                     <span>
-                                        <strong className="text-brand-text">Deep Community Roots</strong>
+                                        <strong className="text-brand-text">Early Childhood Education Background</strong>
                                         <br />
-                                        <span className="text-sm">Cambridge and the surrounding Tri-Cities area</span>
+                                        <span className="text-sm">Patience, empathy, and care for families in every interaction</span>
+                                    </span>
+                                </li>
+                                <li className="flex gap-4">
+                                    <span className="text-brand-accent mt-1">•</span>
+                                    <span>
+                                        <strong className="text-brand-text">Child and Youth Worker Diploma</strong>
+                                        <br />
+                                        <span className="text-sm">A foundation built on helping people through life&apos;s big decisions</span>
                                     </span>
                                 </li>
                                 <li className="flex gap-4">
@@ -186,7 +192,7 @@ export default function AboutPage() {
                             <ul className="space-y-6 text-brand-text-muted text-lg font-light">
                                 <li className="flex gap-4">
                                     <span className="text-brand-accent mt-1">•</span>
-                                    <span>Licensed REALTOR® - Province of Ontario</span>
+                                    <span>Licensed REALTOR® — Province of Ontario</span>
                                 </li>
                                 <li className="flex gap-4">
                                     <span className="text-brand-accent mt-1">•</span>
@@ -221,7 +227,7 @@ export default function AboutPage() {
                     href="/contact"
                     className="inline-block bg-brand-accent hover:bg-brand-accent-light text-white px-10 py-5 uppercase tracking-wider text-sm font-medium transition-colors shadow-lg hover:shadow-xl w-full sm:w-auto"
                 >
-                    Reach Out to Chris &#8594;
+                    Reach Out to Gretta &#8594;
                 </Link>
             </section>
         </div>

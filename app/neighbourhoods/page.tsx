@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { NeighbourhoodGuide } from '@/app/_components/NeighbourhoodGuide'
 
 export const metadata: Metadata = {
-    title: 'Neighbourhoods Guide | Kitchener, Waterloo & Cambridge',
+    title: 'Neighbourhoods Guide | Cambridge, Kitchener, Waterloo & Brantford',
     description:
-        'Explore the different communities across the Waterloo Region. From family-friendly Kitchener suburbs to walkable Uptown Waterloo.',
+        'Explore the different communities across the Waterloo Region. From family-friendly Cambridge neighbourhoods to walkable Uptown Waterloo.',
 }
 
 export default function NeighbourhoodsPage() {
@@ -19,7 +19,7 @@ export default function NeighbourhoodsPage() {
                         Waterloo Region
                     </h1>
                     <p className="text-brand-text-muted text-lg leading-relaxed font-light max-w-2xl mx-auto">
-                        From historic downtowns to quiet suburban cul-de-sacs, the Tri-Cities offer a diverse range of
+                        From historic downtowns to quiet suburban cul-de-sacs, the region offers a diverse range of
                         communities. Where you live dictates your lifestyle just as much as the house itself.
                     </p>
                 </div>
@@ -43,6 +43,15 @@ export default function NeighbourhoodsPage() {
                         Colonial Acres (Waterloo), or Williamsburg (Kitchener).
                     </p>
 
+                    <h3 className="font-display text-2xl mt-12 mb-6 text-brand-text">Cambridge: Home Base</h3>
+                    <p>
+                        Cambridge is the amalgamation of three historic towns: Galt, Preston, and Hespeler. It
+                        sits right on the 401, making it a strong choice for commuters heading towards the GTA or
+                        London. The limestone architecture along the Grand River in downtown Galt gives it a unique
+                        aesthetic that draws many buyers who want character homes or loft spaces at a relatively more
+                        accessible price point than Waterloo.
+                    </p>
+
                     <h3 className="font-display text-2xl mt-12 mb-6 text-brand-text">Kitchener: Growth and Energy</h3>
                     <p>
                         Kitchener is the largest of the three cities and arguably the most rapidly transforming.
@@ -61,29 +70,26 @@ export default function NeighbourhoodsPage() {
                         <strong>Laurelwood</strong> are known for some of the best-rated public schools in the region.
                     </p>
 
-                    <h3 className="font-display text-2xl mt-12 mb-6 text-brand-text">
-                        Cambridge: Historic Charm and Value
-                    </h3>
+                    <h3 className="font-display text-2xl mt-12 mb-6 text-brand-text">Brantford: Affordable & Growing</h3>
                     <p>
-                        Cambridge is actually the amalgamation of three historic towns: Galt, Preston, and Hespeler. It
-                        sits right on the 401, making it a very strong choice for commuters heading towards the GTA or
-                        London. The limestone architecture along the Grand River in downtown Galt gives it a unique
-                        aesthetic that draws many buyers who want character homes or loft spaces at a relatively more
-                        accessible price point than Waterloo.
+                        Brantford offers some of the most accessible price points in the region with strong rental
+                        potential near Laurier Brantford campus. The city is undergoing revitalization with new
+                        developments and improved infrastructure. For first-time buyers and investors, Brantford
+                        represents excellent value with room for growth.
                     </p>
                 </div>
 
                 <div className="bg-brand-bg-dark text-white p-12 text-center mt-20 rounded-sm">
                     <h3 className="font-display text-3xl mb-4 italic text-brand-gold">Not sure where to start?</h3>
                     <p className="text-white/80 font-light mb-8 max-w-lg mx-auto">
-                        Tell me what&apos;s important to you: schools, walkability, lot size, commute, and I can tell
+                        Tell me what&apos;s important to you — schools, walkability, lot size, commute — and I can tell
                         you exactly which streets to watch.
                     </p>
                     <Link
                         href="/contact"
                         className="inline-block bg-brand-accent hover:bg-brand-accent-light px-8 py-4 uppercase tracking-wider text-sm font-semibold transition-colors"
                     >
-                        Ask Chris for a Recommendation →
+                        Ask Gretta for a Recommendation →
                     </Link>
                 </div>
             </div>

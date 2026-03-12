@@ -1,12 +1,12 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import { ContactForm } from '@/components/ContactForm'
-import { Facebook, Instagram, MapPin, Phone, Mail } from 'lucide-react'
+import { Facebook, Instagram, MapPin, Phone } from 'lucide-react'
 
 export const metadata: Metadata = {
-    title: 'Contact Chris Pimentel | RE/MAX Twin City Realty',
+    title: 'Contact Gretta Hughes | RE/MAX Twin City Realty',
     description:
-        'Get in touch with Chris Pimentel to buy or sell a home in Cambridge, Kitchener, Waterloo, or Guelph. No pressure, no obligation.',
+        'Get in touch with Gretta Hughes to buy or sell a home in Cambridge, Kitchener, Waterloo, or Guelph. No pressure, no obligation.',
 }
 
 export default async function ContactPage({ searchParams }: { searchParams: Promise<{ type?: string }> }) {
@@ -32,19 +32,19 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
                     {/* Left Column — Contact Info */}
                     <div className="lg:col-span-2 order-2 lg:order-1 space-y-6">
-                        {/* Chris Card */}
+                        {/* Gretta Card */}
                         <div className="bg-white border border-brand-border/40 rounded-sm p-8">
                             <div className="flex items-center gap-5 mb-8">
                                 <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-brand-accent/20 shrink-0">
                                     <Image
-                                        src="/images/chris4.png"
-                                        alt="Chris Pimentel"
+                                        src="/images/gretta-meet.png"
+                                        alt="Gretta Hughes"
                                         fill
                                         className="object-cover object-top"
                                     />
                                 </div>
                                 <div>
-                                    <h2 className="font-display text-2xl text-brand-text">Chris Pimentel</h2>
+                                    <h2 className="font-display text-2xl text-brand-text">Gretta Hughes</h2>
                                     <p className="text-xs uppercase tracking-widest text-brand-text-muted mt-0.5">
                                         REALTOR®
                                     </p>
@@ -52,30 +52,16 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                             </div>
 
                             <div className="space-y-5">
-                                <a href="tel:519-716-4662" className="flex items-center gap-4 group">
+                                <a href="tel:519-590-3236" className="flex items-center gap-4 group">
                                     <span className="w-10 h-10 rounded-full bg-brand-bg border border-brand-border/50 flex items-center justify-center shrink-0 group-hover:border-brand-accent/30 transition-colors">
                                         <Phone className="w-4 h-4 text-brand-accent" />
                                     </span>
                                     <div>
                                         <span className="block font-medium text-brand-text group-hover:text-brand-accent transition-colors">
-                                            (519) 716-4662
+                                            (519) 590-3236
                                         </span>
                                         <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">
                                             Call or text anytime
-                                        </span>
-                                    </div>
-                                </a>
-
-                                <a href="mailto:cpimentel@remax.net" className="flex items-center gap-4 group">
-                                    <span className="w-10 h-10 rounded-full bg-brand-bg border border-brand-border/50 flex items-center justify-center shrink-0 group-hover:border-brand-accent/30 transition-colors">
-                                        <Mail className="w-4 h-4 text-brand-accent" />
-                                    </span>
-                                    <div>
-                                        <span className="block font-medium text-brand-text group-hover:text-brand-accent transition-colors text-sm">
-                                            cpimentel@remax.net
-                                        </span>
-                                        <span className="text-[10px] text-brand-text-muted uppercase tracking-widest">
-                                            Typical response: same day
                                         </span>
                                     </div>
                                 </a>
@@ -89,7 +75,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                                             RE/MAX Twin City Realty Inc.
                                         </span>
                                         <span className="block text-xs text-brand-text-muted">
-                                            1400 Bishop St N, Suite B, Cambridge, ON
+                                            1400 Bishop Street North, Cambridge, ON
                                         </span>
                                     </div>
                                 </div>
@@ -103,7 +89,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                             </p>
                             <div className="flex gap-3">
                                 <a
-                                    href="https://www.instagram.com/chrispimentel.realtor/"
+                                    href="https://www.instagram.com/gretta.hughes/?hl=en"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-sm bg-brand-bg border border-brand-border/50 flex items-center justify-center text-brand-text hover:text-brand-accent hover:border-brand-accent/30 transition-colors"
@@ -112,7 +98,7 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                                     <Instagram className="w-4 h-4" />
                                 </a>
                                 <a
-                                    href="https://www.facebook.com/chrispimentel.realtor/"
+                                    href="https://www.facebook.com/grettahughes.ca/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-10 h-10 rounded-sm bg-brand-bg border border-brand-border/50 flex items-center justify-center text-brand-text hover:text-brand-accent hover:border-brand-accent/30 transition-colors"
@@ -133,14 +119,14 @@ export default async function ContactPage({ searchParams }: { searchParams: Prom
                             <p className="text-sm text-brand-text-muted mb-8">
                                 {isEvaluation
                                     ? 'Find out what your home is worth today.'
-                                    : 'Fill out the form and Chris will get back to you personally.'}
+                                    : 'Fill out the form and Gretta will get back to you personally.'}
                             </p>
 
                             <ContactForm
                                 defaultIntent={isEvaluation ? 'Sell' : undefined}
                                 defaultMessage={
                                     isEvaluation
-                                        ? "Hi Chris, I'm interested in getting a free evaluation of my home. My address is [Address]."
+                                        ? "Hi Gretta, I'm interested in getting a free evaluation of my home. My address is [Address]."
                                         : ''
                                 }
                             />

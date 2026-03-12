@@ -65,36 +65,21 @@ export default function Home() {
 
                             <div className="bg-brand-bg p-8 border border-brand-border/50 rounded-sm">
                                 <p className="text-sm font-semibold tracking-wider uppercase text-brand-text mb-8 border-b border-brand-border pb-4">
-                                    Real people call and text back. No bots, no assistants, just Chris.
+                                    Real people call and text back. No bots, no assistants, just Gretta.
                                 </p>
 
                                 <div className="space-y-6">
                                     <a
-                                        href="tel:519-716-4662"
+                                        href="tel:519-590-3236"
                                         className="flex items-center gap-4 text-brand-text group"
                                     >
                                         <span className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-brand-border shadow-sm group-hover:scale-105 transition-transform duration-300">
                                             <span className="font-display text-xl">📞</span>
                                         </span>
                                         <div className="flex flex-col">
-                                            <span className="font-medium text-xl">(519) 716-4662</span>
+                                            <span className="font-medium text-xl">(519) 590-3236</span>
                                             <span className="text-xs text-brand-text-muted uppercase tracking-[0.2em] mt-1">
                                                 Call or text anytime
-                                            </span>
-                                        </div>
-                                    </a>
-
-                                    <a
-                                        href="mailto:cpimentel@remax.net"
-                                        className="flex items-center gap-4 text-brand-text group"
-                                    >
-                                        <span className="w-12 h-12 rounded-full bg-white flex items-center justify-center border border-brand-border shadow-sm group-hover:scale-105 transition-transform duration-300">
-                                            <span className="font-display text-xl">✉️</span>
-                                        </span>
-                                        <div className="flex flex-col">
-                                            <span className="font-medium text-lg">cpimentel@remax.net</span>
-                                            <span className="text-xs text-brand-text-muted uppercase tracking-wider mt-1">
-                                                Typical response time: same day
                                             </span>
                                         </div>
                                     </a>
@@ -106,7 +91,7 @@ export default function Home() {
                                     </p>
                                     <div className="flex gap-4">
                                         <a
-                                            href="https://www.instagram.com/chrispimentel.realtor/"
+                                            href="https://www.instagram.com/gretta.hughes/?hl=en"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="w-10 h-10 rounded-sm bg-white border border-brand-border flex items-center justify-center text-brand-text hover:text-brand-accent hover:border-brand-accent transition-colors shadow-sm"
@@ -115,7 +100,7 @@ export default function Home() {
                                             <Instagram className="w-4 h-4" />
                                         </a>
                                         <a
-                                            href="https://www.facebook.com/chrispimentel.realtor/"
+                                            href="https://www.facebook.com/grettahughes.ca/"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="w-10 h-10 rounded-sm bg-white border border-brand-border flex items-center justify-center text-brand-text hover:text-brand-accent hover:border-brand-accent transition-colors shadow-sm"

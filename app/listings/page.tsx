@@ -10,7 +10,7 @@ import { ListingsTermsGate } from './_components/ListingsTermsGate'
 export const metadata: Metadata = {
     title: 'Search Listings | Cambridge, Kitchener, Waterloo & Guelph',
     description:
-        'Browse homes for sale in Cambridge, Kitchener, Waterloo, Guelph, Paris and surrounding areas. Filter by price, bedrooms, and property type.',
+        'Browse homes for sale in Cambridge, Kitchener, Waterloo, Guelph, Brantford and surrounding areas. Filter by price, bedrooms, and property type.',
 }
 
 const PAGE_SIZE = 24
@@ -104,7 +104,7 @@ export default async function ListingsPage({
                         <div className="p-6 pb-4">
                             <h2 className="text-xl font-semibold text-gray-900">Service Area</h2>
                             <p className="text-sm text-gray-500 mt-1">
-                                Cambridge · Kitchener · Waterloo · Guelph · Paris
+                                Cambridge · Kitchener · Waterloo · Guelph · Brantford
                             </p>
                         </div>
                         <iframe
@@ -115,7 +115,7 @@ export default async function ListingsPage({
                             allowFullScreen
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
-                            title="Chris Pimentel service area map"
+                            title="Gretta Hughes service area map"
                         />
                     </div>
 

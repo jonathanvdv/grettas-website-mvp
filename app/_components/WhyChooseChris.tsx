@@ -6,39 +6,39 @@ export function WhyChooseChris() {
     const reasons = [
         {
             icon: Clock,
-            title: '16 Years. No Shortcuts.',
+            title: 'Experienced. Knowledgeable. Professional.',
             description:
-                "I've been doing this since 2010. That's over 500 families helped, thousands of showings, and a track record you can actually verify. Experience isn't just a number. It's the reason I spot opportunities others miss. Start your search and see what I mean.",
+                "Real estate isn't just my career — it's my calling. I bring deep experience, market knowledge, and a professional approach to every client. Start your search and see the difference.",
         },
         {
             icon: MapPin,
-            title: 'Cambridge Is Home Base',
+            title: 'Cambridge Is Home',
             description:
-                "I don't just work here. I live here. Hespeler, Preston, Galt, Blair. I know which blocks are appreciating, which streets flood, and where the best school catchments are. That intel saves you money and headaches.",
+                "I don't just work here — I live here. I've been in Cambridge since I was 10. I know the neighbourhoods, the streets, and which areas are on the rise. That local knowledge saves you money and headaches.",
         },
         {
             icon: TrendingUp,
-            title: 'Proven Track Record',
+            title: 'Results Across the Region',
             description:
-                "Hundreds of closed deals across Cambridge, Kitchener, Waterloo, Guelph, and Paris. My clients don't just find homes. They find the right home at the right price. The listings on this site update daily. Have you checked them yet?",
+                "From Cambridge to Kitchener, Waterloo, Guelph, and Brantford — I help clients find the right home at the right price. The listings on this site update daily. Have you checked them yet?",
         },
         {
             icon: ShieldCheck,
             title: 'Straight Talk, No Games',
             description:
-                "If a house is overpriced, I'll tell you. If you're about to make a mistake, I'll stop you. I'd rather lose a deal than lose your trust. That's why most of my business comes from referrals and repeat clients.",
+                "If a house is overpriced, I'll tell you. If you're about to make a mistake, I'll stop you. I'd rather lose a deal than lose your trust. That's why my business is built on referrals and repeat clients.",
         },
         {
             icon: User,
-            title: 'You Get Chris. Period.',
+            title: 'You Get Gretta. Period.',
             description:
-                'No hand-offs to junior agents. No assistants running your deal. When you call, I answer. I keep my client list tight so every person gets my full attention. Your home search deserves that.',
+                'No hand-offs to junior agents. No assistants running your deal. When you call, I answer. I keep my client list focused so every person gets my full attention. Your home search deserves that.',
         },
         {
             icon: Home,
             title: 'Free Home Evaluation. Zero Pressure.',
             description:
-                "Thinking about selling? I'll give you an honest market evaluation, no obligation, no pitch. And if you're buying, the search starts right here. Browse the latest listings and let's talk about what catches your eye.",
+                "Thinking about selling? I'll give you an honest market evaluation — no obligation, no pitch. And if you're buying, the search starts right here. Browse the latest listings and let's talk about what catches your eye.",
         },
     ]
 
@@ -46,7 +46,7 @@ export function WhyChooseChris() {
         <section className="py-12 md:py-20 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <AnimatedSection className="text-center max-w-2xl mx-auto mb-20 md:mb-24">
-                    <SectionLabel text="Why Clients Choose Chris" />
+                    <SectionLabel text="Why Clients Choose Gretta" />
                     <h2 className="font-display text-4xl md:text-5xl text-brand-text mb-6">
                         Results That <span className="italic text-brand-accent">Speak for Themselves</span>
                     </h2>

@@ -156,7 +156,7 @@ export interface ListingFilters {
 // StructureType values (Collection enum): House, Apartment, Row / Townhouse, Duplex, Triplex, etc.
 // Land uses PropertySubType 'Vacant Land' since it has no StructureType
 
-const SERVICE_AREA_CITIES = ['Cambridge', 'Kitchener', 'Waterloo', 'Guelph', 'Paris']
+const SERVICE_AREA_CITIES = ['Cambridge', 'Kitchener', 'Waterloo', 'Guelph', 'Brantford']
 
 /** Escape a value for use inside an OData single-quoted string literal. */
 export function odataString(value: string): string {
@@ -226,7 +226,7 @@ export function buildODataFilter(filters: ListingFilters): string {
     if (filters.city) {
         parts.push(`City eq '${odataString(filters.city)}'`)
     } else {
-        // Default to Chris's service area
+        // Default to Gretta's service area
         const cityFilter = SERVICE_AREA_CITIES.map((c) => `City eq '${odataString(c)}'`).join(' or ')
         parts.push(`(${cityFilter})`)
     }
@@ -464,7 +464,7 @@ export async function getListing(listingId: string): Promise<Listing> {
 
 /**
  * Fetches a list of featured listings, typically displayed on the home page.
- * Defaults to recent listings in Chris's core service area.
+ * Defaults to recent listings in Gretta's core service area.
  *
  * @param limit - Maximum number of featured listings to return
  * @returns Array of featured listing objects
@@ -475,13 +475,13 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
         return mockListings.slice(0, limit)
     }
 
-    // Get most recent active residential listings in Chris's service area
+    // Get most recent active residential listings in Gretta's service area
     const token = await getDdfToken()
     const params = new URLSearchParams()
     params.set('$top', limit.toString())
     params.set(
         '$filter',
-        "(City eq 'Cambridge' or City eq 'Kitchener' or City eq 'Waterloo' or City eq 'Guelph' or City eq 'Paris') and ListPrice gt 200000"
+        "(City eq 'Cambridge' or City eq 'Kitchener' or City eq 'Waterloo' or City eq 'Guelph' or City eq 'Brantford') and ListPrice gt 200000"
     )
     params.set('$orderby', 'ModificationTimestamp desc')
 

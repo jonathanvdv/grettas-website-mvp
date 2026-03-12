@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: 'Terms of Service',
-    description: 'Terms of service for Chris Pimentel Real Estate website.',
+    description: 'Terms of service for Gretta Hughes Real Estate website.',
 }
 
 export default function TermsPage() {
@@ -17,7 +17,7 @@ export default function TermsPage() {
 
                     <h2 className="font-display text-2xl text-brand-text mt-10">Use of This Website</h2>
                     <p>
-                        This website is operated by Chris Pimentel, a licensed REALTOR® with RE/MAX Twin City Realty
+                        This website is operated by Gretta Hughes, a licensed REALTOR® with RE/MAX Twin City Realty
                         Inc., Brokerage, in Cambridge, Ontario. By using this website, you agree to these terms.
                     </p>
 
@@ -48,15 +48,15 @@ export default function TermsPage() {
                     <h2 className="font-display text-2xl text-brand-text mt-10">Limitation of Liability</h2>
                     <p>
                         This website and its content are provided &ldquo;as is&rdquo; without warranty of any kind.
-                        Chris Pimentel and RE/MAX Twin City Realty Inc. are not liable for any damages arising from the
+                        Gretta Hughes and RE/MAX Twin City Realty Inc. are not liable for any damages arising from the
                         use of this website or reliance on its content.
                     </p>
 
                     <h2 className="font-display text-2xl text-brand-text mt-10">Contact</h2>
                     <p>
-                        Questions about these terms can be directed to{' '}
-                        <a href="mailto:cpimentel@remax.net" className="text-brand-accent hover:underline">
-                            cpimentel@remax.net
+                        Questions about these terms can be directed to Gretta Hughes at{' '}
+                        <a href="tel:519-590-3236" className="text-brand-accent hover:underline">
+                            (519) 590-3236
                         </a>
                         .
                     </p>

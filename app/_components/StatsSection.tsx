@@ -46,17 +46,16 @@ export function StatsSection() {
         <section className="bg-brand-bg-dark text-white py-12 lg:py-16 border-y border-brand-border/20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <AnimatedSection>
-                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-x-0 gap-y-12">
-                        <Counter end={150} suffix="+" label="Families Helped" />
-                        <Counter end={5} suffix="+" label="Years Licensed" />
-                        <Counter end={25} suffix="+" label="Years in Region" />
-                        <Counter end={50} prefix="$" suffix="M+" label="Sold Properties" />
-                        <Counter end={6} label="Languages Spoken" />
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-0 gap-y-12">
+                        <Counter end={15} suffix="+" label="Years in Cambridge" />
+                        <Counter end={5} label="Cities Served" />
+                        <Counter end={100} suffix="%" label="Client Focused" />
+                        <Counter end={24} suffix="hr" label="Response Time" />
                     </div>
 
                     <div className="text-center mt-12 pt-12 border-t border-brand-border/10">
                         <p className="italic text-brand-text-muted text-sm md:text-base leading-relaxed">
-                            "Every number represents a family who trusted me with one of the biggest decisions of their life."
+                            &ldquo;Every client deserves the same care my family received when we first arrived in Canada — that&apos;s the standard I hold myself to.&rdquo;
                         </p>
                     </div>
                 </AnimatedSection>

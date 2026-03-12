@@ -11,7 +11,7 @@ export function ContactCTA() {
                     </h2>
 
                     <p className="text-brand-text-muted text-lg md:text-xl leading-relaxed font-light mb-12 max-w-2xl mx-auto">
-                        The Waterloo Region market moves fast. Get a free, no-obligation evaluation from someone who actually knows your street, not just the algorithm.
+                        The Waterloo Region market moves fast. Get a free, no-obligation evaluation from someone who actually knows your street — not just the algorithm.
                     </p>
 
                     <Link

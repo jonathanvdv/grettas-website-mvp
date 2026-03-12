@@ -8,7 +8,7 @@ import { DollarSign, ShieldCheck, Clock, TrendingUp, Home, Landmark, BookOpen, L
 export const metadata: Metadata = {
     title: 'Mortgage Guide | Waterloo Region Real Estate',
     description:
-        'Your complete guide to Canadian mortgages. Calculate payments, learn about first-time buyer programs, mortgage types, down payments, and more with Chris Pimentel.',
+        'Your complete guide to Canadian mortgages. Calculate payments, learn about first-time buyer programs, mortgage types, down payments, and more with Gretta Hughes.',
 }
 
 const sections = [
@@ -362,14 +362,14 @@ export default function MortgageCalculatorPage() {
                             Need a Mortgage Broker <span className="italic">Recommendation?</span>
                         </h2>
                         <p className="text-brand-text-muted text-lg leading-relaxed font-light mb-12 max-w-2xl mx-auto">
-                            Chris works with trusted local mortgage brokers in the Waterloo Region who can shop the
+                            Gretta works with trusted local mortgage brokers in the Waterloo Region who can shop the
                             market for you and often secure better rates than your home branch.
                         </p>
                         <Link
                             href="/contact"
                             className="inline-block bg-brand-accent hover:bg-brand-accent-light text-white px-10 py-5 uppercase tracking-wider text-sm font-medium transition-colors shadow-lg hover:shadow-xl w-full sm:w-auto"
                         >
-                            Reach Out to Chris →
+                            Reach Out to Gretta →
                         </Link>
                         <p className="mt-8 text-brand-text-muted/60 text-xs font-light max-w-2xl mx-auto leading-relaxed">
                             The calculator and information on this page are for educational purposes only and use the

@@ -9,14 +9,14 @@ export function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
                     {/* Left Column */}
                     <div>
-                        <h2 className="font-display text-3xl mb-1 text-white">Chris Pimentel</h2>
+                        <h2 className="font-display text-3xl mb-1 text-white">Gretta Hughes</h2>
                         <p className="text-brand-text-muted text-sm tracking-widest uppercase mb-6">REALTOR®</p>
                         <p className="text-brand-border/80 text-sm italic">
-                            Serving Cambridge, Kitchener, Waterloo, Guelph & Paris
+                            Serving Cambridge, Kitchener, Waterloo, Guelph & Brantford
                         </p>
                         <div className="mt-6 flex gap-4">
                             <a
-                                href="https://www.facebook.com/chrispimentel.realtor/"
+                                href="https://www.facebook.com/grettahughes.ca/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-2 border border-brand-border/20 rounded-full hover:bg-brand-border/10 transition"
@@ -27,7 +27,7 @@ export function Footer() {
                                 </svg>
                             </a>
                             <a
-                                href="https://www.instagram.com/chrispimentel.realtor/"
+                                href="https://www.instagram.com/gretta.hughes/?hl=en"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-2 border border-brand-border/20 rounded-full hover:bg-brand-border/10 transition"
@@ -61,7 +61,7 @@ export function Footer() {
                             </li>
                             <li>
                                 <Link href="/about" className="hover:text-brand-gold transition-colors">
-                                    About Chris
+                                    About Gretta
                                 </Link>
                             </li>
                             <li>
@@ -83,16 +83,11 @@ export function Footer() {
                         <div className="space-y-4 text-sm text-brand-border/80">
                             <p className="flex items-center gap-3">
                                 <Phone className="w-4 h-4 text-brand-gold" />
-                                <a href="tel:519-716-4662" className="hover:text-white transition-colors">
-                                    (519) 716-4662{' '}
+                                <a href="tel:519-590-3236" className="hover:text-white transition-colors">
+                                    (519) 590-3236{' '}
                                     <span className="text-brand-text-muted text-xs ml-2 uppercase tracking-widest">
                                         Call or Text
                                     </span>
-                                </a>
-                            </p>
-                            <p>
-                                <a href="mailto:cpimentel@remax.net" className="hover:text-white transition-colors">
-                                    cpimentel@remax.net
                                 </a>
                             </p>
                             <address className="not-italic text-brand-text-muted leading-relaxed mt-4">
@@ -100,7 +95,7 @@ export function Footer() {
                                     RE/MAX Twin City Realty Inc., Brokerage
                                 </strong>
                                 <br />
-                                1400 Bishop St N, Suite B<br />
+                                1400 Bishop Street North<br />
                                 Cambridge, ON N1R 6W8
                             </address>
                         </div>
@@ -110,7 +105,7 @@ export function Footer() {
                 {/* Row 2: Bottom Bar */}
                 <div className="pt-8 border-t border-brand-border/20 text-xs text-brand-text-muted flex flex-col items-center text-center space-y-4">
                     <div className="flex flex-col md:flex-row justify-between w-full">
-                        <p>&copy; {new Date().getFullYear()} Chris Pimentel. All rights reserved.</p>
+                        <p>&copy; {new Date().getFullYear()} Gretta Hughes. All rights reserved.</p>
                         <div className="flex gap-4 mt-4 md:mt-0">
                             <Link href="/privacy" className="hover:text-white transition">
                                 Privacy Policy

@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     const listing = await getListing(unresolvedParams.id)
     return {
         title: `${listing.address.full} - $${listing.price.toLocaleString()}`,
-        description: `${listing.beds} bed, ${listing.baths} bath home at ${listing.address.full}. Listed at $${listing.price.toLocaleString()}. Contact Chris Pimentel to book a showing.`,
+        description: `${listing.beds} bed, ${listing.baths} bath home at ${listing.address.full}. Listed at $${listing.price.toLocaleString()}. Contact Gretta Hughes to book a showing.`,
     }
 }
 
@@ -360,7 +360,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                                     <p className="text-sm font-semibold text-gray-900 mb-1">
                                         Interested in touring this property?
                                     </p>
-                                    <p className="text-xs text-gray-500">Contact Chris to schedule a private showing</p>
+                                    <p className="text-xs text-gray-500">Contact Gretta to schedule a private showing</p>
                                 </div>
 
                                 {/* Agent Card + Form */}
@@ -368,28 +368,28 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                                     <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
                                         <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-gray-200">
                                             <Image
-                                                src="/images/chris3.png"
-                                                alt="Chris Pimentel"
+                                                src="/images/gretta-meet.png"
+                                                alt="Gretta Hughes"
                                                 fill
                                                 className="object-cover object-top"
                                             />
                                         </div>
                                         <div>
                                             <h3 className="font-semibold text-gray-900 leading-tight">
-                                                Chris Pimentel
+                                                Gretta Hughes
                                             </h3>
                                             <p className="text-gray-500 text-xs mt-0.5">REALTOR® · RE/MAX Twin City</p>
                                             <a
-                                                href="tel:519-716-4662"
+                                                href="tel:519-590-3236"
                                                 className="text-brand-accent text-sm font-semibold mt-1 block hover:underline"
                                             >
-                                                (519) 716-4662
+                                                (519) 590-3236
                                             </a>
                                         </div>
                                     </div>
 
                                     <ContactForm
-                                        defaultMessage={`Hi Chris, I'm interested in the property at ${listing.address.full} (MLS: ${listing.mlsNumber}). I'd like to book a showing or get more information.`}
+                                        defaultMessage={`Hi Gretta, I'm interested in the property at ${listing.address.full} (MLS: ${listing.mlsNumber}). I'd like to book a showing or get more information.`}
                                         defaultIntent="Buy"
                                         listingAddress={listing.address.full}
                                         className="[&>div>label]:text-[10px]"
@@ -416,7 +416,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
             </div>
             {/* Floating mobile contact sheet */}
             <MobileContactSheet
-                defaultMessage={`Hi Chris, I'm interested in the property at ${listing.address.full} (MLS: ${listing.mlsNumber}). I'd like to book a showing or get more information.`}
+                defaultMessage={`Hi Gretta, I'm interested in the property at ${listing.address.full} (MLS: ${listing.mlsNumber}). I'd like to book a showing or get more information.`}
                 listingAddress={listing.address.full}
             />
         </>

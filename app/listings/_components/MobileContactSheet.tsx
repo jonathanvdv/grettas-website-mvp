@@ -38,19 +38,19 @@ export function MobileContactSheet({ defaultMessage, listingAddress }: MobileCon
                             <div className="flex items-center gap-3">
                                 <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200">
                                     <Image
-                                        src="/images/chris3.png"
-                                        alt="Chris Pimentel"
+                                        src="/images/gretta-meet.png"
+                                        alt="Gretta Hughes"
                                         fill
                                         className="object-cover object-top"
                                     />
                                 </div>
                                 <div>
-                                    <p className="font-semibold text-gray-900 text-sm">Chris Pimentel</p>
+                                    <p className="font-semibold text-gray-900 text-sm">Gretta Hughes</p>
                                     <a
-                                        href="tel:519-716-4662"
+                                        href="tel:519-590-3236"
                                         className="text-brand-accent text-xs font-medium flex items-center gap-1"
                                     >
-                                        <Phone className="w-3 h-3" /> (519) 716-4662
+                                        <Phone className="w-3 h-3" /> (519) 590-3236
                                     </a>
                                 </div>
                             </div>

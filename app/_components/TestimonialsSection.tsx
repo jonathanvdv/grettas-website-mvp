@@ -5,20 +5,20 @@ export function TestimonialsSection() {
     const testimonials = [
         {
             id: 1,
-            quote: "Chris told us our first offer was too high, and he was right. We ended up getting the house in Hespeler for $40K less than we were about to bid. That's not just an agent, that's someone who actually has your back. Sixteen years of experience and you can feel it in every conversation.",
-            author: 'Mark & Sandra L., Cambridge',
+            quote: "Gretta helped us find our dream home in Hespeler before it even hit the open market. Her knowledge of Cambridge is incredible — she knew which streets were appreciating and steered us to the perfect neighbourhood. We felt confident every step of the way.",
+            author: 'Maria & Carlos D., Cambridge',
             stars: 5,
         },
         {
             id: 2,
-            quote: 'We listed with Chris on a Thursday and had three offers by Monday. He knew exactly how to price our Kitchener home and his staging advice was spot-on. The whole process was seamless, no surprises, no stress. We walked away with more than we expected.',
-            author: 'David & Priya R., Kitchener',
+            quote: "We listed with Gretta and had multiple offers within the first week. She knew exactly how to price our Kitchener home and her staging advice was spot-on. The whole process was seamless — no surprises, no stress. We walked away with more than we expected.",
+            author: 'Sarah & James T., Kitchener',
             stars: 5,
         },
         {
             id: 3,
-            quote: "As first-time buyers in Waterloo, we were overwhelmed. Chris cut through the noise, showed us exactly what we could afford, and found us a place near both universities that's already appreciated. He answers his phone on weekends. That says everything.",
-            author: 'Jessica M., Waterloo',
+            quote: "As first-time buyers, we were completely overwhelmed. Gretta was so patient and thorough — she made everything feel manageable. She found us a place in Waterloo that we absolutely love. She answers her phone on weekends. That says everything.",
+            author: 'Emily R., Waterloo',
             stars: 5,
         },
     ]

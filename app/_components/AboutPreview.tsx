@@ -12,8 +12,8 @@ export function AboutPreview() {
                     <AnimatedSection className="relative aspect-[3/4] md:aspect-auto w-full order-2 md:order-1 flex items-center justify-center">
                         <div className="relative w-[280px] h-[370px] md:w-[320px] md:h-[420px] lg:w-[360px] lg:h-[470px]">
                             <Image
-                                src="/images/chris3.png"
-                                alt="Chris Pimentel - Real Estate Professional"
+                                src="/images/gretta-meet.png"
+                                alt="Gretta Hughes - Real Estate Professional"
                                 fill
                                 className="object-contain object-center"
                                 sizes="360px"
@@ -23,29 +23,26 @@ export function AboutPreview() {
 
                     {/* Content Side */}
                     <AnimatedSection className="order-1 md:order-2">
-                        <SectionLabel text="About Chris" />
+                        <SectionLabel text="About Gretta" />
                         <h2 className="font-display text-4xl md:text-5xl lg:text-6xl text-brand-text mb-8 leading-[1.1]">
-                            16 Years In. <span className="italic">Still All In.</span>
+                            From New Beginnings <span className="italic">to Your New Home.</span>
                         </h2>
 
                         <div className="space-y-6 text-brand-text-muted text-base md:text-lg leading-relaxed font-light mb-10">
                             <p>
-                                I&apos;ve been selling real estate in Cambridge and the Waterloo Region for 16 years.
-                                That&apos;s not a talking point. It&apos;s 16 years of knowing which streets hold value,
-                                which neighbourhoods are about to pop, and exactly what it takes to get a deal done in
-                                this market.
+                                I moved to Canada from El Salvador when I was 10. Cambridge became home, and it still
+                                is. I know what it means to start over, to search for a place that truly feels like yours.
+                                That experience drives everything I do as a REALTOR&reg;.
                             </p>
                             <p>
-                                I&apos;m deeply rooted in this community. Cambridge is home. I&apos;ve watched it grow,
-                                helped families put down roots here, and built a reputation on straight talk and
-                                results, not promises. I also speak Portuguese fluently, so if that&apos;s your first
-                                language, we can work together in whatever way feels most comfortable.
+                                Before real estate, I worked as an Early Childhood Educator and Child and Youth Worker.
+                                Those years taught me patience, empathy, and how to guide families through big life
+                                decisions. Buying or selling a home is one of the biggest.
                             </p>
                             <p>
                                 Whether you&apos;re buying your first place or selling the home you raised your kids in,
-                                I bring the same thing to the table every time: local expertise, honest advice, and the
-                                drive to get you the best possible outcome. Ready to see what&apos;s out there? Start
-                                with a search.
+                                I bring the same thing to the table every time: local expertise, honest advice, and genuine
+                                care for your outcome. Ready to see what&apos;s out there? Start with a search.
                             </p>
                         </div>
 
@@ -53,7 +50,7 @@ export function AboutPreview() {
                             href="/about"
                             className="inline-block bg-brand-accent hover:bg-brand-accent-light text-white px-8 py-4 uppercase tracking-wider text-sm font-medium transition-colors"
                         >
-                            Get to Know Chris &#8594;
+                            Get to Know Gretta &#8594;
                         </Link>
                     </AnimatedSection>
                 </div>

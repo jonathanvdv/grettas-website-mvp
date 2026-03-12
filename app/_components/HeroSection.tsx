@@ -14,7 +14,7 @@ export function HeroSection() {
                             {/* Text */}
                             <AnimatedSection className="w-[60%] lg:w-full pr-2 lg:pr-0 self-center z-10">
                                 <p className="text-brand-accent tracking-[0.2em] text-[10px] lg:text-xs font-semibold uppercase mb-3 lg:mb-5 leading-tight">
-                                    Cambridge · Kitchener · Waterloo · Guelph · Paris
+                                    Cambridge · Kitchener · Waterloo · Guelph · Brantford
                                 </p>
 
                                 <h1 className="font-display text-[2.5rem] leading-[1.05] sm:text-5xl lg:text-6xl 2xl:text-7xl text-brand-text mb-4 lg:mb-5 text-balance">
@@ -24,9 +24,8 @@ export function HeroSection() {
 
                                 <div className="text-brand-text-muted text-[13px] sm:text-sm lg:text-lg 2xl:text-xl leading-relaxed font-light text-pretty space-y-4 lg:space-y-5">
                                     <p>
-                                        I&apos;m Chris Pimentel. For 16 years, I&apos;ve helped families across the
-                                        Waterloo Region find homes they love and sell for prices they didn&apos;t
-                                        expect.
+                                        I&apos;m Gretta Hughes. I help families across Cambridge and the Waterloo Region
+                                        find homes they love and sell for prices that exceed expectations.
                                     </p>
                                     <p className="hidden lg:block">
                                         New listings hit this site every day. The best ones don&apos;t last long.
@@ -37,8 +36,8 @@ export function HeroSection() {
                             {/* Mobile Image */}
                             <div className="w-[40%] relative lg:hidden h-[40vh] min-h-[250px] self-end z-0">
                                 <Image
-                                    src="/images/chris3.png"
-                                    alt="Chris Pimentel - Cambridge & Waterloo Region REALTOR"
+                                    src="/images/gretta-hero-nobg.png"
+                                    alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
                                     fill
                                     priority
                                     sizes="(max-width: 1024px) 40vw"
@@ -67,8 +66,8 @@ export function HeroSection() {
                         {/* Trust badge */}
                         <div className="flex justify-center sm:justify-start text-[9px] sm:text-[10px] lg:text-xs font-medium text-brand-text-muted uppercase tracking-wider lg:mb-0 mb-4">
                             <span className="flex items-center gap-1.5 lg:gap-3">
-                                <span className="text-brand-accent">✓</span> 16 Years Experience · 150+ Families Served
-                                · RE/MAX Twin City
+                                <span className="text-brand-accent">✓</span> Cambridge Community Roots · RE/MAX Twin City
+                                · Experienced. Knowledgeable. Professional.
                             </span>
                         </div>
                     </div>
@@ -77,8 +76,8 @@ export function HeroSection() {
                     <div className="hidden lg:flex w-1/2 justify-center items-end relative">
                         <div className="relative w-full max-w-[580px] 2xl:max-w-[660px] h-[85vh] min-h-[600px]">
                             <Image
-                                src="/images/chris3.png"
-                                alt="Chris Pimentel - Cambridge & Waterloo Region REALTOR"
+                                src="/images/gretta-hero-nobg.png"
+                                alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
                                 fill
                                 priority
                                 sizes="50vw"

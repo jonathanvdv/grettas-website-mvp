@@ -15,7 +15,7 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
         {
             name: 'Preston',
             city: 'Cambridge',
-            desc: "Riverside living, established streets, and a tight-knit community feel. One of Cambridge's most desirable pockets, and listings move fast.",
+            desc: "Riverside living, established streets, and a tight-knit community feel. One of Cambridge's most desirable pockets — listings move fast.",
             tags: ['Riverside', 'Established', 'Walkable'],
             link: '/listings',
         },
@@ -27,17 +27,10 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
             link: '/listings',
         },
         {
-            name: 'Blair / South Cambridge',
-            city: 'Cambridge',
-            desc: 'Rural feel, minutes from the city. Larger lots, newer builds, and easy 401 access. Perfect for families who want space without the commute.',
-            tags: ['Large Lots', 'Highway Access', 'Families'],
-            link: '/listings',
-        },
-        {
-            name: 'Doon',
+            name: 'Downtown Kitchener',
             city: 'Kitchener',
-            desc: 'Established, quiet, and close to the 401. A favourite for families and move-up buyers looking for strong long-term value.',
-            tags: ['Quiet', 'Highway Access', 'Move-Up Buyers'],
+            desc: 'The innovation district is booming. LRT access, new condo developments, and a vibrant food scene. Perfect for young professionals and investors.',
+            tags: ['LRT Access', 'Investment', 'Urban'],
             link: '/listings',
         },
         {
@@ -45,6 +38,13 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
             city: 'Waterloo',
             desc: 'Vibrant, walkable, and growing fast. Perfect for young professionals and investors. High demand means you need to act quickly.',
             tags: ['Walkable', 'LRT Access', 'Investment'],
+            link: '/listings',
+        },
+        {
+            name: 'Eagle Place',
+            city: 'Brantford',
+            desc: 'Affordable entry point with strong rental potential. Close to Laurier Brantford campus and the downtown core. A smart first investment.',
+            tags: ['Affordable', 'Rental Potential', 'First-Time Buyers'],
             link: '/listings',
         },
     ]
@@ -59,7 +59,7 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                             Find Your <span className="italic text-brand-accent">Neighbourhood</span>
                         </h2>
                         <p className="text-brand-text-muted text-lg leading-relaxed font-light">
-                            Every neighbourhood has a personality. Here are the areas Chris knows inside and out. Search
+                            Every neighbourhood has a personality. Here are the areas Gretta knows inside and out. Search
                             listings in any of them.
                         </p>
                     </AnimatedSection>

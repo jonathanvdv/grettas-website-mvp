@@ -183,7 +183,7 @@ export function MortgageCalculator() {
                             href="/contact"
                             className="block text-center bg-brand-accent hover:bg-brand-accent-light text-white font-medium px-6 py-4 uppercase tracking-wide text-xs transition-colors"
                         >
-                            Talk to Chris About This →
+                            Talk to Gretta About This →
                         </Link>
                         <Link
                             href="/listings"

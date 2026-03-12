@@ -4,28 +4,28 @@ import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ContactForm } from '@/components/ContactForm'
 
 export const metadata: Metadata = {
-    title: 'Free Home Evaluation | Chris Pimentel - RE/MAX Twin City',
+    title: 'Free Home Evaluation | Gretta Hughes - RE/MAX Twin City',
     description:
-        'Find out what your home is worth. Get a free, no-obligation home evaluation from Chris Pimentel, your local Cambridge and Tri-Cities real estate expert.',
+        'Find out what your home is worth. Get a free, no-obligation home evaluation from Gretta Hughes, your local Cambridge and Waterloo Region real estate expert.',
 }
 
 const testimonials = [
     {
         id: 1,
-        quote: 'Chris helped us find our dream home in Cambridge before it even hit the market. His knowledge of the area after 16 years is unmatched. We felt confident every step of the way.',
-        author: 'Mark & Sarah L., Cambridge',
+        quote: 'Gretta helped us find our dream home in Cambridge before it even hit the market. Her knowledge of the area is unmatched. We felt confident every step of the way.',
+        author: 'Maria & Carlos D., Cambridge',
         stars: 5,
     },
     {
         id: 2,
-        quote: 'We were nervous about selling after 20 years in our home. Chris handled everything with care and professionalism. We got above asking price and the whole process was seamless.',
-        author: 'David & Karen T., Kitchener',
+        quote: 'We were nervous about selling after 20 years in our home. Gretta handled everything with care and professionalism. We got above asking price and the whole process was seamless.',
+        author: 'Sarah & James T., Kitchener',
         stars: 5,
     },
     {
         id: 3,
-        quote: 'As first-time buyers, we had a million questions. Chris was patient, thorough, and always available. He truly goes above and beyond for his clients.',
-        author: 'Jessica & Ryan M., Waterloo',
+        quote: 'As first-time buyers, we had a million questions. Gretta was patient, thorough, and always available. She truly goes above and beyond for her clients.',
+        author: 'Emily & Ryan M., Waterloo',
         stars: 5,
     },
 ]
@@ -46,7 +46,7 @@ const credentials = [
     },
     {
         title: 'Cambridge Community Roots',
-        description: 'Deep ties to Cambridge and the Tri-Cities region',
+        description: 'Deep ties to Cambridge and the Waterloo Region',
         icon: (
             <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -59,8 +59,8 @@ const credentials = [
         ),
     },
     {
-        title: '16 Years of Experience',
-        description: 'Over a decade and a half of trusted real estate expertise',
+        title: 'Experienced. Knowledgeable. Professional.',
+        description: 'Trusted real estate expertise you can count on',
         icon: (
             <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
                 <path
@@ -77,8 +77,8 @@ const steps = [
     { number: '01', title: 'Fill Out the Form', description: 'Share a few details about your property below.' },
     {
         number: '02',
-        title: 'Chris Reviews Your Property',
-        description: 'He analyzes recent comparable sales, market trends, and your neighbourhood.',
+        title: 'Gretta Reviews Your Property',
+        description: 'She analyzes recent comparable sales, market trends, and your neighbourhood.',
     },
     {
         number: '03',
@@ -103,8 +103,8 @@ export default function HomeEvaluationPage() {
                             What Is Your Home <span className="italic text-brand-accent">Worth?</span>
                         </h1>
                         <p className="text-brand-text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-                            Get a free, no-obligation evaluation from Chris Pimentel, your local Cambridge and
-                            Tri-Cities expert who knows these neighbourhoods inside and out.
+                            Get a free, no-obligation evaluation from Gretta Hughes, your local Cambridge and
+                            Waterloo Region expert who knows these neighbourhoods inside and out.
                         </p>
                         <a
                             href="#form"
@@ -158,7 +158,7 @@ export default function HomeEvaluationPage() {
                                             />
                                         ),
                                         title: 'Fast 24-Hour Response',
-                                        desc: 'Chris personally reviews every request and responds within one business day.',
+                                        desc: 'Gretta personally reviews every request and responds within one business day.',
                                     },
                                     {
                                         icon: (
@@ -176,7 +176,7 @@ export default function HomeEvaluationPage() {
                                             </>
                                         ),
                                         title: 'Local Market Expertise',
-                                        desc: 'With 16 years in the Tri-Cities, Chris knows every neighbourhood, street, and market shift.',
+                                        desc: 'With deep roots in Cambridge and the Waterloo Region, Gretta knows every neighbourhood and market shift.',
                                     },
                                     {
                                         icon: (
@@ -221,17 +221,17 @@ export default function HomeEvaluationPage() {
                                 id="form"
                                 className="scroll-mt-24 bg-white border border-brand-border/60 p-8 md:p-10 shadow-xl shadow-black/[0.04] relative"
                             >
-                                {/* Green accent top bar */}
+                                {/* Accent top bar */}
                                 <div className="absolute top-0 left-0 right-0 h-1 bg-brand-accent" />
                                 <h3 className="font-display text-2xl text-brand-text mb-2">
                                     Request Your Free Evaluation
                                 </h3>
                                 <p className="text-brand-text-muted text-sm mb-6">
-                                    Fill out the form and Chris will get back to you within 24 hours.
+                                    Fill out the form and Gretta will get back to you within 24 hours.
                                 </p>
                                 <ContactForm
                                     defaultIntent="Sell"
-                                    defaultMessage="Hi Chris. I'd like to get a free home evaluation for my property located at [Your Address]."
+                                    defaultMessage="Hi Gretta. I'd like to get a free home evaluation for my property located at [Your Address]."
                                 />
                             </div>
                         </AnimatedSection>
@@ -317,7 +317,7 @@ export default function HomeEvaluationPage() {
                             Ready to Find <span className="italic text-white/80">Out?</span>
                         </h2>
                         <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto leading-relaxed">
-                            It takes two minutes to fill out the form. Chris will handle the rest.
+                            It takes two minutes to fill out the form. Gretta will handle the rest.
                         </p>
                         <a
                             href="#form"

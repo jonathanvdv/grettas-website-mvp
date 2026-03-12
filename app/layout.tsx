@@ -18,18 +18,18 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://chrispimentel.com'),
+    metadataBase: new URL('https://grettahughes.ca'),
     title: {
-        default: 'Chris Pimentel | REALTOR® in Waterloo Region | RE/MAX Twin City',
-        template: '%s | Chris Pimentel Real Estate',
+        default: 'Gretta Hughes | REALTOR® in Cambridge & Waterloo Region | RE/MAX Twin City',
+        template: '%s | Gretta Hughes Real Estate',
     },
     description:
-        'Chris Pimentel is a REALTOR® with RE/MAX Twin City Realty in Cambridge, Ontario. Helping buyers and sellers in Cambridge, Kitchener, Waterloo, Guelph, and Paris. Search listings, get a free home evaluation, or connect today.',
+        'Gretta Hughes is a REALTOR® with RE/MAX Twin City Realty in Cambridge, Ontario. Helping buyers and sellers in Cambridge, Kitchener, Waterloo, Guelph, and Brantford. Search listings, get a free home evaluation, or connect today.',
     keywords:
-        'Cambridge real estate agent, Kitchener REALTOR, Waterloo homes for sale, Guelph real estate, Paris Ontario homes, RE/MAX Twin City, Chris Pimentel, Kitchener homes for sale, Waterloo Region real estate',
+        'Cambridge real estate agent, Kitchener REALTOR, Waterloo homes for sale, Guelph real estate, Brantford Ontario homes, RE/MAX Twin City, Gretta Hughes, Kitchener homes for sale, Waterloo Region real estate',
     openGraph: {
         type: 'website',
-        siteName: 'Chris Pimentel | RE/MAX Twin City Realty',
+        siteName: 'Gretta Hughes | RE/MAX Twin City Realty',
         locale: 'en_CA',
     },
     twitter: {

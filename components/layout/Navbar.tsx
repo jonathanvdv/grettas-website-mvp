@@ -86,7 +86,7 @@ export function Navbar() {
     ]
 
     const listingsItems = [
-        { name: "Chris's Listings", href: '/listings/my-listings' },
+        { name: "Gretta's Listings", href: '/listings/my-listings' },
         { name: 'Home Search', href: '/listings' },
     ]
 
@@ -107,7 +107,7 @@ export function Navbar() {
                             <span
                                 className={`font-display text-xl md:text-2xl font-bold transition-colors ${isScrolled ? 'text-brand-text' : 'text-brand-text md:text-brand-bg-dark'}`}
                             >
-                                Chris Pimentel
+                                Gretta Hughes
                             </span>
                             <span
                                 className={`text-[10px] uppercase tracking-[0.2em] mt-0.5 transition-colors ${isScrolled ? 'text-brand-text-muted' : 'text-brand-text-muted md:text-brand-text'}`}
@@ -146,12 +146,12 @@ export function Navbar() {
                     {/* Desktop CTA */}
                     <div className="hidden md:flex items-center gap-6">
                         <a
-                            href="tel:519-716-4662"
+                            href="tel:519-590-3236"
                             className={`flex items-center gap-2 text-sm font-medium group transition-colors ${isScrolled ? 'text-brand-text' : 'text-brand-bg-dark'}`}
                         >
                             <Phone className="w-4 h-4 text-brand-accent group-hover:text-brand-accent-light transition-colors" />
                             <div className="flex flex-col items-end">
-                                <span className="text-base">(519) 716-4662</span>
+                                <span className="text-base">(519) 590-3236</span>
                                 <span className="text-[10px] text-brand-text-muted uppercase tracking-wider">
                                     Call or Text
                                 </span>
@@ -207,7 +207,7 @@ export function Navbar() {
                                         className="text-brand-text hover:text-brand-accent transition-colors"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
-                                        Chris{"'"}s Listings
+                                        Gretta{"'"}s Listings
                                     </Link>
                                     <Link
                                         href="/listings"
@@ -267,7 +267,7 @@ export function Navbar() {
                         <div className="mt-auto pt-12 pb-6">
                             <p className="text-brand-text-muted uppercase text-xs tracking-wider mb-4">Get in Touch</p>
                             <a
-                                href="tel:519-716-4662"
+                                href="tel:519-590-3236"
                                 className="flex items-center justify-center gap-2 w-full border border-brand-border bg-white text-brand-text px-6 py-4 rounded-sm font-medium transition-colors mb-3 shadow-sm"
                                 onClick={() => setMobileMenuOpen(false)}
                             >

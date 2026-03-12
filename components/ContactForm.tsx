@@ -58,7 +58,7 @@ export function ContactForm({
             <div className={`bg-brand-bg p-8 text-center rounded-sm border border-brand-border/50 ${className}`}>
                 <h3 className="text-xl font-display font-medium text-brand-text mb-2">Got it!</h3>
                 <p className="text-brand-text-muted">
-                    Thanks, Chris will reach out personally within one business day. If it&apos;s urgent, feel free to
+                    Thanks, Gretta will reach out personally within one business day. If it&apos;s urgent, feel free to
                     call or text directly.
                 </p>
                 <button
@@ -75,7 +75,7 @@ export function ContactForm({
         <form onSubmit={handleSubmit(onSubmit)} className={`space-y-4 ${className}`} suppressHydrationWarning>
             {isError && (
                 <div className="p-4 bg-red-50 text-red-700 text-sm rounded-sm mb-4">
-                    There was an error sending your message. Please try again or contact Chris directly.
+                    There was an error sending your message. Please try again or contact Gretta directly.
                 </div>
             )}
 

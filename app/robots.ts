@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
             userAgent: '*',
             allow: '/',
         },
-        sitemap: 'https://chrispimentel.com/sitemap.xml',
+        sitemap: 'https://grettahughes.ca/sitemap.xml',
     }
 }

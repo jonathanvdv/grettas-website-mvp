@@ -92,7 +92,7 @@ export async function POST(request: Request) {
         const safeListingAddress = listingAddress ? escapeHtml(listingAddress) : ''
 
         const { error } = await resend.emails.send({
-            from: 'Chris Pimentel <no-reply@chrissellshomes.com>',
+            from: 'Gretta Hughes <no-reply@grettahughes.ca>',
             to: recipient,
             replyTo: email,
             subject: `New ${safeIntent || 'Contact'} Inquiry from ${safeFirstName} ${safeLastName}`,
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
 <!-- Header -->
 <tr>
 <td style="background-color:#1a1a1a;padding:32px 40px;text-align:center;">
-<h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:400;letter-spacing:2px;">CHRIS PIMENTEL</h1>
+<h1 style="margin:0;color:#ffffff;font-size:22px;font-weight:400;letter-spacing:2px;">GRETTA HUGHES</h1>
 <p style="margin:6px 0 0;color:#b8a88a;font-size:11px;letter-spacing:3px;font-family:Arial,Helvetica,sans-serif;">REALTOR&reg; &middot; RE/MAX TWIN CITY</p>
 </td>
 </tr>
@@ -201,7 +201,7 @@ ${
 <!-- Footer -->
 <tr>
 <td style="background-color:#f9f8f5;padding:24px 40px;text-align:center;border-top:1px solid #e8e4dc;">
-<p style="margin:0;color:#aaa;font-size:11px;font-family:Arial,Helvetica,sans-serif;letter-spacing:1px;">CHRISSELLSHOMES.COM</p>
+<p style="margin:0;color:#aaa;font-size:11px;font-family:Arial,Helvetica,sans-serif;letter-spacing:1px;">GRETTAHUGHES.CA</p>
 </td>
 </tr>
 
