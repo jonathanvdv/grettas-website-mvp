@@ -6,53 +6,52 @@ import { MapPin } from 'lucide-react'
 export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean }) {
     const neighbourhoods = [
         {
-            name: "Williamsburg",
-            city: "Kitchener",
-            desc: "Family-friendly streets, great schools, and some of the most sought-after homes in the city.",
-            tags: ["Families", "Top Schools", "Move-Up Buyers"],
-            link: "/listings"
+            name: 'Hespeler',
+            city: 'Cambridge',
+            desc: 'Small-town charm with big upside. Growing fast, family-friendly, and still undervalued compared to KW. Smart buyers are moving here now.',
+            tags: ['Families', 'Growth Area', 'Value'],
+            link: '/listings',
         },
         {
-            name: "Doon",
-            city: "Kitchener",
-            desc: "Established, quiet, and close to the 401. A favourite for families and move-up buyers.",
-            tags: ["Quiet", "Highway Access", "Families"],
-            link: "/listings"
+            name: 'Preston',
+            city: 'Cambridge',
+            desc: "Riverside living, established streets, and a tight-knit community feel. One of Cambridge's most desirable pockets, and listings move fast.",
+            tags: ['Riverside', 'Established', 'Walkable'],
+            link: '/listings',
         },
         {
-            name: "Uptown Waterloo",
-            city: "Waterloo",
-            desc: "Vibrant, walkable, and growing fast. Perfect for young professionals and condo buyers.",
-            tags: ["Walkable", "LRT Access", "Condos"],
-            link: "/listings"
+            name: 'Galt',
+            city: 'Cambridge',
+            desc: "Historic architecture, the Grand River, and price points that still make sense. Galt is quietly becoming one of Ontario's best-kept secrets.",
+            tags: ['Character Homes', 'Grand River', 'Opportunity'],
+            link: '/listings',
         },
         {
-            name: "Forest Heights",
-            city: "Kitchener",
-            desc: "Affordable, well-connected, and close to everything. A smart choice for first-time buyers.",
-            tags: ["Affordable", "First-Time Buyers", "Central"],
-            link: "/listings"
+            name: 'Blair / South Cambridge',
+            city: 'Cambridge',
+            desc: 'Rural feel, minutes from the city. Larger lots, newer builds, and easy 401 access. Perfect for families who want space without the commute.',
+            tags: ['Large Lots', 'Highway Access', 'Families'],
+            link: '/listings',
         },
         {
-            name: "Galt",
-            city: "Cambridge",
-            desc: "Historic charm, lower price points, and a community that's quietly becoming one of Ontario's best-kept secrets.",
-            tags: ["Character Homes", "Value", "Grand River"],
-            link: "/listings"
+            name: 'Doon',
+            city: 'Kitchener',
+            desc: 'Established, quiet, and close to the 401. A favourite for families and move-up buyers looking for strong long-term value.',
+            tags: ['Quiet', 'Highway Access', 'Move-Up Buyers'],
+            link: '/listings',
         },
         {
-            name: "Waterloo North",
-            city: "Waterloo",
-            desc: "Close to both universities, strong rental income potential, and a diverse, energetic community.",
-            tags: ["Investment", "Universities", "Diverse"],
-            link: "/listings"
+            name: 'Uptown Waterloo',
+            city: 'Waterloo',
+            desc: 'Vibrant, walkable, and growing fast. Perfect for young professionals and investors. High demand means you need to act quickly.',
+            tags: ['Walkable', 'LRT Access', 'Investment'],
+            link: '/listings',
         },
     ]
 
     return (
         <section className={`${showHeader ? 'py-12 md:py-20' : 'py-8 md:py-12'} bg-white relative`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
                 {showHeader && (
                     <AnimatedSection className="mb-16 md:mb-20 text-center">
                         <SectionLabel text="Explore the Region" />
@@ -60,7 +59,8 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                             Find Your <span className="italic text-brand-accent">Neighbourhood</span>
                         </h2>
                         <p className="text-brand-text-muted text-lg leading-relaxed font-light">
-                            Waterloo Region has a neighbourhood for every lifestyle. Here are the areas Abdul knows best.
+                            Every neighbourhood has a personality. Here are the areas Chris knows inside and out. Search
+                            listings in any of them.
                         </p>
                     </AnimatedSection>
                 )}
@@ -82,7 +82,9 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                                             {n.city}
                                         </p>
                                     </div>
-                                    <span className="text-brand-accent opacity-0 group-hover:opacity-100 transition-opacity text-lg mt-1">→</span>
+                                    <span className="text-brand-accent opacity-0 group-hover:opacity-100 transition-opacity text-lg mt-1">
+                                        →
+                                    </span>
                                 </div>
 
                                 <p className="text-brand-text-muted text-sm leading-relaxed font-light mb-6">
@@ -90,8 +92,11 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                                 </p>
 
                                 <div className="flex flex-wrap gap-2">
-                                    {n.tags.map(tag => (
-                                        <span key={tag} className="text-[10px] uppercase tracking-wider font-semibold text-brand-accent/80 bg-brand-accent/5 border border-brand-accent/10 px-2.5 py-1 rounded-sm">
+                                    {n.tags.map((tag) => (
+                                        <span
+                                            key={tag}
+                                            className="text-[10px] uppercase tracking-wider font-semibold text-brand-accent/80 bg-brand-accent/5 border border-brand-accent/10 px-2.5 py-1 rounded-sm"
+                                        >
                                             {tag}
                                         </span>
                                     ))}
@@ -106,7 +111,7 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                         href="/listings"
                         className="inline-block border border-brand-border hover:border-brand-accent text-brand-text hover:text-brand-accent font-medium px-8 py-4 uppercase tracking-wider text-sm transition-colors"
                     >
-                        Explore All Neighbourhoods →
+                        Search All Listings →
                     </Link>
                 </AnimatedSection>
             </div>
