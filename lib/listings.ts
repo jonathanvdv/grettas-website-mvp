@@ -156,7 +156,7 @@ export interface ListingFilters {
 // StructureType values (Collection enum): House, Apartment, Row / Townhouse, Duplex, Triplex, etc.
 // Land uses PropertySubType 'Vacant Land' since it has no StructureType
 
-const SERVICE_AREA_CITIES = ['Kitchener', 'Waterloo', 'Cambridge', 'Guelph', 'Brampton', 'Mississauga', 'Toronto']
+const SERVICE_AREA_CITIES = ['Cambridge', 'Kitchener', 'Waterloo', 'Guelph', 'Paris']
 
 /** Escape a value for use inside an OData single-quoted string literal. */
 export function odataString(value: string): string {
@@ -226,7 +226,7 @@ export function buildODataFilter(filters: ListingFilters): string {
     if (filters.city) {
         parts.push(`City eq '${odataString(filters.city)}'`)
     } else {
-        // Default to Abdul's service area
+        // Default to Chris's service area
         const cityFilter = SERVICE_AREA_CITIES.map((c) => `City eq '${odataString(c)}'`).join(' or ')
         parts.push(`(${cityFilter})`)
     }
@@ -464,7 +464,7 @@ export async function getListing(listingId: string): Promise<Listing> {
 
 /**
  * Fetches a list of featured listings, typically displayed on the home page.
- * Defaults to recent listings in Abdul's core service area.
+ * Defaults to recent listings in Chris's core service area.
  *
  * @param limit - Maximum number of featured listings to return
  * @returns Array of featured listing objects
@@ -475,11 +475,14 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
         return mockListings.slice(0, limit)
     }
 
-    // Get most recent active residential listings in Abdul's service area
+    // Get most recent active residential listings in Chris's service area
     const token = await getDdfToken()
     const params = new URLSearchParams()
     params.set('$top', limit.toString())
-    params.set('$filter', "(City eq 'Kitchener' or City eq 'Waterloo' or City eq 'Cambridge') and ListPrice gt 200000")
+    params.set(
+        '$filter',
+        "(City eq 'Cambridge' or City eq 'Kitchener' or City eq 'Waterloo' or City eq 'Guelph' or City eq 'Paris') and ListPrice gt 200000"
+    )
     params.set('$orderby', 'ModificationTimestamp desc')
 
     const res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
@@ -496,7 +499,7 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
     return (data.value || []).map(normalizeDdfListing)
 }
 
-// ─── Fetch Abdul's Own Listings ──────────────────────────────────────────
+// ─── Fetch Agent's Own Listings ──────────────────────────────────────────
 
 const AGENT_KEY = process.env.AGENT_KEY || ''
 

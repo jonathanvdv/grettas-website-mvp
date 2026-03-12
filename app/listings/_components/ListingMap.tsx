@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import React, { useState, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import Map, { Popup, NavigationControl, Marker } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { MapPin } from '@/lib/listings'
@@ -11,7 +12,6 @@ import Supercluster from 'supercluster'
 
 const DEFAULT_CENTER = { latitude: 43.45, longitude: -80.49 }
 const DEFAULT_ZOOM = 10
-const ACCENT = '#1B4332'
 
 // Clean, professional map style using free Carto tiles
 const MAP_STYLE = {
@@ -19,11 +19,10 @@ const MAP_STYLE = {
     sources: {
         carto: {
             type: 'raster' as const,
-            tiles: [
-                'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-            ],
+            tiles: ['https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png'],
             tileSize: 256,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+            attribution:
+                '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
         },
     },
     layers: [
@@ -82,23 +81,29 @@ function formatDaysAgo(listDate: string): string {
 
 function ClusterOverlay({
     data,
-    onClose,
     onMouseEnter,
     onMouseLeave,
 }: {
     data: ClusterOverlayData
-    onClose: () => void
     onMouseEnter: () => void
     onMouseLeave: () => void
 }) {
     const [page, setPage] = useState(0)
     const containerRef = useRef<HTMLDivElement>(null)
+    const [mapDimensions, setMapDimensions] = useState({ w: 1000, h: 600 })
     const totalPages = Math.ceil(data.leaves.length / LEAVES_PER_PAGE)
     const pageListings = data.leaves.slice(page * LEAVES_PER_PAGE, (page + 1) * LEAVES_PER_PAGE)
 
-    const parentEl = containerRef.current?.parentElement
-    const mapW = parentEl?.clientWidth || 1000
-    const mapH = parentEl?.clientHeight || 600
+    useEffect(() => {
+        const parentEl = containerRef.current?.parentElement
+        if (parentEl) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect -- reading layout dimensions from DOM
+            setMapDimensions({ w: parentEl.clientWidth, h: parentEl.clientHeight })
+        }
+    }, [data])
+
+    const mapW = mapDimensions.w
+    const mapH = mapDimensions.h
 
     const style: React.CSSProperties = { position: 'absolute', width: OVERLAY_W, zIndex: 50, maxHeight: mapH - 24 }
     const pinX = data.screenX
@@ -128,9 +133,7 @@ function ClusterOverlay({
             onClick={(e) => e.stopPropagation()}
         >
             <div className="px-3 py-2 border-b border-gray-200 bg-gray-50">
-                <span className="text-sm font-semibold text-gray-900">
-                    {data.totalCount.toLocaleString()} Listings
-                </span>
+                <span className="text-sm font-semibold text-gray-900">{data.totalCount.toLocaleString()} Listings</span>
             </div>
 
             <div className="overflow-y-auto" style={{ maxHeight: 230 }}>
@@ -142,18 +145,29 @@ function ClusterOverlay({
                     >
                         <div className="w-[120px] h-[80px] flex-shrink-0 rounded overflow-hidden bg-gray-100">
                             {pin.photo ? (
+                                // eslint-disable-next-line @next/next/no-img-element
                                 <img src={pin.photo} alt={pin.address} className="w-full h-full object-cover" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">No photo</div>
+                                <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
+                                    No photo
+                                </div>
                             )}
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-brand-accent">{formatPriceFull(pin.price)}</p>
                             <p className="text-xs text-gray-600 mt-0.5 leading-snug truncate">{pin.address}</p>
                             <div className="flex items-center gap-3 text-xs text-gray-500 mt-1.5">
-                                <span className="flex items-center gap-1"><Bed className="w-3 h-3" /> {pin.beds}</span>
-                                <span className="flex items-center gap-1"><Bath className="w-3 h-3" /> {pin.baths}</span>
-                                {pin.sqft && <span className="flex items-center gap-1"><Maximize className="w-3 h-3" /> {pin.sqft.toLocaleString()} sqft</span>}
+                                <span className="flex items-center gap-1">
+                                    <Bed className="w-3 h-3" /> {pin.beds}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                    <Bath className="w-3 h-3" /> {pin.baths}
+                                </span>
+                                {pin.sqft && (
+                                    <span className="flex items-center gap-1">
+                                        <Maximize className="w-3 h-3" /> {pin.sqft.toLocaleString()} sqft
+                                    </span>
+                                )}
                             </div>
                             {pin.listDate && (
                                 <p className="text-[10px] text-gray-400 mt-1.5 flex items-center gap-1">
@@ -169,15 +183,23 @@ function ClusterOverlay({
             {totalPages > 1 && (
                 <div className="flex items-center justify-center gap-3 px-3 py-2 border-t border-gray-200 bg-gray-50">
                     <button
-                        onClick={(e) => { e.stopPropagation(); setPage(p => Math.max(0, p - 1)) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setPage((p) => Math.max(0, p - 1))
+                        }}
                         disabled={page === 0}
                         className="w-8 h-8 flex items-center justify-center rounded-full bg-brand-accent text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-brand-accent/90 transition-colors"
                     >
                         <ChevronLeft className="w-4 h-4" />
                     </button>
-                    <span className="text-xs font-medium text-gray-600">{page + 1} of {totalPages}</span>
+                    <span className="text-xs font-medium text-gray-600">
+                        {page + 1} of {totalPages}
+                    </span>
                     <button
-                        onClick={(e) => { e.stopPropagation(); setPage(p => Math.min(totalPages - 1, p + 1)) }}
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            setPage((p) => Math.min(totalPages - 1, p + 1))
+                        }}
                         disabled={page === totalPages - 1}
                         className="w-8 h-8 flex items-center justify-center rounded-full bg-brand-accent text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-brand-accent/90 transition-colors"
                     >
@@ -197,7 +219,10 @@ function PinMarker({ pin, onClick }: { pin: MapPin; onClick: (pin: MapPin) => vo
             latitude={pin.lat}
             longitude={pin.lng}
             anchor="bottom"
-            onClick={(e) => { e.originalEvent.stopPropagation(); onClick(pin) }}
+            onClick={(e) => {
+                e.originalEvent.stopPropagation()
+                onClick(pin)
+            }}
         >
             <div className="cursor-pointer group" style={{ filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}>
                 <svg width="40" height="50" viewBox="0 0 40 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -207,7 +232,15 @@ function PinMarker({ pin, onClick }: { pin: MapPin; onClick: (pin: MapPin) => vo
                         stroke="white"
                         strokeWidth="1.5"
                     />
-                    <text x="20" y="22" textAnchor="middle" fill="white" fontSize="10" fontWeight="700" fontFamily="system-ui, sans-serif">
+                    <text
+                        x="20"
+                        y="22"
+                        textAnchor="middle"
+                        fill="white"
+                        fontSize="10"
+                        fontWeight="700"
+                        fontFamily="system-ui, sans-serif"
+                    >
                         {formatPrice(pin.price)}
                     </text>
                 </svg>
@@ -235,7 +268,15 @@ function ClusterMarker({
     const h = Math.round(w * 1.25)
     const fontSize = count < 10 ? 11 : count < 100 ? 11 : count < 1000 ? 10 : 9
     return (
-        <Marker latitude={lat} longitude={lng} anchor="bottom" onClick={(e) => { e.originalEvent.stopPropagation(); onClick() }}>
+        <Marker
+            latitude={lat}
+            longitude={lng}
+            anchor="bottom"
+            onClick={(e) => {
+                e.originalEvent.stopPropagation()
+                onClick()
+            }}
+        >
             <div
                 className="cursor-pointer group"
                 style={{ filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.3))' }}
@@ -249,7 +290,16 @@ function ClusterMarker({
                         stroke="white"
                         strokeWidth="1.5"
                     />
-                    <text x={w / 2} y={w * 0.52} textAnchor="middle" dominantBaseline="central" fill="white" fontSize={fontSize} fontWeight="700" fontFamily="system-ui, sans-serif">
+                    <text
+                        x={w / 2}
+                        y={w * 0.52}
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fill="white"
+                        fontSize={fontSize}
+                        fontWeight="700"
+                        fontFamily="system-ui, sans-serif"
+                    >
                         {count.toLocaleString()}
                     </text>
                 </svg>
@@ -277,7 +327,7 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
             radius: 60,
             maxZoom: 16,
         })
-        const points = pins.map(p => ({
+        const points = pins.map((p) => ({
             type: 'Feature' as const,
             properties: { id: p.id },
             geometry: { type: 'Point' as const, coordinates: [p.lng, p.lat] },
@@ -302,28 +352,37 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
         }
     }, [supercluster, mapBounds, zoom])
 
-    const fireBounds = useCallback((map: any) => {
-        const bounds = map.getBounds()
-        const b = {
-            north: bounds.getNorth(),
-            south: bounds.getSouth(),
-            east: bounds.getEast(),
-            west: bounds.getWest(),
-        }
-        setMapBounds([b.west, b.south, b.east, b.north])
-        setZoom(map.getZoom())
-        onBoundsChange?.(b)
-    }, [onBoundsChange])
+    const fireBounds = useCallback(
+        (map: any) => {
+            const bounds = map.getBounds()
+            const b = {
+                north: bounds.getNorth(),
+                south: bounds.getSouth(),
+                east: bounds.getEast(),
+                west: bounds.getWest(),
+            }
+            setMapBounds([b.west, b.south, b.east, b.north])
+            setZoom(map.getZoom())
+            onBoundsChange?.(b)
+        },
+        [onBoundsChange]
+    )
 
-    const handleMoveEnd = useCallback((evt: any) => {
-        fireBounds(evt.target)
-        setClusterOverlay(null)
-        activeClusterIdRef.current = null
-    }, [fireBounds])
+    const handleMoveEnd = useCallback(
+        (evt: any) => {
+            fireBounds(evt.target)
+            setClusterOverlay(null)
+            activeClusterIdRef.current = null
+        },
+        [fireBounds]
+    )
 
-    const handleMapLoad = useCallback((evt: any) => {
-        fireBounds(evt.target)
-    }, [fireBounds])
+    const handleMapLoad = useCallback(
+        (evt: any) => {
+            fireBounds(evt.target)
+        },
+        [fireBounds]
+    )
 
     const clearClusterOverlay = useCallback(() => {
         hoverTimerRef.current = setTimeout(() => {
@@ -334,38 +393,44 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
         }, 250)
     }, [])
 
-    const handleClusterClick = useCallback((clusterId: number, lat: number, lng: number) => {
-        const expansionZoom = supercluster.getClusterExpansionZoom(clusterId)
-        mapRef.current?.getMap()?.easeTo({ center: [lng, lat], zoom: expansionZoom })
-        setClusterOverlay(null)
-        activeClusterIdRef.current = null
-    }, [supercluster])
+    const handleClusterClick = useCallback(
+        (clusterId: number, lat: number, lng: number) => {
+            const expansionZoom = supercluster.getClusterExpansionZoom(clusterId)
+            mapRef.current?.getMap()?.easeTo({ center: [lng, lat], zoom: expansionZoom })
+            setClusterOverlay(null)
+            activeClusterIdRef.current = null
+        },
+        [supercluster]
+    )
 
-    const handleClusterHover = useCallback((e: React.MouseEvent, clusterId: number, pointCount: number) => {
-        if (activeClusterIdRef.current === clusterId) return
-        activeClusterIdRef.current = clusterId
+    const handleClusterHover = useCallback(
+        (e: React.MouseEvent, clusterId: number, pointCount: number) => {
+            if (activeClusterIdRef.current === clusterId) return
+            activeClusterIdRef.current = clusterId
 
-        if (hoverTimerRef.current) {
-            clearTimeout(hoverTimerRef.current)
-            hoverTimerRef.current = null
-        }
+            if (hoverTimerRef.current) {
+                clearTimeout(hoverTimerRef.current)
+                hoverTimerRef.current = null
+            }
 
-        const leaves = supercluster.getLeaves(clusterId, Math.min(pointCount, MAX_LEAVES), 0)
-        const leafPins: MapPin[] = leaves.map((l: any) => pinMap[l.properties?.id]).filter(Boolean)
-        if (leafPins.length === 0) return
+            const leaves = supercluster.getLeaves(clusterId, Math.min(pointCount, MAX_LEAVES), 0)
+            const leafPins: MapPin[] = leaves.map((l: any) => pinMap[l.properties?.id]).filter(Boolean)
+            if (leafPins.length === 0) return
 
-        const rect = mapContainerRef.current?.getBoundingClientRect()
-        const screenX = e.clientX - (rect?.left || 0)
-        const screenY = e.clientY - (rect?.top || 0)
+            const rect = mapContainerRef.current?.getBoundingClientRect()
+            const screenX = e.clientX - (rect?.left || 0)
+            const screenY = e.clientY - (rect?.top || 0)
 
-        setClusterOverlay({
-            screenX,
-            screenY,
-            leaves: leafPins,
-            totalCount: pointCount,
-        })
-        setSelectedPin(null)
-    }, [supercluster, pinMap])
+            setClusterOverlay({
+                screenX,
+                screenY,
+                leaves: leafPins,
+                totalCount: pointCount,
+            })
+            setSelectedPin(null)
+        },
+        [supercluster, pinMap]
+    )
 
     return (
         <div ref={mapContainerRef} className="relative w-full h-full overflow-hidden">
@@ -376,7 +441,10 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
                 mapStyle={MAP_STYLE as any}
                 onMoveEnd={handleMoveEnd}
                 onLoad={handleMapLoad}
-                onClick={() => { setSelectedPin(null); setClusterOverlay(null) }}
+                onClick={() => {
+                    setSelectedPin(null)
+                    setClusterOverlay(null)
+                }}
             >
                 <NavigationControl position="top-right" />
 
@@ -401,13 +469,7 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
                     const pin = pinMap[props.id]
                     if (!pin) return null
 
-                    return (
-                        <PinMarker
-                            key={pin.id}
-                            pin={pin}
-                            onClick={setSelectedPin}
-                        />
-                    )
+                    return <PinMarker key={pin.id} pin={pin} onClick={setSelectedPin} />
                 })}
 
                 {selectedPin && !clusterOverlay && (
@@ -422,7 +484,12 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
                     >
                         <div className="p-1">
                             {selectedPin.photo && (
-                                <img src={selectedPin.photo} alt={selectedPin.address} className="w-full h-28 object-cover rounded mb-2" />
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={selectedPin.photo}
+                                    alt={selectedPin.address}
+                                    className="w-full h-28 object-cover rounded mb-2"
+                                />
                             )}
                             <p className="font-bold text-sm text-brand-accent">{formatPriceFull(selectedPin.price)}</p>
                             <p className="text-xs text-gray-600 mt-0.5 leading-snug">{selectedPin.address}</p>
@@ -430,7 +497,10 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
                                 {selectedPin.beds} bed · {selectedPin.baths} bath
                                 {selectedPin.sqft ? ` · ${selectedPin.sqft} sqft` : ''}
                             </p>
-                            <Link href={`/listings/${selectedPin.id}`} className="text-xs text-brand-accent font-medium mt-2 inline-block hover:underline">
+                            <Link
+                                href={`/listings/${selectedPin.id}`}
+                                className="text-xs text-brand-accent font-medium mt-2 inline-block hover:underline"
+                            >
                                 View Details →
                             </Link>
                         </div>
@@ -441,10 +511,12 @@ export function ListingMap({ pins, onBoundsChange }: ListingMapProps) {
             {clusterOverlay && (
                 <ClusterOverlay
                     data={clusterOverlay}
-                    onClose={() => { setClusterOverlay(null); activeClusterIdRef.current = null }}
                     onMouseEnter={() => {
                         isOverOverlayRef.current = true
-                        if (hoverTimerRef.current) { clearTimeout(hoverTimerRef.current); hoverTimerRef.current = null }
+                        if (hoverTimerRef.current) {
+                            clearTimeout(hoverTimerRef.current)
+                            hoverTimerRef.current = null
+                        }
                     }}
                     onMouseLeave={() => {
                         isOverOverlayRef.current = false
