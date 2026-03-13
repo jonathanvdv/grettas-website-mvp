@@ -8,7 +8,7 @@ export function HeroSection() {
             {/* Desktop Image — absolutely positioned, right side, left-aligned within container */}
             <div className="hidden lg:block absolute right-0 bottom-0 w-[42%] h-[calc(100vh-40px)]">
                 <Image
-                    src="/images/gretta-hero-nobg.png"
+                    src="/images/gretta-hero-cropped.png"
                     alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
                     fill
                     priority
@@ -53,7 +53,7 @@ export function HeroSection() {
                             {/* Mobile Image */}
                             <div className="w-[40%] relative lg:hidden h-[40vh] min-h-[250px] self-end z-0">
                                 <Image
-                                    src="/images/gretta-hero-nobg.png"
+                                    src="/images/gretta-hero-cropped.png"
                                     alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
                                     fill
                                     priority
