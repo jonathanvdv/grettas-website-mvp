@@ -23,7 +23,7 @@ export default function AboutPage() {
                     sizes="100vw"
                     className="object-contain object-bottom saturate-[1.15]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/40 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/20 to-transparent"></div>
 
                 <div className="relative z-10 text-center px-4 flex-1 flex items-end justify-center w-full pb-16">
                     <h1 className="font-display text-5xl md:text-7xl text-brand-text">

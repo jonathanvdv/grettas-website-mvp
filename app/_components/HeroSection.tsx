@@ -5,23 +5,9 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection'
 export function HeroSection() {
     return (
         <section className="relative w-full bg-white overflow-hidden lg:h-screen lg:min-h-[700px]">
-            {/* Desktop Image — absolutely positioned, right side, left-aligned within container */}
-            <div className="hidden lg:block absolute right-0 bottom-0 w-[42%] h-[calc(100vh-40px)]">
-                <Image
-                    src="/images/gretta-hero-cropped.png"
-                    alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
-                    fill
-                    priority
-                    sizes="42vw"
-                    className="object-contain object-left-bottom"
-                />
-                {/* Left fade for smooth transition from text */}
-                <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
-            </div>
-
-            <div className="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-12 2xl:px-20 w-full h-full">
+            <div className="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-28 2xl:px-36 w-full h-full">
                 <div className="flex flex-col lg:flex-row items-end h-full pt-[90px] lg:pt-[124px]">
-                    {/* Main Content Area — pushed to the right */}
+                    {/* Text Content */}
                     <div className="w-full lg:w-[55%] flex flex-col z-10 pt-8 lg:pt-0 lg:justify-center lg:self-stretch">
                         {/* Mobile: side-by-side heading + image */}
                         <div className="flex flex-row items-stretch lg:block w-full mb-6 lg:mb-0">
@@ -32,8 +18,8 @@ export function HeroSection() {
                                 </p>
 
                                 <h1 className="font-display text-[2.5rem] leading-[1.05] sm:text-5xl lg:text-6xl 2xl:text-7xl text-brand-text mb-4 lg:mb-5 text-balance">
-                                    Your Next Home Is <br className="hidden md:block" />
-                                    <span className="italic">Already Listed.</span>
+                                    Real Estate That <br className="hidden md:block" />
+                                    <span className="italic">Feels Like Home.</span>
                                 </h1>
 
                                 <div className="text-brand-text-muted text-[13px] sm:text-sm lg:text-lg 2xl:text-xl leading-relaxed font-light text-pretty space-y-4 lg:space-y-5">
@@ -53,7 +39,7 @@ export function HeroSection() {
                             {/* Mobile Image */}
                             <div className="w-[40%] relative lg:hidden h-[40vh] min-h-[250px] self-end z-0">
                                 <Image
-                                    src="/images/gretta-hero-cropped.png"
+                                    src="/images/gretta-hero-nobg.png"
                                     alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
                                     fill
                                     priority
@@ -86,6 +72,18 @@ export function HeroSection() {
                                 <span className="text-brand-accent">✓</span> Cambridge Community Roots · Experienced. Professional.
                             </span>
                         </div>
+                    </div>
+
+                    {/* Desktop Image — in flow, right side */}
+                    <div className="hidden lg:block relative w-[53%] h-[calc(100vh-60px)] self-end">
+                        <Image
+                            src="/images/gretta-hero-nobg.png"
+                            alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
+                            fill
+                            priority
+                            sizes="45vw"
+                            className="object-contain object-left-bottom"
+                        />
                     </div>
                 </div>
             </div>
