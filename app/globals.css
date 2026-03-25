@@ -1,19 +1,22 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 :root {
-    --color-bg: #fafaf8;
-    --color-bg-dark: #0f1117;
-    --color-text: #2c2416;
-    --color-text-muted: #6b5e52;
-    --color-accent: #9B1B30;
-    --color-accent-light: #B22540;
-    --color-gold: #c49a2a;
-    --color-border: #e5e5e0;
+    --color-bg: #FDFCFA;
+    --color-bg-alt: #F5F0EB;
+    --color-bg-dark: #1A1A1A;
+    --color-text: #1A1A1A;
+    --color-text-muted: #6B6B6B;
+    --color-accent: #B8A089;
+    --color-accent-light: #9C8570;
+    --color-gold: #C4A265;
+    --color-border: #E8E4DF;
     --color-card: #ffffff;
 }
 
 @theme inline {
     --color-brand-bg: var(--color-bg);
+    --color-brand-bg-alt: var(--color-bg-alt);
     --color-brand-bg-dark: var(--color-bg-dark);
     --color-brand-text: var(--color-text);
     --color-brand-text-muted: var(--color-text-muted);
@@ -36,6 +39,28 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* Subtle grain texture overlay */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Elegant selection color */
+::selection {
+    background: var(--color-accent);
+    color: white;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
 /* Map popup styling */
 .maplibregl-popup-content {
     padding: 0 !important;
@@ -56,11 +81,21 @@ body {
     background: transparent;
 }
 
-/* Custom Utilities for Premium Look */
+/* Custom Utilities */
 .text-balance {
     text-wrap: balance;
 }
 
 .text-pretty {
     text-wrap: pretty;
+}
+
+/* Decorative line animation */
+@keyframes draw-line {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.animate-draw-line {
+    animation: draw-line 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
