@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { SectionLabel } from '@/components/ui/SectionLabel'
 import { ContactForm } from '@/components/ContactForm'
@@ -13,20 +14,20 @@ const testimonials = [
     {
         id: 1,
         quote: 'Gretta helped us find our dream home in Cambridge before it even hit the market. Her knowledge of the area is unmatched. We felt confident every step of the way.',
-        author: 'Maria & Carlos D., Cambridge',
-        stars: 5,
+        author: 'Maria & Carlos D.',
+        location: 'Cambridge',
     },
     {
         id: 2,
         quote: 'We were nervous about selling after 20 years in our home. Gretta handled everything with care and professionalism. We got above asking price and the whole process was seamless.',
-        author: 'Sarah & James T., Kitchener',
-        stars: 5,
+        author: 'Sarah & James T.',
+        location: 'Kitchener',
     },
     {
         id: 3,
         quote: 'As first-time buyers, we had a million questions. Gretta was patient, thorough, and always available. She truly goes above and beyond for her clients.',
-        author: 'Emily & Ryan M., Waterloo',
-        stars: 5,
+        author: 'Emily & Ryan M.',
+        location: 'Waterloo',
     },
 ]
 
@@ -34,42 +35,14 @@ const credentials = [
     {
         title: 'RE/MAX Twin City',
         description: 'Backed by the most recognized real estate brand in the world',
-        icon: (
-            <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
-                />
-            </svg>
-        ),
     },
     {
         title: 'Cambridge Community Roots',
         description: 'Deep ties to Cambridge and the Waterloo Region',
-        icon: (
-            <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                />
-            </svg>
-        ),
     },
     {
-        title: 'Experienced. Knowledgeable. Professional.',
-        description: 'Trusted real estate expertise you can count on',
-        icon: (
-            <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
-                />
-            </svg>
-        ),
+        title: "100% Club '21–'24",
+        description: 'Four consecutive years of proven results',
     },
 ]
 
@@ -91,40 +64,36 @@ export default function HomeEvaluationPage() {
     return (
         <main>
             {/* Hero */}
-            <section className="relative bg-white pt-[90px] lg:pt-32 pb-16 md:pb-24 overflow-hidden">
-                {/* Decorative background */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-brand-accent/5 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-accent/[0.03] to-transparent pointer-events-none" />
-
+            <section className="relative bg-brand-bg pt-[90px] lg:pt-32 pb-16 md:pb-24 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
                     <AnimatedSection>
-                        <SectionLabel text="Free Home Evaluation" />
+                        <div className="w-12 h-[1px] bg-brand-gold mx-auto mb-8" />
+                        <SectionLabel text="Free Home Evaluation" className="justify-center" />
                         <h1 className="font-display text-4xl md:text-6xl lg:text-7xl text-brand-text mb-6">
-                            What Is Your Home <span className="italic text-brand-accent">Worth?</span>
+                            What Is Your Home <span className="italic text-brand-accent-light">Worth?</span>
                         </h1>
-                        <p className="text-brand-text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                        <p className="text-brand-text-muted text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-light">
                             Get a free, no-obligation evaluation from Gretta Hughes, your local Cambridge and
                             Waterloo Region expert who knows these neighbourhoods inside and out.
                         </p>
                         <a
                             href="#form"
-                            className="inline-block bg-brand-accent hover:bg-brand-accent-light text-white font-medium px-10 py-4 transition-all uppercase tracking-wider text-sm shadow-lg shadow-brand-accent/20 hover:shadow-xl hover:shadow-brand-accent/30 hover:-translate-y-0.5"
+                            className="inline-block bg-brand-text hover:bg-brand-text/85 text-white font-medium px-10 py-4 transition-all uppercase tracking-[0.2em] text-xs hover:-translate-y-0.5 duration-300"
                         >
-                            Get Your Free Evaluation →
+                            Get Your Free Evaluation
                         </a>
                     </AnimatedSection>
                 </div>
             </section>
 
             {/* Credentials Bar */}
-            <section className="bg-brand-accent py-10 md:py-14">
+            <section className="bg-brand-text py-12 md:py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
                         {credentials.map((c) => (
                             <AnimatedSection key={c.title} className="text-center flex flex-col items-center">
-                                <div className="text-white/80 mb-3">{c.icon}</div>
                                 <h3 className="font-display text-lg md:text-xl text-white mb-1">{c.title}</h3>
-                                <p className="text-white/70 text-sm">{c.description}</p>
+                                <p className="text-white/50 text-sm font-light">{c.description}</p>
                             </AnimatedSection>
                         ))}
                     </div>
@@ -132,7 +101,7 @@ export default function HomeEvaluationPage() {
             </section>
 
             {/* Value Props + Form */}
-            <section className="py-16 md:py-24 bg-white">
+            <section className="py-20 md:py-28 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
                         <AnimatedSection className="order-2 lg:order-1">
@@ -140,9 +109,9 @@ export default function HomeEvaluationPage() {
                             <h2 className="font-display text-3xl md:text-4xl text-brand-text mb-4">
                                 No pressure. No spam.
                                 <br />
-                                <span className="italic text-brand-accent">Just the value.</span>
+                                <span className="italic text-brand-accent-light">Just the value.</span>
                             </h2>
-                            <p className="text-brand-text-muted mb-10 text-lg leading-relaxed font-light">
+                            <p className="text-brand-text-muted mb-10 text-base leading-relaxed font-light">
                                 Whether you&apos;re thinking about selling or just curious, knowing your home&apos;s
                                 value puts you in control.
                             </p>
@@ -150,69 +119,44 @@ export default function HomeEvaluationPage() {
                             <div className="space-y-6">
                                 {[
                                     {
-                                        icon: (
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
-                                        ),
                                         title: 'Fast 24-Hour Response',
                                         desc: 'Gretta personally reviews every request and responds within one business day.',
                                     },
                                     {
-                                        icon: (
-                                            <>
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                                                />
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                                                />
-                                            </>
-                                        ),
                                         title: 'Local Market Expertise',
                                         desc: 'With deep roots in Cambridge and the Waterloo Region, Gretta knows every neighbourhood and market shift.',
                                     },
                                     {
-                                        icon: (
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"
-                                            />
-                                        ),
                                         title: 'No Obligation',
                                         desc: 'This is about giving you information, not a sales pitch. Zero pressure, always.',
                                     },
                                 ].map((item) => (
                                     <div
                                         key={item.title}
-                                        className="flex gap-4 p-4 rounded-sm border border-brand-border/40 bg-brand-bg/50 hover:border-brand-accent/30 hover:shadow-sm transition-all"
+                                        className="flex gap-4 p-5 border border-brand-border/40 bg-brand-bg/50 hover:border-brand-gold/20 transition-all duration-300"
                                     >
-                                        <div className="flex-shrink-0 w-11 h-11 bg-brand-accent/10 rounded-full flex items-center justify-center">
-                                            <svg
-                                                className="w-5 h-5 text-brand-accent"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth={1.5}
-                                                stroke="currentColor"
-                                            >
-                                                {item.icon}
-                                            </svg>
-                                        </div>
+                                        <div className="flex-shrink-0 w-1 bg-brand-gold/30 rounded-full" />
                                         <div>
                                             <h3 className="font-display text-base text-brand-text mb-0.5">
                                                 {item.title}
                                             </h3>
-                                            <p className="text-brand-text-muted text-sm leading-relaxed">{item.desc}</p>
+                                            <p className="text-brand-text-muted text-sm leading-relaxed font-light">
+                                                {item.desc}
+                                            </p>
                                         </div>
                                     </div>
                                 ))}
+                            </div>
+
+                            {/* Photo */}
+                            <div className="mt-10 relative aspect-[16/10] overflow-hidden hidden lg:block">
+                                <Image
+                                    src="/images/gretta-professional.jpg"
+                                    alt="Gretta Hughes"
+                                    fill
+                                    className="object-cover object-top"
+                                    sizes="500px"
+                                />
                             </div>
                         </AnimatedSection>
 
@@ -222,11 +166,11 @@ export default function HomeEvaluationPage() {
                                 className="scroll-mt-24 bg-white border border-brand-border/60 p-8 md:p-10 shadow-xl shadow-black/[0.04] relative"
                             >
                                 {/* Accent top bar */}
-                                <div className="absolute top-0 left-0 right-0 h-1 bg-brand-accent" />
+                                <div className="absolute top-0 left-0 right-0 h-[1px] bg-brand-gold/50" />
                                 <h3 className="font-display text-2xl text-brand-text mb-2">
                                     Request Your Free Evaluation
                                 </h3>
-                                <p className="text-brand-text-muted text-sm mb-6">
+                                <p className="text-brand-text-muted text-sm mb-6 font-light">
                                     Fill out the form and Gretta will get back to you within 24 hours.
                                 </p>
                                 <ContactForm
@@ -240,12 +184,12 @@ export default function HomeEvaluationPage() {
             </section>
 
             {/* How It Works */}
-            <section className="py-16 md:py-24 bg-brand-bg border-y border-brand-border/40">
+            <section className="py-20 md:py-28 bg-brand-bg-alt border-y border-brand-border/40">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <AnimatedSection className="text-center mb-16">
                         <SectionLabel text="How It Works" />
                         <h2 className="font-display text-3xl md:text-4xl text-brand-text">
-                            Three Simple <span className="italic text-brand-accent">Steps</span>
+                            Three Simple <span className="italic text-brand-accent-light">Steps</span>
                         </h2>
                     </AnimatedSection>
 
@@ -253,13 +197,15 @@ export default function HomeEvaluationPage() {
                         {steps.map((s, i) => (
                             <AnimatedSection
                                 key={s.number}
-                                className="relative text-center bg-white border border-brand-border/40 p-8 md:p-10 shadow-sm hover:shadow-md transition-shadow"
+                                className="relative text-center bg-white border border-brand-border/40 p-8 md:p-10 hover:shadow-md transition-shadow duration-300"
                             >
-                                <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-brand-accent text-white font-display text-lg mb-5">
+                                <span className="inline-flex items-center justify-center w-12 h-12 border border-brand-gold/30 text-brand-gold font-display text-lg mb-5">
                                     {i + 1}
                                 </span>
                                 <h3 className="font-display text-xl text-brand-text mb-2">{s.title}</h3>
-                                <p className="text-brand-text-muted text-sm leading-relaxed">{s.description}</p>
+                                <p className="text-brand-text-muted text-sm leading-relaxed font-light">
+                                    {s.description}
+                                </p>
                             </AnimatedSection>
                         ))}
                     </div>
@@ -267,12 +213,13 @@ export default function HomeEvaluationPage() {
             </section>
 
             {/* Testimonials */}
-            <section className="py-16 md:py-24 bg-white">
+            <section className="py-20 md:py-28 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <AnimatedSection className="text-center max-w-2xl mx-auto mb-16">
                         <SectionLabel text="What Clients Say" />
                         <h2 className="font-display text-3xl md:text-4xl text-brand-text">
-                            Real Stories from <span className="italic text-brand-accent">Real Families</span>
+                            Real Stories from{' '}
+                            <span className="italic text-brand-accent-light">Real Families</span>
                         </h2>
                     </AnimatedSection>
 
@@ -280,13 +227,13 @@ export default function HomeEvaluationPage() {
                         {testimonials.map((t) => (
                             <AnimatedSection
                                 key={t.id}
-                                className="bg-brand-bg border border-brand-border/40 p-8 md:p-10 flex flex-col relative shadow-sm hover:shadow-md transition-shadow"
+                                className="bg-brand-bg border border-brand-border/40 p-8 md:p-10 flex flex-col relative hover:shadow-md transition-shadow duration-300"
                             >
-                                <span className="text-brand-accent/15 font-display text-9xl absolute -top-8 left-4 select-none">
+                                <span className="text-brand-gold/15 font-display text-8xl absolute -top-4 left-4 select-none leading-none">
                                     &ldquo;
                                 </span>
                                 <div className="flex gap-1 mb-5 mt-4 relative z-10">
-                                    {[...Array(t.stars)].map((_, i) => (
+                                    {[...Array(5)].map((_, i) => (
                                         <svg
                                             key={i}
                                             className="w-4 h-4 text-brand-gold"
@@ -297,12 +244,16 @@ export default function HomeEvaluationPage() {
                                         </svg>
                                     ))}
                                 </div>
-                                <div className="flex-1 text-brand-text mb-8 relative z-10 leading-relaxed font-light text-lg">
+                                <div className="flex-1 text-brand-text mb-8 relative z-10 leading-relaxed font-light">
                                     <p>&ldquo;{t.quote}&rdquo;</p>
                                 </div>
-                                <p className="text-brand-text font-medium text-sm tracking-wider uppercase">
-                                    — {t.author}
-                                </p>
+                                <div>
+                                    <div className="w-8 h-[1px] bg-brand-gold/30 mb-3" />
+                                    <p className="text-brand-text font-medium text-sm">{t.author}</p>
+                                    <p className="text-brand-text-muted text-[10px] uppercase tracking-[0.2em] mt-0.5">
+                                        {t.location}
+                                    </p>
+                                </div>
                             </AnimatedSection>
                         ))}
                     </div>
@@ -310,20 +261,20 @@ export default function HomeEvaluationPage() {
             </section>
 
             {/* Final CTA */}
-            <section className="bg-brand-accent py-16 md:py-20">
+            <section className="bg-brand-text py-20 md:py-24">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <AnimatedSection>
                         <h2 className="font-display text-3xl md:text-5xl text-white mb-6">
-                            Ready to Find <span className="italic text-white/80">Out?</span>
+                            Ready to Find <span className="italic text-brand-gold">Out?</span>
                         </h2>
-                        <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto leading-relaxed">
+                        <p className="text-white/50 text-base mb-8 max-w-xl mx-auto leading-relaxed font-light">
                             It takes two minutes to fill out the form. Gretta will handle the rest.
                         </p>
                         <a
                             href="#form"
-                            className="inline-block bg-white text-brand-accent hover:bg-brand-bg font-medium px-10 py-4 transition-all uppercase tracking-wider text-sm shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                            className="inline-block bg-white text-brand-text hover:bg-brand-bg font-medium px-10 py-4 transition-all uppercase tracking-[0.2em] text-xs hover:-translate-y-0.5 duration-300"
                         >
-                            Get Your Free Evaluation →
+                            Get Your Free Evaluation
                         </a>
                     </AnimatedSection>
                 </div>

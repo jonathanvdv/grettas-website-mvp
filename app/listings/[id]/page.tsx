@@ -368,7 +368,7 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                                     <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
                                         <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-gray-200">
                                             <Image
-                                                src="/images/gretta-meet.png"
+                                                src="/images/gretta-professional.jpg"
                                                 alt="Gretta Hughes"
                                                 fill
                                                 className="object-cover object-top"

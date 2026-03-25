@@ -20,7 +20,7 @@ export default async function MyListingsPage() {
                 {/* Agent header */}
                 <div className="bg-white border border-gray-200 rounded-lg p-6 md:p-8 mb-8 flex flex-col md:flex-row items-center gap-6">
                     <div className="relative w-20 h-20 rounded-full overflow-hidden shrink-0 border-2 border-brand-accent/20">
-                        <Image src="/images/gretta-meet.png" alt="Gretta Hughes" fill className="object-cover object-top" />
+                        <Image src="/images/gretta-professional.jpg" alt="Gretta Hughes" fill className="object-cover object-top" />
                     </div>
                     <div className="text-center md:text-left">
                         <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Gretta Hughes&apos;s Listings</h1>

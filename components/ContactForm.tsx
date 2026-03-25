@@ -55,15 +55,15 @@ export function ContactForm({
 
     if (isSuccess) {
         return (
-            <div className={`bg-brand-bg p-8 text-center rounded-sm border border-brand-border/50 ${className}`}>
+            <div className={`bg-brand-bg-alt p-8 text-center border border-brand-border/50 ${className}`}>
                 <h3 className="text-xl font-display font-medium text-brand-text mb-2">Got it!</h3>
-                <p className="text-brand-text-muted">
+                <p className="text-brand-text-muted font-light">
                     Thanks, Gretta will reach out personally within one business day. If it&apos;s urgent, feel free to
                     call or text directly.
                 </p>
                 <button
                     onClick={() => setIsSuccess(false)}
-                    className="mt-6 text-brand-accent text-sm font-medium hover:underline"
+                    className="mt-6 text-brand-gold text-sm font-medium hover:underline"
                 >
                     Send another message
                 </button>
@@ -72,9 +72,9 @@ export function ContactForm({
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className={`space-y-4 ${className}`} suppressHydrationWarning>
+        <form onSubmit={handleSubmit(onSubmit)} className={`space-y-5 ${className}`} suppressHydrationWarning>
             {isError && (
-                <div className="p-4 bg-red-50 text-red-700 text-sm rounded-sm mb-4">
+                <div className="p-4 bg-red-50 text-red-700 text-sm mb-4">
                     There was an error sending your message. Please try again or contact Gretta directly.
                 </div>
             )}
@@ -85,7 +85,7 @@ export function ContactForm({
                 <div suppressHydrationWarning>
                     <label
                         htmlFor="firstName"
-                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                        className="block text-[10px] font-medium text-brand-text-muted mb-2 uppercase tracking-[0.15em]"
                     >
                         First Name *
                     </label>
@@ -94,14 +94,14 @@ export function ContactForm({
                         id="firstName"
                         type="text"
                         placeholder="John"
-                        className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
+                        className="w-full border border-brand-border/60 px-4 py-3 bg-brand-bg text-sm focus:outline-none focus:border-brand-gold/60 transition-colors duration-300"
                     />
                     {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName.message}</p>}
                 </div>
                 <div>
                     <label
                         htmlFor="lastName"
-                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                        className="block text-[10px] font-medium text-brand-text-muted mb-2 uppercase tracking-[0.15em]"
                     >
                         Last Name *
                     </label>
@@ -110,7 +110,7 @@ export function ContactForm({
                         id="lastName"
                         type="text"
                         placeholder="Smith"
-                        className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
+                        className="w-full border border-brand-border/60 px-4 py-3 bg-brand-bg text-sm focus:outline-none focus:border-brand-gold/60 transition-colors duration-300"
                     />
                     {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName.message}</p>}
                 </div>
@@ -120,7 +120,7 @@ export function ContactForm({
                 <div>
                     <label
                         htmlFor="email"
-                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                        className="block text-[10px] font-medium text-brand-text-muted mb-2 uppercase tracking-[0.15em]"
                     >
                         Email *
                     </label>
@@ -129,14 +129,14 @@ export function ContactForm({
                         id="email"
                         type="email"
                         placeholder="john@example.com"
-                        className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
+                        className="w-full border border-brand-border/60 px-4 py-3 bg-brand-bg text-sm focus:outline-none focus:border-brand-gold/60 transition-colors duration-300"
                     />
                     {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
                 </div>
                 <div>
                     <label
                         htmlFor="phone"
-                        className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                        className="block text-[10px] font-medium text-brand-text-muted mb-2 uppercase tracking-[0.15em]"
                     >
                         Phone
                     </label>
@@ -145,29 +145,29 @@ export function ContactForm({
                         id="phone"
                         type="tel"
                         placeholder="(519) 555-0123"
-                        className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors"
+                        className="w-full border border-brand-border/60 px-4 py-3 bg-brand-bg text-sm focus:outline-none focus:border-brand-gold/60 transition-colors duration-300"
                     />
                 </div>
             </div>
 
             {!defaultIntent && !listingAddress && (
                 <div>
-                    <label className="block text-xs font-semibold text-brand-text mb-2 uppercase tracking-wider">
+                    <label className="block text-[10px] font-medium text-brand-text-muted mb-3 uppercase tracking-[0.15em]">
                         I&apos;m looking to:
                     </label>
                     <div className="flex flex-wrap gap-4">
                         {['Buy', 'Sell', 'Both', 'Just Curious'].map((intent) => (
                             <label
                                 key={intent}
-                                className="flex items-center gap-2 cursor-pointer text-sm text-brand-text-muted hover:text-brand-text"
+                                className="flex items-center gap-2 cursor-pointer text-sm text-brand-text-muted hover:text-brand-text transition-colors"
                             >
                                 <input
                                     type="radio"
                                     value={intent}
                                     {...register('intent')}
-                                    className="accent-brand-accent"
+                                    className="accent-brand-gold"
                                 />
-                                <span>{intent}</span>
+                                <span className="font-light">{intent}</span>
                             </label>
                         ))}
                     </div>
@@ -177,7 +177,7 @@ export function ContactForm({
             <div>
                 <label
                     htmlFor="message"
-                    className="block text-xs font-semibold text-brand-text mb-1 uppercase tracking-wider"
+                    className="block text-[10px] font-medium text-brand-text-muted mb-2 uppercase tracking-[0.15em]"
                 >
                     Message *
                 </label>
@@ -186,7 +186,7 @@ export function ContactForm({
                     id="message"
                     rows={4}
                     placeholder="Tell me a bit about what you're thinking. There are no wrong answers here."
-                    className="w-full border border-brand-border px-4 py-3 bg-brand-bg focus:outline-none focus:border-brand-accent transition-colors resize-y"
+                    className="w-full border border-brand-border/60 px-4 py-3 bg-brand-bg text-sm focus:outline-none focus:border-brand-gold/60 transition-colors duration-300 resize-y"
                 ></textarea>
                 {errors.message && <p className="text-red-500 text-xs mt-1">{errors.message.message}</p>}
             </div>
@@ -194,9 +194,9 @@ export function ContactForm({
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-brand-accent hover:bg-brand-accent-light text-white font-medium px-8 py-4 transition-colors w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-wider text-sm"
+                className="bg-brand-text hover:bg-brand-text/85 text-white font-medium px-8 py-4 transition-all w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed uppercase tracking-[0.2em] text-xs hover:-translate-y-0.5 duration-300"
             >
-                {isSubmitting ? 'Sending...' : 'Send Message →'}
+                {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
         </form>
     )

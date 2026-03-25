@@ -7,15 +7,13 @@ import { SectionLabel } from '@/components/ui/SectionLabel'
 export async function FeaturedListings() {
     const listings = await getFeaturedListings(6)
 
-    // Empty state if API is down or nothing featured
     if (!listings || listings.length === 0) {
         return null
     }
 
     return (
-        <section className="py-12 md:py-20 bg-brand-bg relative">
+        <section className="py-20 md:py-28 bg-brand-bg relative">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
                 <AnimatedSection className="mb-16">
                     <SectionLabel text="Featured Listings" />
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -23,17 +21,18 @@ export async function FeaturedListings() {
                             <h2 className="font-display text-4xl md:text-5xl text-brand-text mb-6">
                                 Homes Available in the Area
                             </h2>
-                            <p className="text-brand-text-muted text-lg leading-relaxed font-light">
-                                Browse current listings across Kitchener, Waterloo, Cambridge, Breslau, & GTA. New properties added daily.
+                            <p className="text-brand-text-muted text-base leading-relaxed font-light">
+                                Browse current listings across Kitchener, Waterloo, Cambridge, Breslau, & GTA. New
+                                properties added daily.
                             </p>
                         </div>
                         <div className="hidden md:block">
                             <Link
                                 href="/listings"
-                                className="text-brand-accent text-sm font-semibold uppercase tracking-wider hover:text-brand-accent-light flex items-center gap-2 group"
+                                className="inline-flex items-center gap-3 text-brand-text font-medium text-sm uppercase tracking-[0.2em] group"
                             >
-                                View All Listings
-                                <span className="transition-transform group-hover:translate-x-1">→</span>
+                                <span>View All Listings</span>
+                                <span className="w-8 h-[1px] bg-brand-text group-hover:w-12 transition-all duration-300" />
                             </Link>
                         </div>
                     </div>
@@ -41,10 +40,7 @@ export async function FeaturedListings() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {listings.map((listing, index) => (
-                        <AnimatedSection
-                            key={listing.id}
-                            className={index > 0 ? `hidden sm:block` : ''}
-                        >
+                        <AnimatedSection key={listing.id} className={index > 0 ? `hidden sm:block` : ''}>
                             <ListingCard listing={listing} />
                         </AnimatedSection>
                     ))}
@@ -53,9 +49,9 @@ export async function FeaturedListings() {
                 <div className="mt-12 text-center md:hidden">
                     <Link
                         href="/listings"
-                        className="inline-block bg-brand-accent hover:bg-brand-accent-light text-white font-medium px-8 py-4 transition-colors text-center uppercase tracking-wider text-sm shadow-sm hover:shadow"
+                        className="inline-block bg-brand-text hover:bg-brand-text/85 text-white font-medium px-8 py-4 transition-all text-center uppercase tracking-[0.2em] text-xs"
                     >
-                        View All Listings →
+                        View All Listings
                     </Link>
                 </div>
             </div>

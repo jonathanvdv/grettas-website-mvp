@@ -4,86 +4,84 @@ import { AnimatedSection } from '@/components/ui/AnimatedSection'
 
 export function HeroSection() {
     return (
-        <section className="relative w-full bg-white overflow-hidden lg:h-screen lg:min-h-[700px]">
-            <div className="max-w-7xl 2xl:max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-28 2xl:px-36 w-full h-full">
-                <div className="flex flex-col lg:flex-row items-end h-full pt-[90px] lg:pt-[124px]">
+        <section className="relative w-full bg-brand-bg overflow-hidden min-h-screen">
+            {/* Subtle warm gradient backdrop */}
+            <div className="absolute inset-0 bg-gradient-to-br from-brand-bg via-brand-bg-alt/30 to-brand-bg pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-full relative">
+                <div className="flex flex-col lg:flex-row items-center min-h-screen pt-24 lg:pt-0">
                     {/* Text Content */}
-                    <div className="w-full lg:w-[55%] flex flex-col z-10 pt-8 lg:pt-0 lg:justify-center lg:self-stretch">
-                        {/* Mobile: side-by-side heading + image */}
-                        <div className="flex flex-row items-stretch lg:block w-full mb-6 lg:mb-0">
-                            {/* Text */}
-                            <AnimatedSection className="w-[60%] lg:w-full pr-2 lg:pr-0 self-center z-10">
-                                <p className="text-brand-accent tracking-[0.2em] text-[10px] lg:text-xs font-semibold uppercase mb-3 lg:mb-5 leading-tight">
-                                    Cambridge · Kitchener · Waterloo · Guelph · Brantford
+                    <div className="w-full lg:w-1/2 flex flex-col z-10 lg:pr-12 pt-8 lg:pt-0">
+                        <AnimatedSection>
+                            {/* Thin decorative line */}
+                            <div className="w-12 h-[1px] bg-brand-gold mb-8 animate-draw-line" />
+
+                            <p className="text-brand-gold tracking-[0.2em] text-[9px] lg:text-[11px] font-medium uppercase mb-6 whitespace-nowrap">
+                                Cambridge &middot; Kitchener &middot; Waterloo &middot; Guelph &middot; Brantford
+                            </p>
+
+                            <h1 className="font-display text-[2.8rem] leading-[1.02] sm:text-5xl lg:text-6xl 2xl:text-7xl text-brand-text mb-6 text-balance">
+                                Thoughtful Real Estate,{' '}
+                                <span className="italic text-brand-accent-light">Tailored to You.</span>
+                            </h1>
+
+                            <div className="text-brand-text-muted text-sm lg:text-base 2xl:text-lg leading-relaxed font-light text-pretty space-y-4 max-w-lg">
+                                <p>
+                                    I&apos;m Gretta Hughes, a Cambridge-based REALTOR&reg; with a genuine
+                                    appreciation for the community I call home. I provide a thoughtful
+                                    and tailored approach to real estate, guiding clients through each
+                                    step with clarity, confidence, and care.
                                 </p>
-
-                                <h1 className="font-display text-[2.5rem] leading-[1.05] sm:text-5xl lg:text-6xl 2xl:text-7xl text-brand-text mb-4 lg:mb-5 text-balance">
-                                    Real Estate That <br className="hidden md:block" />
-                                    <span className="italic">Feels Like Home.</span>
-                                </h1>
-
-                                <div className="text-brand-text-muted text-[13px] sm:text-sm lg:text-lg 2xl:text-xl leading-relaxed font-light text-pretty space-y-4 lg:space-y-5">
-                                    <p>
-                                        I&apos;m Gretta Hughes, a REALTOR&reg; with RE/MAX Twin City in Cambridge.
-                                        I help families across the Waterloo Region find homes they love and sell
-                                        for prices that exceed expectations.
-                                    </p>
-                                    <p className="hidden lg:block">
-                                        Buying, selling, or just exploring your options — I&apos;m here to guide you
-                                        with honest advice and hands-on expertise every step of the way. New listings
-                                        hit this site every day. The best ones don&apos;t last long.
-                                    </p>
-                                </div>
-                            </AnimatedSection>
-
-                            {/* Mobile Image */}
-                            <div className="w-[40%] relative lg:hidden h-[40vh] min-h-[250px] self-end z-0">
-                                <Image
-                                    src="/images/gretta-hero-nobg.png"
-                                    alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
-                                    fill
-                                    priority
-                                    sizes="(max-width: 1024px) 40vw"
-                                    className="object-contain object-bottom"
-                                />
-                                <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
                             </div>
-                        </div>
 
-                        {/* Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 mb-5 lg:mb-6 mt-0 lg:mt-8 relative z-20">
-                            <Link
-                                href="/listings"
-                                className="bg-brand-accent hover:bg-brand-accent-light text-white font-medium px-6 py-4 lg:px-8 transition-colors text-center uppercase tracking-wider text-xs lg:text-sm shadow-lg hover:shadow-xl w-full sm:w-auto"
-                            >
-                                Search Listings →
-                            </Link>
-                            <Link
-                                href="/home-evaluation"
-                                className="border border-brand-border bg-white lg:bg-transparent hover:bg-brand-border/10 text-brand-text font-medium px-6 py-4 lg:px-8 transition-colors text-center uppercase tracking-wider text-xs lg:text-sm shadow-sm hover:shadow-md lg:shadow-none w-full sm:w-auto"
-                            >
-                                What&apos;s My Home Worth?
-                            </Link>
-                        </div>
+                            {/* Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 mt-10">
+                                <Link
+                                    href="/listings"
+                                    className="bg-brand-text hover:bg-brand-text/85 text-white font-medium px-8 py-4 transition-all text-center uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-xl hover:-translate-y-0.5 duration-300"
+                                >
+                                    Search Listings
+                                </Link>
+                                <Link
+                                    href="/home-evaluation"
+                                    className="border border-brand-border hover:border-brand-accent text-brand-text font-medium px-8 py-4 transition-all text-center uppercase tracking-[0.2em] text-xs hover:-translate-y-0.5 duration-300"
+                                >
+                                    What&apos;s My Home Worth?
+                                </Link>
+                            </div>
 
-                        {/* Trust badge */}
-                        <div className="flex justify-center sm:justify-start text-[9px] sm:text-[10px] lg:text-xs font-medium text-brand-text-muted uppercase tracking-wider mb-5">
-                            <span className="flex items-center gap-1.5 lg:gap-3">
-                                <span className="text-brand-accent">✓</span> Cambridge Community Roots · Experienced. Professional.
-                            </span>
-                        </div>
+                            {/* Trust badges */}
+                            <div className="flex items-center flex-wrap gap-x-6 gap-y-2 mt-10 text-[10px] text-brand-text-muted uppercase tracking-[0.15em]">
+                                <span className="flex items-center gap-2">
+                                    <span className="w-1 h-1 rounded-full bg-brand-gold" />
+                                    RE/MAX Twin City
+                                </span>
+                                <span className="flex items-center gap-2">
+                                    <span className="w-1 h-1 rounded-full bg-brand-gold" />
+                                    100% Club &apos;21–&apos;24
+                                </span>
+                                <span className="flex items-center gap-2">
+                                    <span className="w-1 h-1 rounded-full bg-brand-gold" />
+                                    English &amp; Espa&ntilde;ol
+                                </span>
+                            </div>
+                        </AnimatedSection>
                     </div>
 
-                    {/* Desktop Image — in flow, right side */}
-                    <div className="hidden lg:block relative w-[53%] h-[calc(100vh-60px)] self-end">
-                        <Image
-                            src="/images/gretta-hero-nobg.png"
-                            alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
-                            fill
-                            priority
-                            sizes="45vw"
-                            className="object-contain object-left-bottom"
-                        />
+                    {/* Image */}
+                    <div className="w-full lg:w-1/2 relative mt-12 lg:mt-0 flex items-end justify-center lg:justify-end self-end">
+                        <div className="relative w-full max-w-[500px] lg:max-w-none aspect-[3/4] lg:aspect-auto lg:h-[85vh]">
+                            <Image
+                                src="/images/gretta-hero.jpg"
+                                alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
+                                fill
+                                priority
+                                sizes="(max-width: 1024px) 100vw, 50vw"
+                                className="object-cover object-top"
+                            />
+                            {/* Soft gradient fade at bottom */}
+                            <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-bg to-transparent pointer-events-none" />
+                        </div>
                     </div>
                 </div>
             </div>

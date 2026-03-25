@@ -50,17 +50,16 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
     ]
 
     return (
-        <section className={`${showHeader ? 'py-12 md:py-20' : 'py-8 md:py-12'} bg-white relative`}>
+        <section className={`${showHeader ? 'py-20 md:py-32' : 'py-8 md:py-12'} bg-white relative`}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {showHeader && (
                     <AnimatedSection className="mb-16 md:mb-20 text-center">
                         <SectionLabel text="Explore the Region" />
                         <h2 className="font-display text-4xl md:text-5xl text-brand-text mb-6">
-                            Find Your <span className="italic text-brand-accent">Neighbourhood</span>
+                            Find Your <span className="italic text-brand-accent-light">Neighbourhood</span>
                         </h2>
-                        <p className="text-brand-text-muted text-lg leading-relaxed font-light">
-                            Every neighbourhood has a personality. Here are the areas Gretta knows inside and out. Search
-                            listings in any of them.
+                        <p className="text-brand-text-muted text-base leading-relaxed font-light max-w-xl mx-auto">
+                            Every neighbourhood has a personality. Here are the areas Gretta knows inside and out.
                         </p>
                     </AnimatedSection>
                 )}
@@ -70,20 +69,20 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                         <AnimatedSection key={index}>
                             <Link
                                 href={n.link}
-                                className="group block bg-brand-bg border border-brand-border hover:border-brand-accent/30 rounded-sm p-8 h-full transition-all duration-300 hover:shadow-lg relative"
+                                className="group block bg-brand-bg border border-brand-border/50 p-8 h-full transition-all duration-500 hover:border-brand-gold/30 hover:shadow-lg hover:shadow-brand-gold/[0.04] relative"
                             >
                                 <div className="flex items-start justify-between mb-4">
                                     <div>
-                                        <h3 className="font-display text-2xl text-brand-text group-hover:text-brand-accent transition-colors">
+                                        <h3 className="font-display text-2xl text-brand-text group-hover:text-brand-accent-light transition-colors duration-300">
                                             {n.name}
                                         </h3>
-                                        <p className="text-xs uppercase tracking-widest text-brand-text-muted mt-1 flex items-center gap-1">
+                                        <p className="text-[10px] uppercase tracking-[0.2em] text-brand-text-muted mt-1 flex items-center gap-1">
                                             <MapPin className="w-3 h-3" />
                                             {n.city}
                                         </p>
                                     </div>
-                                    <span className="text-brand-accent opacity-0 group-hover:opacity-100 transition-opacity text-lg mt-1">
-                                        →
+                                    <span className="text-brand-gold opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-lg mt-1">
+                                        &rarr;
                                     </span>
                                 </div>
 
@@ -95,7 +94,7 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                                     {n.tags.map((tag) => (
                                         <span
                                             key={tag}
-                                            className="text-[10px] uppercase tracking-wider font-semibold text-brand-accent/80 bg-brand-accent/5 border border-brand-accent/10 px-2.5 py-1 rounded-sm"
+                                            className="text-[9px] uppercase tracking-[0.15em] font-medium text-brand-gold/80 bg-brand-gold/[0.06] border border-brand-gold/10 px-2.5 py-1"
                                         >
                                             {tag}
                                         </span>
@@ -109,9 +108,10 @@ export function NeighbourhoodGuide({ showHeader = true }: { showHeader?: boolean
                 <AnimatedSection className="mt-12 text-center">
                     <Link
                         href="/listings"
-                        className="inline-block border border-brand-border hover:border-brand-accent text-brand-text hover:text-brand-accent font-medium px-8 py-4 uppercase tracking-wider text-sm transition-colors"
+                        className="inline-flex items-center gap-3 text-brand-text font-medium text-sm uppercase tracking-[0.2em] group"
                     >
-                        Search All Listings →
+                        <span>Search All Listings</span>
+                        <span className="w-8 h-[1px] bg-brand-text group-hover:w-12 transition-all duration-300" />
                     </Link>
                 </AnimatedSection>
             </div>

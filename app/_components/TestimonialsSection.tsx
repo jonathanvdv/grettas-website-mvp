@@ -6,46 +6,49 @@ export function TestimonialsSection() {
         {
             id: 1,
             quote: "Gretta helped us find our dream home in Hespeler before it even hit the open market. Her knowledge of Cambridge is incredible — she knew which streets were appreciating and steered us to the perfect neighbourhood. We felt confident every step of the way.",
-            author: 'Maria & Carlos D., Cambridge',
-            stars: 5,
+            author: 'Maria & Carlos D.',
+            location: 'Cambridge',
         },
         {
             id: 2,
             quote: "We listed with Gretta and had multiple offers within the first week. She knew exactly how to price our Kitchener home and her staging advice was spot-on. The whole process was seamless — no surprises, no stress. We walked away with more than we expected.",
-            author: 'Sarah & James T., Kitchener',
-            stars: 5,
+            author: 'Sarah & James T.',
+            location: 'Kitchener',
         },
         {
             id: 3,
             quote: "As first-time buyers, we were completely overwhelmed. Gretta was so patient and thorough — she made everything feel manageable. She found us a place in Waterloo that we absolutely love. She answers her phone on weekends. That says everything.",
-            author: 'Emily R., Waterloo',
-            stars: 5,
+            author: 'Emily R.',
+            location: 'Waterloo',
         },
     ]
 
     return (
-        <section className="py-12 md:py-20 bg-brand-bg-dark text-white relative border-y border-brand-border/20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <AnimatedSection className="text-center max-w-2xl mx-auto mb-16 md:mb-24">
-                    <SectionLabel text="What Clients Say" className="text-brand-gold" />
-                    <h2 className="font-display text-4xl md:text-5xl text-white mb-6">
+        <section className="py-20 md:py-32 bg-brand-text text-white relative overflow-hidden">
+            {/* Decorative accent */}
+            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-gold/40 to-transparent" />
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <AnimatedSection className="text-center max-w-2xl mx-auto mb-16 md:mb-20">
+                    <p className="text-brand-gold tracking-[0.3em] text-xs font-medium uppercase mb-4">What Clients Say</p>
+                    <h2 className="font-display text-4xl md:text-5xl text-white">
                         Real Stories from <span className="italic text-brand-gold">Real Families</span>
                     </h2>
                 </AnimatedSection>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {testimonials.map((t) => (
-                        <AnimatedSection key={t.id} className="bg-brand-card p-8 md:p-10 flex flex-col relative">
-                            {/* Large quote mark */}
-                            <span className="text-brand-accent/20 font-display text-9xl absolute -top-8 left-4 select-none">
+                        <AnimatedSection key={t.id} className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.06] p-8 md:p-10 flex flex-col relative group hover:bg-white/[0.07] transition-colors duration-500">
+                            {/* Quote mark */}
+                            <span className="text-brand-gold/20 font-display text-8xl absolute -top-4 left-6 select-none leading-none">
                                 &ldquo;
                             </span>
 
                             <div className="flex gap-1 mb-6 mt-4 relative z-10">
-                                {[...Array(t.stars)].map((_, i) => (
+                                {[...Array(5)].map((_, i) => (
                                     <svg
                                         key={i}
-                                        className="w-5 h-5 text-brand-gold"
+                                        className="w-4 h-4 text-brand-gold"
                                         fill="currentColor"
                                         viewBox="0 0 20 20"
                                     >
@@ -54,11 +57,15 @@ export function TestimonialsSection() {
                                 ))}
                             </div>
 
-                            <div className="flex-1 text-brand-text mb-8 relative z-10 leading-relaxed font-light text-lg">
+                            <div className="flex-1 text-white/80 mb-8 relative z-10 leading-relaxed font-light">
                                 <p>&ldquo;{t.quote}&rdquo;</p>
                             </div>
 
-                            <p className="text-brand-text font-medium text-sm tracking-wider uppercase">- {t.author}</p>
+                            <div className="relative z-10">
+                                <div className="w-8 h-[1px] bg-brand-gold/40 mb-4" />
+                                <p className="text-white font-medium text-sm">{t.author}</p>
+                                <p className="text-white/40 text-xs uppercase tracking-[0.2em] mt-1">{t.location}</p>
+                            </div>
                         </AnimatedSection>
                     ))}
                 </div>
