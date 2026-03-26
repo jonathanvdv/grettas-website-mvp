@@ -82,49 +82,45 @@ export function HeroSection() {
                     </div>
                 </div>
 
-                {/* Mobile layout - inspired by reference */}
+                {/* Mobile layout */}
                 <div className="flex flex-col lg:hidden pt-[72px]">
                     {/* Thin decorative line - tight to nav */}
-                    <div className="w-12 h-[1px] bg-brand-gold mb-5 mt-3 animate-draw-line" />
+                    <div className="w-full h-[1px] bg-brand-gold/30 mb-5 mt-3" />
 
                     {/* Cities */}
                     <p className="text-brand-gold tracking-[0.2em] text-[9px] sm:text-[10px] font-medium uppercase mb-4">
                         Cambridge &middot; Kitchener &middot; Waterloo &middot; Guelph &middot; Brantford
                     </p>
 
-                    {/* Heading + Image row */}
-                    <div className="relative mb-4">
-                        <div className="grid grid-cols-[1fr_45%] sm:grid-cols-[1fr_40%] items-end gap-0">
-                            <h1 className="font-display text-[2.4rem] leading-[1.02] sm:text-5xl text-brand-text text-balance z-10 pr-2">
-                                Thoughtful Real Estate,{' '}
-                                <span className="italic text-brand-accent-light">Tailored to You.</span>
-                            </h1>
+                    {/* Heading - full width */}
+                    <h1 className="font-display text-[2.6rem] leading-[1.05] sm:text-5xl text-brand-text mb-5">
+                        Thoughtful Real Estate,<br />
+                        <span className="italic text-brand-accent-light">Tailored to You.</span>
+                    </h1>
 
-                            <div className="relative aspect-[3/4] self-start -mt-4">
-                                <Image
-                                    src="/images/gretta-hero.jpg"
-                                    alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
-                                    fill
-                                    priority
-                                    sizes="45vw"
-                                    className="object-cover object-top"
-                                />
-                                {/* Fade at bottom */}
-                                <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-brand-bg to-transparent pointer-events-none" />
-                                {/* Fade on left edge for text overlap */}
-                                <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand-bg to-transparent pointer-events-none" />
-                            </div>
+                    {/* Bio text + Image side by side */}
+                    <div className="grid grid-cols-[1fr_42%] gap-4 items-start mb-8">
+                        <div className="text-brand-text-muted text-sm leading-relaxed font-light text-pretty">
+                            <p>
+                                I&apos;m Gretta Hughes, a Cambridge-based REALTOR&reg; with a genuine
+                                appreciation for the community I call home. I provide a thoughtful
+                                and tailored approach to real estate, guiding clients through each
+                                step with clarity, confidence, and care.
+                            </p>
                         </div>
-                    </div>
 
-                    {/* Bio text */}
-                    <div className="text-brand-text-muted text-sm leading-relaxed font-light text-pretty max-w-sm mb-8">
-                        <p>
-                            I&apos;m Gretta Hughes, a Cambridge-based REALTOR&reg; with a genuine
-                            appreciation for the community I call home. I provide a thoughtful
-                            and tailored approach to real estate, guiding clients through each
-                            step with clarity, confidence, and care.
-                        </p>
+                        <div className="relative aspect-[3/4]">
+                            <Image
+                                src="/images/gretta-hero.jpg"
+                                alt="Gretta Hughes - Cambridge & Waterloo Region REALTOR"
+                                fill
+                                priority
+                                sizes="42vw"
+                                className="object-cover object-top"
+                            />
+                            {/* Fade at bottom */}
+                            <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-brand-bg to-transparent pointer-events-none" />
+                        </div>
                     </div>
 
                     {/* Full-width CTA buttons */}
@@ -143,8 +139,8 @@ export function HeroSection() {
                         </Link>
                     </div>
 
-                    {/* Trust badges */}
-                    <div className="flex items-center justify-center flex-wrap gap-x-5 gap-y-2 pb-8 text-[10px] text-brand-text-muted uppercase tracking-[0.15em]">
+                    {/* Trust badges - only 2 on smallest screens to prevent wrapping */}
+                    <div className="flex items-center justify-center gap-x-5 pb-8 text-[10px] text-brand-text-muted uppercase tracking-[0.15em]">
                         <span className="flex items-center gap-2">
                             <span className="w-1 h-1 rounded-full bg-brand-gold" />
                             RE/MAX Twin City
@@ -153,7 +149,7 @@ export function HeroSection() {
                             <span className="w-1 h-1 rounded-full bg-brand-gold" />
                             100% Club &apos;21–&apos;24
                         </span>
-                        <span className="flex items-center gap-2">
+                        <span className="hidden sm:flex items-center gap-2">
                             <span className="w-1 h-1 rounded-full bg-brand-gold" />
                             English &amp; Espa&ntilde;ol
                         </span>
