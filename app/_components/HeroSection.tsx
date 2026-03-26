@@ -92,8 +92,8 @@ export function HeroSection() {
                         Cambridge &middot; Kitchener &middot; Waterloo &middot; Guelph &middot; Brantford
                     </p>
 
-                    {/* Heading - full width */}
-                    <h1 className="font-display text-[2.6rem] leading-[1.05] sm:text-5xl text-brand-text mb-5">
+                    {/* Heading - full width, sized to fit 2 lines */}
+                    <h1 className="font-display text-[2rem] leading-[1.08] sm:text-[2.6rem] text-brand-text mb-5">
                         Thoughtful Real Estate,<br />
                         <span className="italic text-brand-accent-light">Tailored to You.</span>
                     </h1>
