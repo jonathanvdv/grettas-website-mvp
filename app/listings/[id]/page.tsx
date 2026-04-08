@@ -6,31 +6,44 @@ import { ContactForm } from '@/components/ContactForm'
 import { Bed, Bath, Maximize, Car, MapPin, ExternalLink, Home } from 'lucide-react'
 import { MobileContactSheet } from '../_components/MobileContactSheet'
 import Image from 'next/image'
+import { notFound } from 'next/navigation'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const unresolvedParams = await params
     const listing = await getListing(unresolvedParams.id)
+    if (!listing) {
+        return { title: 'Listing Not Found' }
+    }
     return {
         title: `${listing.address.full} - $${listing.price.toLocaleString()}`,
         description: `${listing.beds} bed, ${listing.baths} bath home at ${listing.address.full}. Listed at $${listing.price.toLocaleString()}. Contact Gretta Hughes to book a showing.`,
     }
 }
 
-// Helper component for detail rows
-function DetailRow({
-    label,
-    value,
-    className = '',
-}: {
-    label: string
-    value: string | number | null | undefined
-    className?: string
-}) {
+function DetailItem({ label, value }: { label: string; value: string | number | null | undefined }) {
     if (!value && value !== 0) return null
     return (
-        <div className={`flex justify-between py-2.5 border-b border-gray-100 text-sm ${className}`}>
-            <span className="text-gray-500">{label}</span>
-            <span className="text-gray-900 font-medium text-right max-w-[60%]">{value}</span>
+        <div>
+            <p className="text-sm text-gray-500">{label}</p>
+            <p className="text-sm font-medium text-gray-900 mt-0.5">{value}</p>
+        </div>
+    )
+}
+
+function SectionCard({ title, children }: { title: string; children: React.ReactNode }) {
+    return (
+        <section className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 md:p-8">
+            <h2 className="text-xl font-bold text-gray-900 mb-5 pb-3 border-b border-gray-200">{title}</h2>
+            {children}
+        </section>
+    )
+}
+
+function SubSection({ title, children }: { title: string; children: React.ReactNode }) {
+    return (
+        <div className="mb-6 last:mb-0">
+            <h3 className="text-base font-semibold text-gray-900 mb-3 pb-2 border-b border-gray-100">{title}</h3>
+            {children}
         </div>
     )
 }
@@ -40,303 +53,298 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
     const listing = await getListing(unresolvedParams.id)
 
     if (!listing) {
-        return (
-            <div className="min-h-[50vh] flex items-center justify-center pt-24">
-                <h1 className="font-display text-2xl text-brand-text">Listing not found</h1>
-            </div>
-        )
+        notFound()
     }
 
     const mapQuery = encodeURIComponent(listing.address.full)
 
+    const hasBuilding = listing.constructionMaterial || listing.foundation || listing.roof || listing.exteriorFeatures
+    const hasInterior = listing.flooring || listing.interiorFeatures || listing.appliances || listing.basement
+    const hasUtilities = listing.heating || listing.cooling || listing.waterSource || listing.sewer
+    const hasParking = listing.parkingTotal || listing.garageSpaces || listing.parkingFeatures
+    const hasFinancial = listing.taxAmount || listing.associationFee
+    const hasCommunity = listing.communityFeatures || listing.poolFeatures || listing.fencing
+
     return (
         <>
-            <div className="bg-white relative min-h-screen pt-[72px] lg:pt-[84px]">
+            <div className="bg-gray-50 relative min-h-screen pt-[72px] lg:pt-[84px]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Breadcrumb-style address header */}
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pt-6 pb-4">
-                        <h1 className="font-display text-xl md:text-2xl text-gray-900 uppercase tracking-wide">
+                    {/* Address header */}
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-3 pt-4 md:pt-6 pb-3 md:pb-4">
+                        <h1 className="font-display text-lg sm:text-xl md:text-2xl text-gray-900 uppercase tracking-wide">
                             {listing.address.unitNumber ? `${listing.address.unitNumber} - ` : ''}
                             {listing.address.streetNumber} {listing.address.streetName}
                         </h1>
-                        <div className="flex items-center gap-4">
-                            {listing.realtorCaUrl && (
-                                <a
-                                    href={listing.realtorCaUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-xs text-brand-accent hover:underline flex items-center gap-1 font-medium"
-                                >
-                                    <ExternalLink className="w-3.5 h-3.5" /> REALTOR.ca
-                                </a>
-                            )}
-                        </div>
+                        {listing.realtorCaUrl && (
+                            <a
+                                href={listing.realtorCaUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-brand-accent hover:underline flex items-center gap-1 font-medium"
+                            >
+                                <ExternalLink className="w-3.5 h-3.5" /> View on REALTOR.ca
+                            </a>
+                        )}
                     </div>
 
                     {/* Photo Grid */}
                     <ImageGallery photos={listing.photos} address={listing.address.full} />
 
-                    {/* Quick Stats Bar — right below photos */}
-                    <div className="flex flex-wrap items-center gap-x-8 gap-y-3 py-5 border-b border-gray-200">
-                        <div>
-                            <span className="text-3xl md:text-4xl font-bold text-gray-900">
+                    {/* Price + Stats Bar */}
+                    <div className="bg-white border border-gray-200 rounded-lg px-4 sm:px-6 py-4 sm:py-5 mt-4">
+                        {/* Price */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 mb-3 sm:mb-0">
+                            <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
                                 ${listing.price.toLocaleString()}
+                                {listing.isRental && listing.rentFrequency && (
+                                    <span className="text-sm sm:text-base font-normal text-gray-500 ml-1">
+                                        /{listing.rentFrequency.toLowerCase()}
+                                    </span>
+                                )}
                             </span>
-                            {listing.isRental && listing.rentFrequency && (
-                                <span className="text-base font-normal text-gray-500 ml-1">
-                                    /{listing.rentFrequency.toLowerCase()}
-                                </span>
-                            )}
+                            <span
+                                className={`px-2.5 py-0.5 rounded text-xs font-semibold uppercase sm:hidden ${listing.status === 'Active' ? 'bg-green-100 text-green-700' : listing.status === 'Sold' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}
+                            >
+                                {listing.status}
+                            </span>
                         </div>
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-600">
-                            <span className="flex items-center gap-1.5">
-                                <Bed className="w-4 h-4 text-gray-400" />
-                                <span className="font-semibold text-gray-900">{listing.beds}</span> Beds
+
+                        {/* Stats row */}
+                        <div className="flex items-center gap-x-4 sm:gap-x-6 text-sm sm:text-base text-gray-600 pb-3 border-b border-gray-100 sm:border-0 sm:pb-0 sm:pt-2">
+                            <span className="flex items-center gap-1.5 sm:gap-2">
+                                <Bed className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                                <span className="font-semibold text-gray-900 sm:text-lg">{listing.beds}</span> Beds
                             </span>
-                            <span className="flex items-center gap-1.5">
-                                <Bath className="w-4 h-4 text-gray-400" />
-                                <span className="font-semibold text-gray-900">{listing.baths}</span> Baths
+                            <span className="flex items-center gap-1.5 sm:gap-2">
+                                <Bath className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                                <span className="font-semibold text-gray-900 sm:text-lg">{listing.baths}</span> Baths
                             </span>
                             {listing.sqft && (
-                                <span className="flex items-center gap-1.5">
-                                    <Maximize className="w-4 h-4 text-gray-400" />
-                                    <span className="font-semibold text-gray-900">
+                                <span className="flex items-center gap-1.5 sm:gap-2">
+                                    <Maximize className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                                    <span className="font-semibold text-gray-900 sm:text-lg">
                                         {listing.sqft.toLocaleString()}
                                     </span>{' '}
                                     sqft
                                 </span>
                             )}
                             {listing.parkingTotal != null && listing.parkingTotal > 0 && listing.parkingTotal <= 10 && (
-                                <span className="flex items-center gap-1.5">
-                                    <Car className="w-4 h-4 text-gray-400" />
-                                    <span className="font-semibold text-gray-900">{listing.parkingTotal}</span> Parking
+                                <span className="hidden sm:flex items-center gap-2">
+                                    <Car className="w-5 h-5 text-gray-400" />
+                                    <span className="font-semibold text-gray-900 text-lg">{listing.parkingTotal}</span> Parking
                                 </span>
                             )}
                         </div>
-                        <div className="flex items-center gap-4 ml-auto text-xs text-gray-500">
-                            <span className="flex items-center gap-1">
-                                <MapPin className="w-3.5 h-3.5" />
+
+                        {/* Meta row */}
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 sm:gap-4 mt-3 sm:mt-2 text-xs sm:text-sm text-gray-500">
+                            <span className="flex items-center gap-1.5">
+                                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 {listing.address.city}, {listing.address.province}
                             </span>
                             <span>MLS® #{listing.mlsNumber}</span>
                             <span
-                                className={`px-2 py-0.5 rounded text-[11px] font-semibold uppercase ${listing.status === 'Active' ? 'bg-green-100 text-green-700' : listing.status === 'Sold' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}
+                                className={`hidden sm:inline-block px-2.5 py-0.5 rounded text-xs font-semibold uppercase ${listing.status === 'Active' ? 'bg-green-100 text-green-700' : listing.status === 'Sold' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}
                             >
                                 {listing.status}
                             </span>
+                            {listing.parkingTotal != null && listing.parkingTotal > 0 && listing.parkingTotal <= 10 && (
+                                <span className="flex sm:hidden items-center gap-1.5">
+                                    <Car className="w-3.5 h-3.5 text-gray-400" />
+                                    {listing.parkingTotal} Parking
+                                </span>
+                            )}
                         </div>
                     </div>
                 </div>
 
                 {/* Main Content */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <div className="flex flex-col lg:flex-row gap-10 items-start">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="flex flex-col lg:flex-row gap-6 items-start">
                         {/* Left Column */}
-                        <div className="w-full lg:w-2/3 space-y-8">
-                            {/* Listing Description — first, like realtor.ca */}
+                        <div className="w-full lg:w-2/3 space-y-6">
+                            {/* Listing Description Card */}
                             {listing.description && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Listing Description
-                                    </h2>
+                                <SectionCard title="Listing Description">
                                     <p className="text-gray-600 text-[15px] leading-relaxed whitespace-pre-line">
                                         {listing.description}
                                     </p>
-                                </section>
+                                </SectionCard>
                             )}
 
-                            {/* Property Summary */}
-                            <section>
-                                <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                    Property Summary
-                                </h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                    <DetailRow label="Property Type" value={listing.propertyType} />
-                                    <DetailRow label="Building Type" value={listing.buildingType} />
-                                    <DetailRow label="Storeys" value={listing.storeys} />
-                                    <DetailRow label="Year Built" value={listing.yearBuilt} />
-                                    <DetailRow
-                                        label="Living Area"
-                                        value={listing.sqft ? `${listing.sqft.toLocaleString()} sqft` : null}
-                                    />
-                                    <DetailRow label="Lot Size" value={listing.lotSizeDimensions || listing.lotSize} />
-                                    <DetailRow label="Neighbourhood" value={listing.address.neighbourhood} />
-                                    <DetailRow label="Zoning" value={listing.zoning} />
-                                    <DetailRow label="Days on Market" value={listing.daysOnMarket} />
-                                    <DetailRow
-                                        label="Listed"
-                                        value={
-                                            listing.listDate
-                                                ? new Date(listing.listDate).toLocaleDateString('en-CA', {
-                                                      year: 'numeric',
-                                                      month: 'long',
-                                                      day: 'numeric',
-                                                  })
-                                                : null
-                                        }
-                                    />
+                            {/* Property Summary Card */}
+                            <SectionCard title="Property Summary">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-4">
+                                    <DetailItem label="Property Type" value={listing.propertyType} />
+                                    <DetailItem label="Building Type" value={listing.buildingType} />
+                                    <DetailItem label="Square Footage" value={listing.sqft ? `${listing.sqft.toLocaleString()} sqft` : null} />
+                                    <DetailItem label="Lot Size" value={listing.lotSizeDimensions || listing.lotSize} />
+                                    <DetailItem label="Storeys" value={listing.storeys} />
+                                    <DetailItem label="Year Built" value={listing.yearBuilt} />
+                                    <DetailItem label="Neighbourhood" value={listing.address.neighbourhood} />
+                                    <DetailItem label="Zoning" value={listing.zoning} />
+                                    {listing.taxAmount != null && (
+                                        <DetailItem
+                                            label={`Annual Property Taxes${listing.taxYear ? ` (${listing.taxYear})` : ''}`}
+                                            value={`$${listing.taxAmount.toLocaleString()}`}
+                                        />
+                                    )}
+                                    {hasParking && (
+                                        <DetailItem label="Parking Type" value={listing.parkingFeatures || (listing.garageSpaces ? `${listing.garageSpaces} Garage` : null)} />
+                                    )}
+                                    {listing.parkingTotal != null && (
+                                        <DetailItem label="Total Parking Spaces" value={listing.parkingTotal} />
+                                    )}
+                                    <DetailItem label="Time on Market" value={listing.daysOnMarket ? `${listing.daysOnMarket} days` : null} />
                                 </div>
-                            </section>
+                            </SectionCard>
 
-                            {/* Bedrooms & Bathrooms */}
-                            <section>
-                                <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                    Bedrooms & Bathrooms
-                                </h2>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                    <DetailRow label="Bedrooms" value={listing.beds} />
-                                    <DetailRow label="Bedrooms (Above Grade)" value={listing.bedsAboveGrade} />
-                                    <DetailRow label="Bedrooms (Below Grade)" value={listing.bedsBelowGrade} />
-                                    <DetailRow label="Bathrooms" value={listing.baths} />
-                                    <DetailRow label="Full Bathrooms" value={listing.bathsFull} />
-                                    <DetailRow label="Half Bathrooms" value={listing.bathsHalf} />
-                                </div>
-                            </section>
+                            {/* Building Card */}
+                            {(hasBuilding || hasInterior || hasUtilities || listing.beds) && (
+                                <SectionCard title="Building">
+                                    {/* Bedrooms */}
+                                    <SubSection title="Bedrooms">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                            <DetailItem label="Total" value={listing.beds} />
+                                            <DetailItem label="Above Grade" value={listing.bedsAboveGrade} />
+                                            <DetailItem label="Below Grade" value={listing.bedsBelowGrade} />
+                                        </div>
+                                    </SubSection>
 
-                            {/* Building & Structure */}
-                            {(listing.constructionMaterial ||
-                                listing.foundation ||
-                                listing.roof ||
-                                listing.exteriorFeatures) && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Building
-                                    </h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                        <DetailRow label="Construction" value={listing.constructionMaterial} />
-                                        <DetailRow label="Foundation" value={listing.foundation} />
-                                        <DetailRow label="Roof" value={listing.roof} />
-                                        <DetailRow label="Exterior" value={listing.exteriorFeatures} />
-                                    </div>
-                                </section>
+                                    {/* Bathrooms */}
+                                    <SubSection title="Bathrooms">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                            <DetailItem label="Total" value={listing.baths} />
+                                            <DetailItem label="Full" value={listing.bathsFull} />
+                                            <DetailItem label="Partial" value={listing.bathsHalf} />
+                                        </div>
+                                    </SubSection>
+
+                                    {/* Interior Features */}
+                                    {hasInterior && (
+                                        <SubSection title="Interior Features">
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                                <DetailItem label="Appliances Included" value={listing.appliances} />
+                                                <DetailItem label="Basement Type" value={listing.basement} />
+                                                <DetailItem label="Flooring" value={listing.flooring} />
+                                                <DetailItem label="Features" value={listing.interiorFeatures} />
+                                            </div>
+                                        </SubSection>
+                                    )}
+
+                                    {/* Building Features */}
+                                    {hasBuilding && (
+                                        <SubSection title="Building Features">
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                                <DetailItem label="Construction" value={listing.constructionMaterial} />
+                                                <DetailItem label="Foundation Type" value={listing.foundation} />
+                                                <DetailItem label="Roof" value={listing.roof} />
+                                                <DetailItem label="Exterior Finish" value={listing.exteriorFeatures} />
+                                            </div>
+                                        </SubSection>
+                                    )}
+
+                                    {/* Heating & Cooling */}
+                                    {hasUtilities && (
+                                        <SubSection title="Heating & Cooling">
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                                <DetailItem label="Cooling" value={listing.cooling} />
+                                                <DetailItem label="Heating Type" value={listing.heating} />
+                                                <DetailItem label="Heating Fuel" value={listing.heatingFuel} />
+                                            </div>
+                                        </SubSection>
+                                    )}
+                                </SectionCard>
                             )}
 
-                            {/* Interior Features */}
-                            {(listing.flooring ||
-                                listing.interiorFeatures ||
-                                listing.appliances ||
-                                listing.basement) && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Interior
-                                    </h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                        <DetailRow label="Flooring" value={listing.flooring} />
-                                        <DetailRow label="Features" value={listing.interiorFeatures} />
-                                        <DetailRow label="Appliances" value={listing.appliances} />
-                                        <DetailRow label="Basement" value={listing.basement} />
-                                    </div>
-                                </section>
+                            {/* Measurements Card */}
+                            {listing.sqft && (
+                                <SectionCard title="Measurements">
+                                    <DetailItem label="Square Footage" value={`${listing.sqft.toLocaleString()} sqft`} />
+                                    {listing.lotSizeDimensions && (
+                                        <div className="mt-4">
+                                            <DetailItem label="Lot Dimensions" value={listing.lotSizeDimensions} />
+                                        </div>
+                                    )}
+                                    {listing.lotSize && !listing.lotSizeDimensions && (
+                                        <div className="mt-4">
+                                            <DetailItem label="Lot Size" value={listing.lotSize} />
+                                        </div>
+                                    )}
+                                </SectionCard>
                             )}
 
-                            {/* Utilities */}
-                            {(listing.heating || listing.cooling || listing.waterSource || listing.sewer) && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Utilities
-                                    </h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                        <DetailRow label="Heating" value={listing.heating} />
-                                        <DetailRow label="Heating Fuel" value={listing.heatingFuel} />
-                                        <DetailRow label="Cooling" value={listing.cooling} />
-                                        <DetailRow label="Water" value={listing.waterSource} />
-                                        <DetailRow label="Sewer" value={listing.sewer} />
-                                    </div>
-                                </section>
-                            )}
-
-                            {/* Parking */}
-                            {(listing.parkingTotal || listing.garageSpaces || listing.parkingFeatures) && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Parking
-                                    </h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                        <DetailRow label="Total Parking" value={listing.parkingTotal} />
-                                        <DetailRow label="Garage Spaces" value={listing.garageSpaces} />
-                                        <DetailRow label="Parking Features" value={listing.parkingFeatures} />
-                                    </div>
-                                </section>
-                            )}
-
-                            {/* Financial */}
-                            {(listing.taxAmount || listing.associationFee) && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Financial
-                                    </h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                        {listing.taxAmount != null && (
-                                            <DetailRow
-                                                label={`Annual Taxes${listing.taxYear ? ` (${listing.taxYear})` : ''}`}
-                                                value={`$${listing.taxAmount.toLocaleString()}`}
-                                            />
-                                        )}
-                                        {listing.associationFee != null && (
-                                            <DetailRow
-                                                label="Condo / Strata Fee"
-                                                value={`$${listing.associationFee.toLocaleString()}${listing.associationFeeFrequency ? ` / ${listing.associationFeeFrequency}` : ''}`}
-                                            />
-                                        )}
-                                    </div>
-                                </section>
-                            )}
-
-                            {/* Room Dimensions */}
+                            {/* Rooms Card */}
                             {listing.rooms.length > 0 && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Room Dimensions
-                                    </h2>
-                                    <div className="overflow-x-auto">
+                                <SectionCard title="Rooms">
+                                    <div className="overflow-x-auto -mx-2">
                                         <table className="w-full text-sm">
                                             <thead>
                                                 <tr className="text-left text-gray-500 border-b border-gray-200">
-                                                    <th className="pb-2 font-medium">Room</th>
-                                                    <th className="pb-2 font-medium">Level</th>
-                                                    <th className="pb-2 font-medium">Dimensions</th>
-                                                    <th className="pb-2 font-medium">Description</th>
+                                                    <th className="pb-3 pl-2 font-medium">Level</th>
+                                                    <th className="pb-3 font-medium">Room</th>
+                                                    <th className="pb-3 font-medium">Dimensions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {listing.rooms.map((room, i) => (
-                                                    <tr key={i} className="border-b border-gray-50">
-                                                        <td className="py-2 text-gray-900 font-medium">{room.type}</td>
-                                                        <td className="py-2 text-gray-600">{room.level}</td>
-                                                        <td className="py-2 text-gray-600">{room.dimensions}</td>
-                                                        <td className="py-2 text-gray-600">{room.description}</td>
+                                                    <tr key={i} className={i % 2 === 0 ? 'bg-gray-50' : ''}>
+                                                        <td className="py-3 pl-2 text-gray-600">{room.level}</td>
+                                                        <td className="py-3 text-gray-900 font-medium">{room.type}</td>
+                                                        <td className="py-3 text-gray-600">{room.dimensions || 'Measurements not available'}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
                                         </table>
                                     </div>
-                                </section>
+                                </SectionCard>
                             )}
 
-                            {/* Community / Pool / Fencing */}
-                            {(listing.communityFeatures || listing.poolFeatures || listing.fencing) && (
-                                <section>
-                                    <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                        Community & Outdoor
-                                    </h2>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12">
-                                        <DetailRow label="Community Features" value={listing.communityFeatures} />
-                                        <DetailRow label="Pool" value={listing.poolFeatures} />
-                                        <DetailRow label="Fencing" value={listing.fencing} />
-                                    </div>
-                                </section>
+                            {/* Community & Neighbourhood Card */}
+                            {(hasCommunity || hasFinancial) && (
+                                <SectionCard title="Land">
+                                    {hasCommunity && (
+                                        <SubSection title="Neighbourhood Features">
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                                <DetailItem label="Community Features" value={listing.communityFeatures} />
+                                                <DetailItem label="Pool" value={listing.poolFeatures} />
+                                                <DetailItem label="Fencing" value={listing.fencing} />
+                                            </div>
+                                        </SubSection>
+                                    )}
+
+                                    {hasFinancial && (
+                                        <SubSection title="Maintenance or Condo Information">
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                                {listing.associationFee != null && (
+                                                    <DetailItem
+                                                        label="Maintenance Fees"
+                                                        value={`$${listing.associationFee.toLocaleString()}${listing.associationFeeFrequency ? ` ${listing.associationFeeFrequency}` : ''}`}
+                                                    />
+                                                )}
+                                            </div>
+                                        </SubSection>
+                                    )}
+
+                                    {hasParking && (
+                                        <SubSection title="Parking">
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-4">
+                                                <DetailItem label="Parking Type" value={listing.parkingFeatures || 'No Garage'} />
+                                                <DetailItem label="Total Parking Spaces" value={listing.parkingTotal} />
+                                                <DetailItem label="Garage Spaces" value={listing.garageSpaces} />
+                                            </div>
+                                        </SubSection>
+                                    )}
+                                </SectionCard>
                             )}
 
                             {/* Brokerage Attribution */}
                             {listing.listingBrokerage && (
-                                <p className="text-xs text-gray-400">Listed by {listing.listingBrokerage}</p>
+                                <p className="text-xs text-gray-400 px-2">Listed by {listing.listingBrokerage}</p>
                             )}
 
-                            {/* Map */}
-                            <section>
-                                <h2 className="text-lg font-bold text-gray-900 mb-4 pb-2 border-b border-gray-200">
-                                    Location
-                                </h2>
+                            {/* Location Card */}
+                            <SectionCard title="Location">
                                 <div className="h-80 w-full relative rounded-lg overflow-hidden border border-gray-200">
                                     <iframe
                                         width="100%"
@@ -348,12 +356,12 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                                         src={`https://maps.google.com/maps?width=100%25&height=600&hl=en&q=${mapQuery}&t=&z=14&ie=UTF8&iwloc=B&output=embed`}
                                     />
                                 </div>
-                            </section>
+                            </SectionCard>
                         </div>
 
-                        {/* Right Column — Sticky Contact Card */}
-                        <div className="w-full lg:w-1/3 shrink-0">
-                            <div className="space-y-6">
+                        {/* Right Column - Sticky Contact (desktop only, mobile uses floating sheet) */}
+                        <div className="hidden lg:block lg:w-1/3 shrink-0">
+                            <div id="contact-section" className="sticky top-24 space-y-4">
                                 {/* CTA Banner */}
                                 <div className="bg-brand-accent/5 border border-brand-accent/20 rounded-lg p-5 text-center">
                                     <Home className="w-8 h-8 text-brand-accent mx-auto mb-2" />
@@ -368,10 +376,10 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                                     <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
                                         <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-gray-200">
                                             <Image
-                                                src="/images/gretta-professional.jpg"
+                                                src="/images/gretta-headshot-2026.png"
                                                 alt="Gretta Hughes"
                                                 fill
-                                                className="object-cover object-top"
+                                                className="object-cover object-center"
                                             />
                                         </div>
                                         <div>
@@ -414,7 +422,6 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                     <ListingDisclaimer lastUpdated={new Date().toLocaleDateString('en-CA')} />
                 </div>
             </div>
-            {/* Floating mobile contact sheet */}
             <MobileContactSheet
                 defaultMessage={`Hi Gretta, I'm interested in the property at ${listing.address.full} (MLS: ${listing.mlsNumber}). I'd like to book a showing or get more information.`}
                 listingAddress={listing.address.full}

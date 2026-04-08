@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import React, { useCallback, useState, useTransition } from 'react'
+import React, { useCallback, useState, useTransition, useEffect, useRef } from 'react'
 import { SlidersHorizontal, X, Search, RotateCcw, ChevronDown, List, Map as MapIcon, Loader2 } from 'lucide-react'
 
 const selectClass = "w-full border-0 bg-transparent text-sm text-gray-700 focus:outline-none focus:ring-0 appearance-none cursor-pointer pt-0.5 pb-2 pr-7 pl-2"
@@ -225,11 +225,28 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
         router.push(pathname + '?' + buildQuery({ [name]: value }))
     }
 
-    const handleSearch = () => {
+    const debounceRef = useRef<ReturnType<typeof setTimeout>>(null)
+
+    const handleSearch = useCallback(() => {
         startSearchTransition(() => {
             router.push(pathname + '?' + buildQuery({ q: searchText.trim() }))
         })
-    }
+    }, [searchText, pathname, buildQuery, router, startSearchTransition])
+
+    // Debounce: auto-search 400ms after user stops typing
+    useEffect(() => {
+        if (debounceRef.current) clearTimeout(debounceRef.current)
+        debounceRef.current = setTimeout(() => {
+            const currentQ = searchParams.get('q') || ''
+            const trimmed = searchText.trim()
+            if (trimmed !== currentQ) {
+                startSearchTransition(() => {
+                    router.push(pathname + '?' + buildQuery({ q: trimmed }))
+                })
+            }
+        }, 400)
+        return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+    }, [searchText, searchParams, pathname, buildQuery, router, startSearchTransition])
 
     const isRental = (searchParams.get('tt') || initialFilters['tt']) === 'rent'
     const minPresets = isRental ? rentalMinPresets : saleMinPresets
@@ -448,13 +465,20 @@ export function ListingSearch({ initialFilters = {}, resultCount, totalCount }: 
 
                         <FilterSelect label="Area" value={currentVal('city')} onChange={(v) => handleChange('city', v)}>
                             <option value="">All Areas</option>
+                            <option value="Cambridge">Cambridge</option>
                             <option value="Kitchener">Kitchener</option>
                             <option value="Waterloo">Waterloo</option>
-                            <option value="Cambridge">Cambridge</option>
                             <option value="Guelph">Guelph</option>
-                            <option value="Brampton">Brampton</option>
-                            <option value="Mississauga">Mississauga</option>
-                            <option value="Toronto">Toronto</option>
+                            <option value="Brantford">Brantford</option>
+                            <option value="Brant">Brant County</option>
+                            <option value="Paris">Paris</option>
+                            <option value="Puslinch">Puslinch</option>
+                            <option value="Hamilton">Hamilton</option>
+                            <option value="Woolwich">Woolwich</option>
+                            <option value="Wellesley">Wellesley</option>
+                            <option value="Wilmot">Wilmot</option>
+                            <option value="North Dumfries">North Dumfries</option>
+                            <option value="Woodstock">Woodstock</option>
                         </FilterSelect>
 
                         <FilterSelect label="Beds" value={currentVal('bd')} onChange={(v) => handleChange('bd', v)}>

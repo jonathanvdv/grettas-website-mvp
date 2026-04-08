@@ -6,7 +6,7 @@ export function filterPins(pins: MapPin[], params: Record<string, string>): MapP
 
     const q = params.q?.trim().toLowerCase()
     if (q) {
-        result = result.filter((p) => p.address.toLowerCase().includes(q) || p.id.toLowerCase().includes(q))
+        result = result.filter((p) => p.address.toLowerCase().includes(q) || p.id.toLowerCase().includes(q) || p.mlsNumber.toLowerCase().includes(q))
     }
 
     const tt = params.tt

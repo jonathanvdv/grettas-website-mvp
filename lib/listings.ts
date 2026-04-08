@@ -50,6 +50,7 @@ async function _fetchDdfToken(): Promise<string> {
 
 export interface MapPin {
     id: string
+    mlsNumber: string
     lat: number | null
     lng: number | null
     price: number
@@ -177,7 +178,18 @@ export interface ListingFilters {
 // StructureType values (Collection enum): House, Apartment, Row / Townhouse, Duplex, Triplex, etc.
 // Land uses PropertySubType 'Vacant Land' since it has no StructureType
 
-const SERVICE_AREA_CITIES = ['Cambridge', 'Kitchener', 'Waterloo', 'Guelph', 'Brantford']
+const SERVICE_AREA_CITIES = [
+    // Waterloo Region
+    'Cambridge', 'Kitchener', 'Waterloo', 'Woolwich', 'Wellesley', 'Wilmot', 'North Dumfries',
+    // Brant County
+    'Brantford', 'Brant', 'Paris',
+    // Wellington County / surrounding
+    'Guelph', 'Puslinch', 'Guelph/Eramosa',
+    // Hamilton-Wentworth
+    'Hamilton',
+    // Beyond
+    'Woodstock', 'Norfolk', 'Haldimand',
+]
 
 /** Escape a value for use inside an OData single-quoted string literal. */
 export function odataString(value: string): string {
@@ -468,37 +480,40 @@ async function fetchRemainingBatches(
  * @param listingId - The unique identifier (ListingKey) of the property
  * @returns The normalized listing object
  */
-export async function getListing(listingId: string): Promise<Listing> {
+export async function getListing(listingId: string): Promise<Listing | null> {
     if (!DDF_CLIENT_ID) {
         const { mockListings } = await import('./mock-listings')
-        const found = mockListings.find((l) => l.id === listingId)
-        if (!found) throw new Error('Listing not found')
-        return found
+        return mockListings.find((l) => l.id === listingId) || null
     }
 
-    const token = await getDdfToken()
+    let token = await getDdfToken()
     const params = new URLSearchParams()
     params.set('$filter', `ListingKey eq '${odataString(listingId)}'`)
-    params.set('$expand', 'Rooms')
 
-    let res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
+    const url = `${DDF_API_BASE}/Property?${params.toString()}`
+    let res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
         next: { revalidate: 300 },
     })
 
-    // If $expand=Rooms isn't supported, retry without it
-    if (!res.ok) {
-        params.delete('$expand')
-        res = await fetch(`${DDF_API_BASE}/Property?${params.toString()}`, {
+    // Retry on 401 with a fresh token
+    if (res.status === 401) {
+        cachedToken = null
+        tokenExpiry = 0
+        token = await getDdfToken()
+        res = await fetch(url, {
             headers: { Authorization: `Bearer ${token}` },
             next: { revalidate: 300 },
         })
     }
 
-    if (!res.ok) throw new Error(`Listing not found: ${listingId}`)
+    if (!res.ok) {
+        console.error('getListing failed:', res.status, listingId)
+        return null
+    }
 
     const data = await res.json()
-    if (!data.value || data.value.length === 0) throw new Error('Listing not found')
+    if (!data.value || data.value.length === 0) return null
     return normalizeDdfListing(data.value[0])
 }
 
@@ -521,9 +536,10 @@ export async function getFeaturedListings(limit = 6): Promise<Listing[]> {
     const token = await getDdfToken()
     const params = new URLSearchParams()
     params.set('$top', limit.toString())
+    const cityFilter = SERVICE_AREA_CITIES.map((c) => `City eq '${odataString(c)}'`).join(' or ')
     params.set(
         '$filter',
-        "(City eq 'Cambridge' or City eq 'Kitchener' or City eq 'Waterloo' or City eq 'Guelph' or City eq 'Brantford') and ListPrice gt 200000"
+        `(${cityFilter}) and ListPrice gt 200000`
     )
     params.set('$orderby', 'ModificationTimestamp desc')
 
@@ -614,12 +630,22 @@ function normalizeDdfListing(raw: any): Listing {
     const dom = listDate ? Math.floor((Date.now() - new Date(listDate).getTime()) / (1000 * 60 * 60 * 24)) : 0
 
     // Parse rooms from $expand=Rooms
-    const rooms: Room[] = (raw.Rooms || []).map((r: any) => ({
-        type: r.RoomType || 'Room',
-        level: r.RoomLevel || '',
-        dimensions: r.RoomDimensions || (r.RoomLength && r.RoomWidth ? `${r.RoomLength} x ${r.RoomWidth}` : ''),
-        description: r.RoomDescription || '',
-    }))
+    const rooms: Room[] = (raw.Rooms || []).map((r: any) => {
+        const units = r.RoomLengthWidthUnits || ''
+        const unitLabel = units.toLowerCase() === 'meters' ? 'm' : units.toLowerCase() === 'feet' ? 'ft' : units
+        let dimensions = r.RoomDimensions || ''
+        if (!dimensions && r.RoomLength && r.RoomWidth) {
+            dimensions = unitLabel
+                ? `${r.RoomLength} ${unitLabel} x ${r.RoomWidth} ${unitLabel}`
+                : `${r.RoomLength} x ${r.RoomWidth}`
+        }
+        return {
+            type: r.RoomType || 'Room',
+            level: r.RoomLevel || '',
+            dimensions,
+            description: r.RoomDescription || '',
+        }
+    })
     /* eslint-enable @typescript-eslint/no-explicit-any */
 
     return {
@@ -720,6 +746,7 @@ export function toMapPin(listing: Listing): MapPin | null {
         return null
     return {
         id: listing.id,
+        mlsNumber: listing.mlsNumber,
         lat: listing.latitude,
         lng: listing.longitude,
         price: listing.price,
@@ -746,6 +773,7 @@ export function toMapPin(listing: Listing): MapPin | null {
 
 const MAP_PIN_SELECT = [
     'ListingKey',
+    'ListingId',
     'Latitude',
     'Longitude',
     'ListPrice',
@@ -800,6 +828,7 @@ export function normalizeDdfToPin(raw: any): MapPin | null {
 
     return {
         id: raw.ListingKey,
+        mlsNumber: raw.ListingId || raw.ListingKey,
         lat,
         lng,
         price: raw.ListPrice || raw.TotalActualRent || 0,
