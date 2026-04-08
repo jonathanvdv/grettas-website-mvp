@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, X, ImageIcon } from 'lucide-react'
 
@@ -16,83 +16,96 @@ export function ImageGallery({ photos, address }: { photos: string[], address?: 
         )
     }
 
-    const handleNext = () => setCurrentIndex((prev) => (prev + 1) % photos.length)
-    const handlePrev = () => setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length)
+    const handleNext = useCallback(() => setCurrentIndex((prev) => (prev + 1) % photos.length), [photos.length])
+    const handlePrev = useCallback(() => setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length), [photos.length])
 
     const openFullscreen = (index: number) => {
         setCurrentIndex(index)
         setIsFullscreen(true)
     }
 
-    const remainingCount = photos.length - 3
+    useEffect(() => {
+        if (!isFullscreen) return
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowRight') handleNext()
+            else if (e.key === 'ArrowLeft') handlePrev()
+            else if (e.key === 'Escape') setIsFullscreen(false)
+        }
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [isFullscreen, handleNext, handlePrev])
+
+    // Lock body scroll when lightbox is open
+    useEffect(() => {
+        if (isFullscreen) {
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.overflow = ''
+        }
+        return () => { document.body.style.overflow = '' }
+    }, [isFullscreen])
+
+    const gridPhotos = photos.slice(0, 5)
+    const remainingCount = photos.length - 5
 
     return (
         <>
-            {/* Photo Grid: 1 large left + 2 stacked right */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-1.5 rounded-lg overflow-hidden h-[300px] md:h-[480px]">
-                {/* Main large photo */}
+            {/* Photo Grid: 1 large left + 4 smaller right (2x2), like Realtor.ca */}
+            <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-2 rounded-lg overflow-hidden h-[240px] sm:h-[300px] md:h-[440px]">
+                {/* Main large photo - spans 2 rows on left */}
                 <button
-                    className="relative md:col-span-2 h-full cursor-pointer group overflow-hidden"
+                    className="relative md:col-span-2 md:row-span-2 h-full cursor-pointer group overflow-hidden"
                     onClick={() => openFullscreen(0)}
                 >
                     <Image
-                        src={photos[0]}
+                        src={gridPhotos[0]}
                         alt={address ? `${address} - Photo 1` : 'Property photo 1'}
                         fill
                         className="object-cover group-hover:brightness-95 transition-all duration-200"
-                        sizes="(max-width: 768px) 100vw, 66vw"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                         priority
+                        unoptimized
                     />
                 </button>
 
-                {/* Right column — 2 stacked photos */}
-                <div className="hidden md:grid grid-rows-2 gap-1.5 h-full">
-                    {photos[1] ? (
+                {/* Right 4 photos in 2x2 grid */}
+                {[1, 2, 3, 4].map((i) => {
+                    const photo = gridPhotos[i]
+                    const isLast = i === 4
+                    if (!photo) return <div key={i} className="hidden md:block bg-gray-100" />
+                    return (
                         <button
-                            className="relative h-full cursor-pointer group overflow-hidden"
-                            onClick={() => openFullscreen(1)}
+                            key={i}
+                            className="relative hidden md:block h-full cursor-pointer group overflow-hidden"
+                            onClick={() => openFullscreen(i)}
                         >
                             <Image
-                                src={photos[1]}
-                                alt={address ? `${address} - Photo 2` : 'Property photo 2'}
+                                src={photo}
+                                alt={address ? `${address} - Photo ${i + 1}` : `Property photo ${i + 1}`}
                                 fill
                                 className="object-cover group-hover:brightness-95 transition-all duration-200"
-                                sizes="33vw"
+                                sizes="25vw"
+                                unoptimized
                             />
-                        </button>
-                    ) : (
-                        <div className="bg-gray-100" />
-                    )}
-                    {photos[2] ? (
-                        <button
-                            className="relative h-full cursor-pointer group overflow-hidden"
-                            onClick={() => openFullscreen(2)}
-                        >
-                            <Image
-                                src={photos[2]}
-                                alt={address ? `${address} - Photo 3` : 'Property photo 3'}
-                                fill
-                                className="object-cover group-hover:brightness-95 transition-all duration-200"
-                                sizes="33vw"
-                            />
-                            {remainingCount > 0 && (
-                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center transition-colors group-hover:bg-black/40">
-                                    <span className="flex items-center gap-2 text-white font-semibold text-base">
+                            {isLast && remainingCount > 0 && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-colors group-hover:bg-black/30">
+                                    <span className="flex items-center gap-2 text-white font-semibold text-lg">
                                         <ImageIcon className="w-5 h-5" />
                                         + {remainingCount}
                                     </span>
                                 </div>
                             )}
                         </button>
-                    ) : (
-                        <div className="bg-gray-100" />
-                    )}
-                </div>
+                    )
+                })}
             </div>
 
             {/* Fullscreen Lightbox */}
             {isFullscreen && (
-                <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center">
+                <div
+                    className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center"
+                    onClick={(e) => { if (e.target === e.currentTarget) setIsFullscreen(false) }}
+                >
                     <button
                         onClick={() => setIsFullscreen(false)}
                         className="absolute top-5 right-5 text-white/70 hover:text-white p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors z-50"
@@ -104,13 +117,13 @@ export function ImageGallery({ photos, address }: { photos: string[], address?: 
                         {currentIndex + 1} / {photos.length}
                     </div>
 
-                    <div className="relative w-full h-[80vh] flex items-center justify-center">
-                        <Image
+                    <div className="relative w-full h-[80vh] flex items-center justify-center px-16">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
                             src={photos[currentIndex]}
                             alt={address ? `${address} - Photo ${currentIndex + 1}` : `Property photo ${currentIndex + 1}`}
-                            fill
-                            className="object-contain"
-                            sizes="100vw"
+                            className="max-w-full max-h-full w-auto h-auto object-contain"
+                            draggable={false}
                         />
 
                         {photos.length > 1 && (

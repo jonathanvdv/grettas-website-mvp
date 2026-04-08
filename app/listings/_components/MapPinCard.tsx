@@ -29,6 +29,7 @@ export const MapPinCard = React.memo(function MapPinCard({ pin }: { pin: MapPin 
                             fill
                             sizes="140px"
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            unoptimized
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">

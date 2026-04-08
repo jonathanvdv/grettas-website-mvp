@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Phone } from 'lucide-react'
 import Image from 'next/image'
 import { ContactForm } from '@/components/ContactForm'
@@ -12,10 +12,37 @@ interface MobileContactSheetProps {
 
 export function MobileContactSheet({ defaultMessage, listingAddress }: MobileContactSheetProps) {
     const [open, setOpen] = useState(false)
+    const [showDesktopBtn, setShowDesktopBtn] = useState(false)
+
+    useEffect(() => {
+        function handleScroll() {
+            setShowDesktopBtn(window.scrollY > 400)
+        }
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
+    function scrollToContact() {
+        const el = document.getElementById('contact-section')
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+    }
 
     return (
         <>
-            {/* Floating trigger button */}
+            {/* Desktop floating button — scrolls to contact form sidebar */}
+            <button
+                onClick={scrollToContact}
+                className={`fixed bottom-8 right-8 z-40 hidden lg:flex items-center gap-2 px-6 py-3 text-sm font-semibold rounded-full bg-brand-accent text-white shadow-lg hover:bg-brand-accent/90 transition-all duration-300 ${
+                    showDesktopBtn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+                }`}
+            >
+                <Phone className="w-4 h-4" />
+                Book a Showing
+            </button>
+
+            {/* Mobile floating trigger button */}
             <button
                 onClick={() => setOpen(true)}
                 className="fixed bottom-5 left-4 right-4 z-40 lg:hidden py-3 text-sm font-semibold rounded-full bg-brand-accent text-white shadow-lg text-center"
@@ -23,7 +50,7 @@ export function MobileContactSheet({ defaultMessage, listingAddress }: MobileCon
                 Book a Showing
             </button>
 
-            {/* Bottom sheet overlay */}
+            {/* Mobile bottom sheet overlay */}
             {open && (
                 <div className="fixed inset-0 z-50 lg:hidden">
                     <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
@@ -38,10 +65,10 @@ export function MobileContactSheet({ defaultMessage, listingAddress }: MobileCon
                             <div className="flex items-center gap-3">
                                 <div className="relative w-10 h-10 rounded-full overflow-hidden border border-gray-200">
                                     <Image
-                                        src="/images/gretta-professional.jpg"
+                                        src="/images/gretta-headshot-2026.png"
                                         alt="Gretta Hughes"
                                         fill
-                                        className="object-cover object-top"
+                                        className="object-cover object-center"
                                     />
                                 </div>
                                 <div>
