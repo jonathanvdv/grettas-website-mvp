@@ -148,16 +148,6 @@ export default function HomeEvaluationPage() {
                                 ))}
                             </div>
 
-                            {/* Photo */}
-                            <div className="mt-10 relative aspect-[16/10] overflow-hidden hidden lg:block">
-                                <Image
-                                    src="/images/gretta-professional.jpg"
-                                    alt="Gretta Hughes"
-                                    fill
-                                    className="object-cover object-center"
-                                    sizes="500px"
-                                />
-                            </div>
                         </AnimatedSection>
 
                         <AnimatedSection className="order-1 lg:order-2">
@@ -180,6 +170,20 @@ export default function HomeEvaluationPage() {
                             </div>
                         </AnimatedSection>
                     </div>
+
+                    {/* Photo */}
+                    <AnimatedSection className="mt-16">
+                        <div className="max-w-3xl mx-auto">
+                            <Image
+                                src="/images/gretta-professional.jpg"
+                                alt="Gretta Hughes"
+                                width={1200}
+                                height={800}
+                                className="w-full h-auto"
+                                sizes="(max-width: 768px) 100vw, 768px"
+                            />
+                        </div>
+                    </AnimatedSection>
                 </div>
             </section>
 
